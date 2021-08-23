@@ -123,14 +123,14 @@ class SabycomViewController: UIViewController, SabycomView {
     
     // MARK: - Lifecycle
     
-    public override func loadView() {
+    override func loadView() {
         super.loadView()
         
         // Создадим webview
         webview(completion: {_ in })
     }
     
-    public override func viewDidLoad() {
+    override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = .white
@@ -291,17 +291,17 @@ class SabycomViewController: UIViewController, SabycomView {
 
 extension SabycomViewController: WKNavigationDelegate {
     
-    public func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse, decisionHandler: @escaping (WKNavigationResponsePolicy) -> Swift.Void) {
+    func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse, decisionHandler: @escaping (WKNavigationResponsePolicy) -> Swift.Void) {
         lastResponse = WebResponse(wkResponse: navigationResponse)
         
         decisionHandler(.allow)
     }
     
-    public func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+    func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
         state = .error
     }
     
-    public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         if lastResponse?.error != nil {
             state = .error
         } else {
@@ -309,7 +309,7 @@ extension SabycomViewController: WKNavigationDelegate {
         }
     }
     
-    public func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
         print("Error navigation \(error)")
     }
 }

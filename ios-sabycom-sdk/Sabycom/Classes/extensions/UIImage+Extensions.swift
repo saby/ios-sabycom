@@ -8,7 +8,7 @@
 import Foundation
 
 extension UIImage {
-    public class func named(_ name: String) -> UIImage {
+    class func named(_ name: String) -> UIImage {
         return UIImage.init(named: name, in: Bundle.mainSdk, compatibleWith: nil)!
     }
 }

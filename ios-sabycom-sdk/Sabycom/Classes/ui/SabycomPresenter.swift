@@ -42,11 +42,11 @@ class SabycomPresenter {
                 
                 let config = self.interactor.getConfig()
                 let url = self.interactor.getUrl()
-                DispatchQueue.main.async { [weak self] in
-                    self?.view?.updateWithConfig(config)
+                DispatchQueue.main.async { [weak view] in
+                    view?.updateWithConfig(config)
                     
                     if let url = url {
-                        self?.view?.loadUrl(url)
+                        view?.loadUrl(url)
                     }
                 }
             }
