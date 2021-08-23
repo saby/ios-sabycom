@@ -14,6 +14,8 @@ public class Sabycom {
     
     private static let instance = Sabycom()
     
+    private static let api = Api()
+    
     private lazy var controller = SabycomViewController()
     
     public class func initialize(appId: String, apiKey: String, lazy: Bool = false) {
@@ -41,12 +43,12 @@ public class Sabycom {
         instance.controller.dismiss(animated: true, completion: nil)
     }
     
-    public class func getUnreadConversationCount(completion: @escaping (_ unreadConversationCount: Int) -> Void) {
-        
+    public class func getUnreadConversationCount(completion: @escaping (_ unreadConversationCount: Int?) -> Void) {
+        api.getUnreadConversationCount(completion: completion)
     }
     
-    public class func registerUser(_ user: SabycomUser) {
-        
+    public class func registerUser(_ user: SabycomUser, completion: @escaping (_ userId: String?) -> Void) {
+        api.registerUser(user, completion: completion)
     }
     
     public class func isSabycomPushNotification(info: [String: String]) -> Bool {
