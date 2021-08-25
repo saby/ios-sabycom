@@ -8,13 +8,13 @@
 import Foundation
 
 class Api {
-    func getUnreadConversationCount(completion: @escaping (_ unreadConversationCount: Int?) -> Void) {
+    func getUnreadConversationCount(completion: @escaping (_ unreadConversationCount: Int) -> Void) {
         let request = Request<UnreadConversationCountResponse>.get(path: "unreadConversationCount")
         request.execute { response in
             completion(response.count)
             print("unread conversations count: \(response.count)")
         } onError: { error in
-            completion(nil)
+            completion(0)
             print("unread conversations count error: \(error.localizedDescription)")
         }
     }

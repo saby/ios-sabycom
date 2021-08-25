@@ -82,11 +82,7 @@ class SabycomDemoMainViewController: UIViewController {
     
     private func getUnreadConversationsCount() {
         Sabycom.getUnreadConversationCount { [weak unreadCountLabel] count in
-            if let count = count {
-                unreadCountLabel?.text = "Количество сообщений: \(count)"
-            } else {
-                unreadCountLabel?.text = "Ошибка при получении количества сообщений"
-            }
+            unreadCountLabel?.text = "Количество сообщений: \(count)"
         }
     }
 }
