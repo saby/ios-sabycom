@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1240"
+   LastUpgradeVersion = "1250"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -17,21 +17,7 @@
                BlueprintIdentifier = "607FACCF1AFB9204008FA782"
                BuildableName = "ios-sabycom-demo.app"
                BlueprintName = "ios-sabycom-demo"
-               ReferencedContainer = "container:Sabycom.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "607FACE41AFB9204008FA782"
-               BuildableName = "Sabycom_Tests.xctest"
-               BlueprintName = "Sabycom_Tests"
-               ReferencedContainer = "container:Sabycom.xcodeproj">
+               ReferencedContainer = "container:ios-sabycom-demo.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -41,15 +27,6 @@
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "607FACCF1AFB9204008FA782"
-            BuildableName = "ios-sabycom-demo.app"
-            BlueprintName = "ios-sabycom-demo"
-            ReferencedContainer = "container:Sabycom.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
       <Testables>
          <TestableReference
             skipped = "NO">
@@ -58,7 +35,7 @@
                BlueprintIdentifier = "607FACE41AFB9204008FA782"
                BuildableName = "Sabycom_Tests.xctest"
                BlueprintName = "Sabycom_Tests"
-               ReferencedContainer = "container:Sabycom.xcodeproj">
+               ReferencedContainer = "container:ios-sabycom-demo.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -80,7 +57,7 @@
             BlueprintIdentifier = "607FACCF1AFB9204008FA782"
             BuildableName = "ios-sabycom-demo.app"
             BlueprintName = "ios-sabycom-demo"
-            ReferencedContainer = "container:Sabycom.xcodeproj">
+            ReferencedContainer = "container:ios-sabycom-demo.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -97,7 +74,7 @@
             BlueprintIdentifier = "607FACCF1AFB9204008FA782"
             BuildableName = "ios-sabycom-demo.app"
             BlueprintName = "ios-sabycom-demo"
-            ReferencedContainer = "container:Sabycom.xcodeproj">
+            ReferencedContainer = "container:ios-sabycom-demo.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
