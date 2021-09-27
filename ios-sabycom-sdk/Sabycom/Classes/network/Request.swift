@@ -60,19 +60,19 @@ struct Request<T: Codable> {
 }
 
 private enum Host {
-    static let baseUrl = "https://virtserver.swaggerhub.com/iskhakovstensor/Sabycom/1.0.0/"
+    static let host = SabycomHost.init(hostType: .test, appId: nil)
 }
 
 extension Request {
     
     static func get(path: String, params: [String: Any?] = [:], headers: [String: String] = [:]) -> Request {
-        let url = Host.baseUrl + path
+        let url = Host.host.createApiUrl() + path
         let request = Request(url: url, method: .get, params: params, headers: headers)
         return request
     }
     
     static func post(path: String, params: [String: Any?] = [:], headers: [String: String] = [:]) -> Request {
-        let url = Host.baseUrl + path
+        let url = Host.host.createApiUrl() + path
         let request = Request(url: url, method: .post, params: params, headers: headers)
         return request
     }

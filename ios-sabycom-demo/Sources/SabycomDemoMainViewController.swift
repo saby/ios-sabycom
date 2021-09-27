@@ -14,6 +14,10 @@ class SabycomDemoMainViewController: UIViewController {
         static let margin: CGFloat = 16
     }
     
+    private enum Keys {
+        static let userId = "SabycomUser.Id"
+    }
+    
     private lazy var unreadCountLabel: UILabel = {
         let label = UILabel()
         label.textColor = .black
@@ -41,6 +45,13 @@ class SabycomDemoMainViewController: UIViewController {
         button.addTarget(self, action: #selector(onHelpClicked(_:)), for: .touchUpInside)
         view.addSubview(button)
         
+        let clearButton = UIButton(type: .custom)
+        clearButton.translatesAutoresizingMaskIntoConstraints = false
+        clearButton.setTitleColor(.blue, for: .normal)
+        clearButton.setTitle("Сбросить пользователя", for: .normal)
+        clearButton.addTarget(self, action: #selector(onClearUserClicked(_:)), for: .touchUpInside)
+        view.addSubview(clearButton)
+        
         view.addSubview(unreadCountLabel)
         view.addSubview(userIdLabel)
         
@@ -50,9 +61,14 @@ class SabycomDemoMainViewController: UIViewController {
         ])
         
         NSLayoutConstraint.activate([
+            clearButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            clearButton.topAnchor.constraint(equalTo: button.bottomAnchor)
+        ])
+        
+        NSLayoutConstraint.activate([
             unreadCountLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: Constants.margin),
             unreadCountLabel.rightAnchor.constraint(equalTo: view.rightAnchor, constant: Constants.margin),
-            unreadCountLabel.topAnchor.constraint(equalTo: button.bottomAnchor, constant: Constants.margin)
+            unreadCountLabel.topAnchor.constraint(equalTo: clearButton.bottomAnchor, constant: Constants.margin)
         ])
         
         NSLayoutConstraint.activate([
@@ -69,15 +85,17 @@ class SabycomDemoMainViewController: UIViewController {
         Sabycom.show(on: self)
     }
     
+    @objc private func onClearUserClicked(_ sender: UIButton) {
+        UserDefaults.standard.removeObject(forKey: Keys.userId)
+        
+        let alert = UIAlertController(title: "Пользователь сброшен", message: "Чтобы зарегистрировать нового пользователя, перезагрузите приложение", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
+        present(alert, animated: true, completion: nil)
+    }
+    
     private func registerUser() {
-        let user = SabycomUser(uuid: UUID().uuidString, name: "John", surname: "Doe", email: "John.Doe@paradise.com", phone: "+1234567890")
-        Sabycom.registerUser(user) { [weak userIdLabel] userId in
-            if let userId = userId {
-                userIdLabel?.text = "Пользователь зарегистрирован: \(userId)"
-            } else {
-                userIdLabel?.text = "Ошибка при регистрации пользователя"
-            }
-        }
+        let user = SabycomUser(uuid: getUserId(), name: "John", surname: "Doe", email: "John.Doe1@paradise.com", phone: "+1234567890")
+        Sabycom.registerUser(user)
     }
     
     private func getUnreadConversationsCount() {
@@ -85,5 +103,16 @@ class SabycomDemoMainViewController: UIViewController {
             unreadCountLabel?.text = "Количество сообщений: \(count)"
         }
     }
+    
+    private func getUserId() -> String {
+        guard let userId = UserDefaults.standard.string(forKey: Keys.userId) else {
+            let id = UUID().uuidString
+            UserDefaults.standard.setValue(id, forKey: Keys.userId)
+            return id
+        }
+        
+        return userId
+    }
+    
 }
 
