@@ -8,5 +8,7 @@
 import Foundation
 
 struct RegisterUserResponse: Codable {
-    let id: String
+    let jsonrpc: String
+    let result: Bool?
+    let error: ResponseError?
 }

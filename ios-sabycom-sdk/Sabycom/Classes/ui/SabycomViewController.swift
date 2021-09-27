@@ -10,8 +10,9 @@ import WebKit
 import UIKit
 
 enum WebViewState: Equatable {
+    case preparing
     case loading(url: URL)
-    case normal
+    case loaded(url: URL)
     case error
 }
 
@@ -24,7 +25,7 @@ class SabycomViewController: UIViewController, SabycomView {
     
     var presenter: SabycomPresenter!
     
-    var state: WebViewState = .normal {
+    var state: WebViewState = .preparing {
         didSet {
             updateViewState()
         }
@@ -99,6 +100,8 @@ class SabycomViewController: UIViewController, SabycomView {
     
     var didLoadView: (() -> Void)?
     
+    var viewWillAppear: (() -> Void)?
+    
     func forceInitialize() {
         view.setNeedsLayout()
     }
@@ -137,10 +140,15 @@ class SabycomViewController: UIViewController, SabycomView {
 
         setupViews()
         setupWebViewConstraints()
-        loadWebPage()
         updateViewState()
         
         didLoadView?()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        viewWillAppear?()
     }
     
     private func setupViews() {
@@ -252,8 +260,15 @@ class SabycomViewController: UIViewController, SabycomView {
     }
     
     private func loadWebPage() {
+        let currentUrl: URL?
         
-        guard isViewLoaded, case .loading(let url) = state else {
+        switch state {
+        case .loading(let url), .loaded(let url):
+            currentUrl = url
+        default:
+            currentUrl = nil
+        }
+        guard isViewLoaded, let url = currentUrl else {
             return
         }
                 
@@ -275,7 +290,7 @@ class SabycomViewController: UIViewController, SabycomView {
             webContainer.isHidden = true
             webViewLoadIndicator.startAnimating()
             
-        case .normal:
+        case .preparing, .loaded:
             webContainer.isHidden = false
             webViewLoadIndicator.stopAnimating()
         case .error:
@@ -304,8 +319,10 @@ extension SabycomViewController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         if lastResponse?.error != nil {
             state = .error
+        } else if let url = webView.url {
+            state = .loaded(url: url)
         } else {
-            state = .normal
+            state = .error
         }
     }
     

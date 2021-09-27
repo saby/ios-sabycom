@@ -9,6 +9,7 @@ import Foundation
 
 struct SabycomHost {
     private static let baseHostString = "consultant.sbis.ru/consultant/"
+    private static let baseApiUrlString = "consultant.sbis.ru/service/restapi/"
     
     enum HostType {
         case prod
@@ -28,12 +29,17 @@ struct SabycomHost {
     }
     
     let hostType: HostType
-    let appId: String
-    let apiKey: String
+    let appId: String?
 
     
-    func createURL() -> URL? {
+    func createURL() -> String {
+        let appId = self.appId ?? ""
         let urlString = "https://\(hostType.prefix)\(SabycomHost.baseHostString)\(appId)"
-        return URL(string: urlString)
+        return urlString
+    }
+    
+    func createApiUrl() -> String {
+        let urlString = "https://\(hostType.prefix)\(SabycomHost.baseApiUrlString)"
+        return urlString
     }
 }

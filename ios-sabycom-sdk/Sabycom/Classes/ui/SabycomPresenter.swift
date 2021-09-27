@@ -5,12 +5,12 @@
 //  Created by Sergey Iskhakov on 19.08.2021.
 //
 
-import Foundation
+import UIKit
 
 protocol SabycomView: AnyObject {
     var didLoadView: (() -> Void)? { get set }
+    var viewWillAppear: (() -> Void)? { get set }
     
-    func forceInitialize()
     func startedLoadingConfig()
     func updateWithConfig(_ config: SabycomConfig)
     func loadUrl(_ url: URL)
@@ -27,10 +27,6 @@ class SabycomPresenter {
         setViewHandlers()
     }
     
-    func forceInitialize() {
-        view?.forceInitialize()
-    }
-    
     private func setViewHandlers() {
         view?.didLoadView = { [weak view] in
             view?.startedLoadingConfig()
@@ -41,14 +37,24 @@ class SabycomPresenter {
                 }
                 
                 let config = self.interactor.getConfig()
-                let url = self.interactor.getUrl()
                 DispatchQueue.main.async { [weak view] in
                     view?.updateWithConfig(config)
-                    
-                    if let url = url {
+                }
+            }
+        }
+        
+        view?.viewWillAppear = { [weak view] in
+            DispatchQueue.global(qos: .userInteractive).async { [weak self] in
+                guard let self = self else {
+                    return
+                }
+                
+                if let url = self.interactor.getUrl() {
+                    DispatchQueue.main.async { [weak view] in
                         view?.loadUrl(url)
                     }
                 }
+                
             }
         }
     }
