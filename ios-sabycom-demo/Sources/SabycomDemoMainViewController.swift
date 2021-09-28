@@ -33,9 +33,21 @@ class SabycomDemoMainViewController: UIViewController {
         return label
     }()
     
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: .SabycomUnreadConversationCountDidChange, object: nil)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setupViews()
+        updateUnreadConversationsCount()
+        registerUser()
+        observeUnreadConversationsCount()
+    }
+    
+    
+    private func setupViews() {
         view.backgroundColor = .white
         
         let button = UIButton(type: .custom)
@@ -76,9 +88,11 @@ class SabycomDemoMainViewController: UIViewController {
             userIdLabel.rightAnchor.constraint(equalTo: view.rightAnchor, constant: Constants.margin),
             userIdLabel.topAnchor.constraint(equalTo: unreadCountLabel.bottomAnchor, constant: Constants.margin)
         ])
-        
-        registerUser()
-        getUnreadConversationsCount()
+    }
+    
+    @objc
+    private func updateUnreadConversationsCount() {
+        unreadCountLabel.text = "Количество сообщений: \(Sabycom.unreadConversationCount)"
     }
     
     @objc private func onHelpClicked(_ sender: UIButton) {
@@ -86,10 +100,15 @@ class SabycomDemoMainViewController: UIViewController {
     }
     
     @objc private func onClearUserClicked(_ sender: UIButton) {
-        UserDefaults.standard.removeObject(forKey: Keys.userId)
-        
-        let alert = UIAlertController(title: "Пользователь сброшен", message: "Чтобы зарегистрировать нового пользователя, перезагрузите приложение", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
+        let alert = UIAlertController(title: "Сбросить?", message: nil, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Да", style: .default, handler: { [weak self] _ in
+            UserDefaults.standard.removeObject(forKey: Keys.userId)
+            
+            let alert = UIAlertController(title: "Пользователь сброшен", message: "Чтобы зарегистрировать нового пользователя, перезагрузите приложение", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
+            self?.present(alert, animated: true, completion: nil)
+        }))
+        alert.addAction(UIAlertAction(title: "Нет", style: .cancel, handler: nil))
         present(alert, animated: true, completion: nil)
     }
     
@@ -98,11 +117,10 @@ class SabycomDemoMainViewController: UIViewController {
         Sabycom.registerUser(user)
     }
     
-    private func getUnreadConversationsCount() {
-        Sabycom.getUnreadConversationCount { [weak unreadCountLabel] count in
-            unreadCountLabel?.text = "Количество сообщений: \(count)"
-        }
+    private func observeUnreadConversationsCount() {
+        NotificationCenter.default.addObserver(self, selector: #selector(updateUnreadConversationsCount), name: .SabycomUnreadConversationCountDidChange, object: nil)
     }
+    
     
     private func getUserId() -> String {
         guard let userId = UserDefaults.standard.string(forKey: Keys.userId) else {
