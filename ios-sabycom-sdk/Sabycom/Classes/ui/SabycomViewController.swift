@@ -89,12 +89,30 @@ class SabycomViewController: UIViewController, SabycomView {
         return loadIndicator
     }()
     
+    private lazy var jsHandler: SabycomWidgetJSHandler = {
+        let handler = SabycomWidgetJSHandler()
+        handler.delegate = self
+        return handler
+    }()
+    
     /// Идет ли процесс создания WebView
     private var webViewInTheMaking = false
     /// Стэк запросов на обращение в WebView, нужен чтобы не запрашивать несколько раз создание webview.
     private var webViewRequestsStack = [(WKWebView)-> Void]()
     
     private var lastResponse: WebResponse?
+    
+    private let unreadMessagesService: UnreadMessagesService?
+    
+    init(unreadMessagesService: UnreadMessagesService) {
+        self.unreadMessagesService = unreadMessagesService
+        
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     //MARK: - SabycomView -
     
@@ -244,7 +262,19 @@ class SabycomViewController: UIViewController, SabycomView {
         // Если webview не создано - запускаем процес инициализации.
         guard let webView = _webView else {
             self.webViewInTheMaking = true
-            self._webView = WKWebView()
+            
+            let preferences = WKPreferences()
+            preferences.javaScriptEnabled = true
+            
+            let configuration = WKWebViewConfiguration()
+            configuration.preferences = preferences
+            
+            let contentController = WKUserContentController()
+            contentController.add(jsHandler, name: "mobileParent")
+            
+            configuration.userContentController = contentController
+            
+            self._webView = WKWebView(frame: view.bounds, configuration: configuration)
             self._webView?.translatesAutoresizingMaskIntoConstraints = false
             
             setupWebViewConstraints()
@@ -301,6 +331,16 @@ class SabycomViewController: UIViewController, SabycomView {
     
     @objc private func onClose(_ sender: UIButton) {
         Sabycom.hide()
+    }
+}
+
+extension SabycomViewController: SabycomWidgetJSHandlerDelegate {
+    func didClickClose() {
+        Sabycom.hide()
+    }
+    
+    func didReceiveNewMessage() {
+        unreadMessagesService?.updateUnreadMessagesCount()
     }
 }
 

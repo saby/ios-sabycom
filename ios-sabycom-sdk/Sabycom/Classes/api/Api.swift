@@ -8,19 +8,24 @@
 import Foundation
 
 class Api {
-    func getUnreadConversationCount(for userId: String, channedUUID: String, completion: @escaping (_ unreadConversationCount: Int) -> Void) {
+    func getUnreadConversationCount(for userId: String, channedUUID: String, completion: ((_ unreadConversationCount: Int) -> Void)?) {
         let path = "externalUser/\(userId)/\(channedUUID)/unread/\(channedUUID)"
-        let request = Request<UnreadConversationCountResponse>.get(path: path)
+        let request = Request<BaseResponse<UnreadConversationCountResponse>>.get(path: path)
         request.execute { response in
-            completion(response.count)
-            print("unread conversations count: \(response.count)")
+            if let count = response.result?.count {
+                completion?(count)
+                print("unread conversations count: \(count)")
+            } else {
+                completion?(0)
+            }
+            
         } onError: { error in
-            completion(0)
+            completion?(0)
             print("unread conversations count error: \(error.localizedDescription)")
         }
     }
     
-    func registerUser(_ user: SabycomUser, channedUUID: String, pushToken: String?, completion: @escaping (_ userId: String?) -> Void) {
+    func registerUser(_ user: SabycomUser, channedUUID: String, pushToken: String?, completion:((_ userId: String?) -> Void)?) {
         let params = ["id": user.uuid,
                       "service_id": channedUUID,
                       "name": user.name ?? "",
@@ -28,15 +33,19 @@ class Api {
                       "email": user.email ?? "",
                       "phone": user.phone ?? "",
                       "push_token": pushToken ?? ""]
-        let request = Request<RegisterUserResponse>.post(path: "externalUser", params: params)
+        
+        let path = "externalUser/\(user.uuid)/\(channedUUID)"
+        let request = Request<BaseResponse<Bool>>.put(path: path, params: params)
         request.execute { response in
             if response.result == true {
                 print("registered user id: \(user.uuid)")
+                completion?(user.uuid)
             } else if let error = response.error {
                 print("user registration error: \(error.message)")
+                completion?(nil)
             }
         } onError: { error in
-            completion(nil)
+            completion?(nil)
             print("user registration error: \(error.localizedDescription)")
         }
     }

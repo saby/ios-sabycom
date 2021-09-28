@@ -9,7 +9,7 @@
 import Foundation
 
 /// Модель пользователя
-public struct SabycomUser {
+public struct SabycomUser: Equatable {
     /// Уникальный идентификатор пользователя
     public let uuid: String
     
@@ -35,5 +35,13 @@ public struct SabycomUser {
         self.surname = surname
         self.email = email
         self.phone = phone
+    }
+    
+    public static func == (lhs: SabycomUser, rhs: SabycomUser) -> Bool {
+        return lhs.uuid == rhs.uuid &&
+            lhs.name == rhs.name &&
+            lhs.surname == rhs.surname &&
+            lhs.email == rhs.email &&
+            lhs.phone == rhs.phone
     }
 }

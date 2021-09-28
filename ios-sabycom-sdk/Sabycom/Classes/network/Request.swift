@@ -76,6 +76,12 @@ extension Request {
         let request = Request(url: url, method: .post, params: params, headers: headers)
         return request
     }
+    
+    static func put(path: String, params: [String: Any?] = [:], headers: [String: String] = [:]) -> Request {
+        let url = Host.host.createApiUrl() + path
+        let request = Request(url: url, method: .put, params: params, headers: headers)
+        return request
+    }
 }
 
 enum HTTPMethod: String {
