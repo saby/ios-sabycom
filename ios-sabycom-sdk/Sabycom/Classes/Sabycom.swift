@@ -10,78 +10,158 @@ import UIKit
 
 /// СБИС онлайн консультант.
 public class Sabycom {
-    private var appId: String = ""
+    private static let instance = SabycomImpl()
     
-    private var user: SabycomUser?
-    
-    private static let instance = Sabycom()
-    
-    private let api = Api()
-    
-    private lazy var controller = SabycomViewController()
+    /// Количество непрочитанных сообщений
+    public class var unreadConversationCount: Int {
+        instance.getUnreadConversationCount()
+    }
     
     /// Инициализация компонента. Нужно вызвать до вызова метода show(on:)
     /// - Parameter appId: API Ключ приложения
     public class func initialize(appId: String) {
-        instance.appId = appId
+        instance.initialize(appId: appId)
     }
     
     /// Показывает виджет. Перед вызовом функции нужно обязяательно вызвать initialize(apikey:) и registerUser(_:)
     /// - Parameter viewController: UIViewController, в котором будет показан виджет
     public class func show(on viewController: UIViewController) {
-        checkWasInitialized()
-        
-        let host = SabycomHost(hostType: .test, appId: instance.appId)
-        let interactor = SabycomInteractor(host: host, appId: instance.appId, user: instance.user!)
-        let presenter = SabycomPresenter(interactor: interactor, view: instance.controller)
-        instance.controller.presenter = presenter
-        
-        viewController.present(instance.controller, animated: true, completion: nil)
+        instance.show(on: viewController)
     }
     
     /// Закрывает виджет
     public class func hide() {
-        checkWasInitialized()
-        
-        instance.controller.dismiss(animated: true, completion: nil)
+        instance.hide()
     }
     
     /// Добавить информацию о пользователе. Метод должен быть вызван до show(on:).
     /// Метод необходимо вызывать даже если нет информации о пользователе, в таком случае необходимо передать только идентификатор пользователя SabycomUser
     /// - Parameter user: Информация о пользователе
     public class func registerUser(_ user: SabycomUser) {
-        instance.user = user
-        
-        instance.api.registerUser(user, channedUUID: instance.appId, pushToken: nil) { userId in
-            
-        }
+        instance.registerUser(user)
     }
     
-    /// Получить количество непрочитанных сообщений
-    /// - Parameter completion: Каллбек, в который придет количество непрочитанных сообщений
-    public class func getUnreadConversationCount(completion: @escaping (_ unreadConversationCount: Int) -> Void) {
-        checkWasInitialized()
-        
-        instance.api.getUnreadConversationCount(for: instance.user!.uuid, channedUUID: instance.appId, completion: completion)
+    /// Подписаться на получение push-сообщений
+    /// - Parameter token: Токен, полученный от Firebase
+    public class func registerForPushNotifications(with token: String) {
+        instance.registerForPushNotifications(with: token)
+    }
+    
+    /// Отписаться от получения push-сообщений
+    public class func unregisterFromPushNotifications() {
+        instance.unregisterFromPushNotifications()
     }
     
     /// Определить, пришел пуш от сервиса Sabycom или нет
     /// - Parameter info: Payload пуша
     public class func isSabycomPushNotification(info: [String: String]) -> Bool {
-        return false
+        return instance.isSabycomPushNotification(info: info)
     }
     
     /// Показывает всплывающую панель с сообщением
     /// - Parameter info: Payload пуша
     public class func handlePushNotification(info: [String: String]) {
+        return instance.handlePushNotification(info: info)
+    }
+}
+
+private class SabycomImpl {
+    private var viewModel = SabycomViewModel()
+    
+    private lazy var api = Api()
+    
+    private lazy var userService: UserService = UserServiceImpl(api: api)
+    private lazy var unreadMessagesService: UnreadMessagesService = UnreadMessagesServiceImpl(api: api)
+    
+    private lazy var controller = SabycomViewController(unreadMessagesService: unreadMessagesService)
+    
+    init() {
+        unreadMessagesService.registerObserver(self)
+    }
+    
+    deinit {
+        unreadMessagesService.unregisterObserver(self)
+    }
+    
+    func initialize(appId: String) {
+        viewModel.appId = appId
+        unreadMessagesService.appId = appId
+        userService.appId = appId
+        
+        configureController()
+    }
+    
+    func show(on viewController: UIViewController) {
+        guard tryGetAppIdAndUser() != nil else {
+            return
+        }
+        
+        viewController.present(controller, animated: true, completion: nil)
+    }
+    
+    func hide() {
+        controller.dismiss(animated: true, completion: nil)
+    }
+    
+    func registerUser(_ user: SabycomUser) {
+        viewModel.user = user
+        unreadMessagesService.user = user
+        userService.user = user
+        
+        configureController()
+     }
+    
+    func getUnreadConversationCount() -> Int {
+        return unreadMessagesService.unreadMessagesCount
+    }
+    
+    func registerForPushNotifications(with token: String) {
+        viewModel.pushToken = token
+        userService.pushToken = token
+    }
+    
+    func unregisterFromPushNotifications() {
         
     }
     
-    private class func checkWasInitialized() {
-        if instance.appId.isEmpty {
+    func isSabycomPushNotification(info: [String: String]) -> Bool {
+        return false
+    }
+
+    func handlePushNotification(info: [String: String]) {
+        
+    }
+    
+    private func configureController() {
+        if let appId = viewModel.appId, !appId.isEmpty, let user = viewModel.user {
+            let host = SabycomHost(hostType: .pretest, appId: appId)
+            let interactor = SabycomInteractor(host: host, appId: appId, user: user)
+            let presenter = SabycomPresenter(interactor: interactor, view: controller)
+            controller.presenter = presenter
+            
+            presenter.forceInitialize()
+        }
+    }
+    
+    private func tryGetAppIdAndUser() -> (appId: String, user: SabycomUser)? {
+        guard let appId = viewModel.appId, !appId.isEmpty else {
             assertionFailure("Sabycom not initialized. Call Sabycom.initialize(apiKey:)")
-        } else if instance.user == nil {
+            return nil
+        }
+        
+        guard let user = viewModel.user else {
             assertionFailure("User not registered. Call Sabycom.registerUser(_:)")
+            return nil
+        }
+        
+        return (appId, user)
+    }
+}
+
+extension SabycomImpl: UnreadMessagesCountObservable {
+    func unreadMessagesCountChanged(_ count: Int) {
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: .SabycomUnreadConversationCountDidChange, object: nil)
         }
     }
 }

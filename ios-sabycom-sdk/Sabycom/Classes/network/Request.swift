@@ -60,7 +60,7 @@ struct Request<T: Codable> {
 }
 
 private enum Host {
-    static let host = SabycomHost.init(hostType: .test, appId: nil)
+    static let host = SabycomHost.init(hostType: .pretest, appId: nil)
 }
 
 extension Request {
@@ -74,6 +74,12 @@ extension Request {
     static func post(path: String, params: [String: Any?] = [:], headers: [String: String] = [:]) -> Request {
         let url = Host.host.createApiUrl() + path
         let request = Request(url: url, method: .post, params: params, headers: headers)
+        return request
+    }
+    
+    static func put(path: String, params: [String: Any?] = [:], headers: [String: String] = [:]) -> Request {
+        let url = Host.host.createApiUrl() + path
+        let request = Request(url: url, method: .put, params: params, headers: headers)
         return request
     }
 }
