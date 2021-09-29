@@ -38,43 +38,10 @@ class SabycomViewController: UIViewController, SabycomView {
         }
     }
     
-    private lazy var container: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .clear
-        return view
-    }()
-    
     private lazy var loadIndicator: UIActivityIndicatorView = {
         let loadIndicator = UIActivityIndicatorView(style: .gray)
         loadIndicator.translatesAutoresizingMaskIntoConstraints = false
         return loadIndicator
-    }()
-    
-    private lazy var headerContainer: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .red
-        return view
-    }()
-    
-    private lazy var titleLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = .white
-        label.font = Constants.titleLabelFont
-        label.textAlignment = .center
-        return label
-    }()
-    
-    private lazy var closeButton: UIButton = {
-        let button = UIButton(type: .custom)
-        button.setImage(UIImage.named("ic_close"), for: .normal)
-        button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = .clear
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 24, weight: .medium)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
     }()
     
     private lazy var webContainer: UIView = {
@@ -124,17 +91,9 @@ class SabycomViewController: UIViewController, SabycomView {
         view.setNeedsLayout()
     }
     
-    func startedLoadingConfig() {
-        container.isHidden = true
+    func startedLoading() {
+        webContainer.isHidden = true
         loadIndicator.startAnimating()
-    }
-    
-    func updateWithConfig(_ config: SabycomConfig) {
-        container.isHidden = false
-        loadIndicator.stopAnimating()
-        
-        titleLabel.text = config.title
-        headerContainer.backgroundColor = config.headerColor
     }
     
     func loadUrl(_ url: URL) {
@@ -170,19 +129,15 @@ class SabycomViewController: UIViewController, SabycomView {
     }
     
     private func setupViews() {
-        view.addSubview(container)
         view.addSubview(loadIndicator)
-        container.addSubview(webContainer)
-        container.addSubview(headerContainer)
-        container.addSubview(webViewLoadIndicator)
-        headerContainer.addSubview(closeButton)
-        headerContainer.addSubview(titleLabel)
+        view.addSubview(webContainer)
+        webContainer.addSubview(webViewLoadIndicator)
         
         NSLayoutConstraint.activate([
-            container.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            container.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            container.topAnchor.constraint(equalTo: view.topAnchor),
-            container.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            webContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            webContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            webContainer.topAnchor.constraint(equalTo: view.topAnchor),
+            webContainer.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
         
         NSLayoutConstraint.activate([
@@ -191,40 +146,9 @@ class SabycomViewController: UIViewController, SabycomView {
         ])
         
         NSLayoutConstraint.activate([
-            headerContainer.leftAnchor.constraint(equalTo: container.leftAnchor),
-            headerContainer.topAnchor.constraint(equalTo: container.topAnchor),
-            headerContainer.rightAnchor.constraint(equalTo: container.rightAnchor),
-            headerContainer.heightAnchor.constraint(equalToConstant: Constants.headerHeight)
+            webViewLoadIndicator.centerXAnchor.constraint(equalTo: webContainer.centerXAnchor),
+            webViewLoadIndicator.centerYAnchor.constraint(equalTo: webContainer.centerYAnchor)
         ])
-        
-        NSLayoutConstraint.activate([
-            closeButton.rightAnchor.constraint(equalTo: headerContainer.rightAnchor),
-            closeButton.topAnchor.constraint(equalTo: headerContainer.topAnchor),
-            closeButton.bottomAnchor.constraint(equalTo: headerContainer.bottomAnchor),
-            closeButton.widthAnchor.constraint(equalTo: closeButton.heightAnchor)
-        ])
-        
-        NSLayoutConstraint.activate([
-            titleLabel.leadingAnchor.constraint(equalTo: headerContainer.leadingAnchor, constant: Constants.headerMargins),
-            titleLabel.topAnchor.constraint(equalTo: headerContainer.topAnchor),
-            titleLabel.bottomAnchor.constraint(equalTo: headerContainer.bottomAnchor),
-            titleLabel.trailingAnchor.constraint(equalTo: closeButton.leadingAnchor, constant: Constants.headerMargins)
-        ])
-        
-        NSLayoutConstraint.activate([
-            webContainer.leftAnchor.constraint(equalTo: container.leftAnchor),
-            webContainer.topAnchor.constraint(equalTo: headerContainer.bottomAnchor),
-            webContainer.rightAnchor.constraint(equalTo: container.rightAnchor),
-            webContainer.bottomAnchor.constraint(equalTo: container.bottomAnchor)
-        ])
-        
-        NSLayoutConstraint.activate([
-            webViewLoadIndicator.centerXAnchor.constraint(equalTo: container.centerXAnchor),
-            webViewLoadIndicator.centerYAnchor.constraint(equalTo: container.centerYAnchor)
-        ])
-        
-        closeButton.addTarget(self, action: #selector(onClose(_:)), for: .touchUpInside)
-        titleLabel.text = "Sabycom"
     }
     // MARK: - WebPage helpers
     
@@ -269,8 +193,9 @@ class SabycomViewController: UIViewController, SabycomView {
             let configuration = WKWebViewConfiguration()
             configuration.preferences = preferences
             
+            
             let contentController = WKUserContentController()
-            contentController.add(jsHandler, name: "mobileParent")
+            jsHandler.addTo(controller: contentController)
             
             configuration.userContentController = contentController
             
@@ -328,10 +253,6 @@ class SabycomViewController: UIViewController, SabycomView {
             webViewLoadIndicator.stopAnimating()
         }
     }
-    
-    @objc private func onClose(_ sender: UIButton) {
-        Sabycom.hide()
-    }
 }
 
 extension SabycomViewController: SabycomWidgetJSHandlerDelegate {
@@ -339,8 +260,8 @@ extension SabycomViewController: SabycomWidgetJSHandlerDelegate {
         Sabycom.hide()
     }
     
-    func didReceiveNewMessage() {
-        unreadMessagesService?.updateUnreadMessagesCount()
+    func didReceiveNewMessage(unreadCount: Int) {
+        unreadMessagesService?.updateUnreadMessagesCount(unreadCount)
     }
 }
 

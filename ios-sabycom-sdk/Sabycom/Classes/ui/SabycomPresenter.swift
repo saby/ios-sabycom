@@ -11,8 +11,8 @@ protocol SabycomView: AnyObject {
     var didLoadView: (() -> Void)? { get set }
     var viewWillAppear: (() -> Void)? { get set }
     
-    func startedLoadingConfig()
-    func updateWithConfig(_ config: SabycomConfig)
+    func forceInitialize()
+    func startedLoading()
     func loadUrl(_ url: URL)
 }
 
@@ -27,23 +27,13 @@ class SabycomPresenter {
         setViewHandlers()
     }
     
+    func forceInitialize() {
+        view?.forceInitialize()
+    }
+    
     private func setViewHandlers() {
-        view?.didLoadView = { [weak view] in
-            view?.startedLoadingConfig()
-            
-            DispatchQueue.global(qos: .userInteractive).async { [weak self] in
-                guard let self = self else {
-                    return
-                }
-                
-                let config = self.interactor.getConfig()
-                DispatchQueue.main.async { [weak view] in
-                    view?.updateWithConfig(config)
-                }
-            }
-        }
-        
         view?.viewWillAppear = { [weak view] in
+            view?.startedLoading()
             DispatchQueue.global(qos: .userInteractive).async { [weak self] in
                 guard let self = self else {
                     return

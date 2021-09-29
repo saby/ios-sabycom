@@ -87,17 +87,14 @@ private class SabycomImpl {
         viewModel.appId = appId
         unreadMessagesService.appId = appId
         userService.appId = appId
+        
+        configureController()
     }
     
     func show(on viewController: UIViewController) {
-        guard let data = tryGetAppIdAndUser() else {
+        guard tryGetAppIdAndUser() != nil else {
             return
         }
-        
-        let host = SabycomHost(hostType: .test, appId: data.appId)
-        let interactor = SabycomInteractor(host: host, appId: data.appId, user: data.user)
-        let presenter = SabycomPresenter(interactor: interactor, view: controller)
-        controller.presenter = presenter
         
         viewController.present(controller, animated: true, completion: nil)
     }
@@ -110,6 +107,8 @@ private class SabycomImpl {
         viewModel.user = user
         unreadMessagesService.user = user
         userService.user = user
+        
+        configureController()
      }
     
     func getUnreadConversationCount() -> Int {
@@ -131,6 +130,17 @@ private class SabycomImpl {
 
     func handlePushNotification(info: [String: String]) {
         
+    }
+    
+    private func configureController() {
+        if let appId = viewModel.appId, !appId.isEmpty, let user = viewModel.user {
+            let host = SabycomHost(hostType: .pretest, appId: appId)
+            let interactor = SabycomInteractor(host: host, appId: appId, user: user)
+            let presenter = SabycomPresenter(interactor: interactor, view: controller)
+            controller.presenter = presenter
+            
+            presenter.forceInitialize()
+        }
     }
     
     private func tryGetAppIdAndUser() -> (appId: String, user: SabycomUser)? {

@@ -16,7 +16,7 @@ protocol UnreadMessagesService {
     var appId: String? { get set }
     var unreadMessagesCount: Int { get }
     
-    func updateUnreadMessagesCount()
+    func updateUnreadMessagesCount(_ count: Int)
     
     func registerObserver(_ observer: UnreadMessagesCountObservable)
     func unregisterObserver(_ observer: UnreadMessagesCountObservable)
@@ -29,13 +29,13 @@ class UnreadMessagesServiceImpl: UnreadMessagesService {
     
     var user: SabycomUser? {
         didSet {
-            updateUnreadMessagesCount(force: false)
+            loadUnreadMessagesCount(force: false)
         }
     }
     
     var appId: String? {
         didSet {
-            updateUnreadMessagesCount(force: false)
+            loadUnreadMessagesCount(force: false)
         }
     }
     var unreadMessagesCount: Int = 0
@@ -55,8 +55,8 @@ class UnreadMessagesServiceImpl: UnreadMessagesService {
         self.api = api
     }
 
-    func updateUnreadMessagesCount() {
-        updateUnreadMessagesCount(force: true)
+    func updateUnreadMessagesCount(_ count: Int) {
+        notifyObservers(with: count)
     }
     
     func registerObserver(_ observer: UnreadMessagesCountObservable) {
@@ -74,7 +74,7 @@ class UnreadMessagesServiceImpl: UnreadMessagesService {
         }
     }
 
-    private func updateUnreadMessagesCount(force: Bool) {
+    private func loadUnreadMessagesCount(force: Bool) {
         if let uuid = user?.uuid, let appId = appId {
             let timePassedInterval = ProcessInfo.processInfo.systemUptime - (lastUpdateTimeInterval ?? 0)
             if force || lastUpdateTimeInterval == nil || timePassedInterval >= Constants.minUpdateTimeInterval {

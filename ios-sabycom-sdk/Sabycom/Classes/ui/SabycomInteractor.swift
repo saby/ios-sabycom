@@ -20,10 +20,6 @@ class SabycomInteractor {
         self.user = user
     }
     
-    func getConfig() -> SabycomConfig {
-        return SabycomConfig(title: "Sabycom", headerColor: .blue)
-    }
-    
     func getUrl() -> URL? {
         let url = host.createURL()
         let defaultUrl = URL(string: url)

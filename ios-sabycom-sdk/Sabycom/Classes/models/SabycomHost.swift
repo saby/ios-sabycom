@@ -15,6 +15,7 @@ struct SabycomHost {
         case prod
         case fix
         case test
+        case pretest
         
         var prefix: String {
             switch self {
@@ -24,6 +25,8 @@ struct SabycomHost {
                 return "fix-"
             case .test:
                 return "test-"
+            case .pretest:
+                return "pre-test-"
             }
         }
     }
