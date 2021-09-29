@@ -60,7 +60,7 @@ struct Request<T: Codable> {
 }
 
 private enum Host {
-    static let host = SabycomHost.init(hostType: .pretest, appId: nil)
+    static let host = SabycomHost.init(hostType: .test, appId: nil)
 }
 
 extension Request {

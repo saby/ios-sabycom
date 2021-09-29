@@ -16,7 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     internal func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        Sabycom.initialize(appId: "5cf633f3-481a-40e7-b254-a60200c87dc4")
+        Sabycom.initialize(appId: "b2a53b11-cbdb-4355-ba9d-178ad8f3cbfe")
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.rootViewController = SabycomDemoMainViewController(nibName: nil, bundle: nil)
         window?.makeKeyAndVisible()

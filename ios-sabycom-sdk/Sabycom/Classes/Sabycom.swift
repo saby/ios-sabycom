@@ -134,7 +134,7 @@ private class SabycomImpl {
     
     private func configureController() {
         if let appId = viewModel.appId, !appId.isEmpty, let user = viewModel.user {
-            let host = SabycomHost(hostType: .pretest, appId: appId)
+            let host = SabycomHost(hostType: .test, appId: appId)
             let interactor = SabycomInteractor(host: host, appId: appId, user: user)
             let presenter = SabycomPresenter(interactor: interactor, view: controller)
             controller.presenter = presenter
