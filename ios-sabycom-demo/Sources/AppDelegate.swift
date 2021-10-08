@@ -13,12 +13,14 @@ import Sabycom
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
-
+    
     internal func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        Sabycom.initialize(appId: "b2a53b11-cbdb-4355-ba9d-178ad8f3cbfe")
+        
+        let container = DIContainer.shared
+        container.register(type: UserStorage.self, component: UserStorageImpl())
+        
         window = UIWindow(frame: UIScreen.main.bounds)
-        window?.rootViewController = SabycomDemoMainViewController(nibName: nil, bundle: nil)
+        window?.rootViewController = createRootController()
         window?.makeKeyAndVisible()
         return true
     }
@@ -45,6 +47,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
-
+    private func createRootController() -> UIViewController {
+        let interactor = ConfigurationInteractor()
+        let controller = ConfigurationViewController()
+        let navigationController = UINavigationController(rootViewController: controller)
+        let router = SabycomConfigurationRouterImpl(navigationController: navigationController)
+        
+        let presenter = ConfigurationPresenter(interactor: interactor, view: controller, router: router)
+        controller.presenter = presenter
+        
+        return navigationController
+    }
 }
 

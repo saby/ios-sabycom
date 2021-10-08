@@ -8,9 +8,15 @@
 import Foundation
 
 class Api {
+    var hostType: SabycomHost.HostType
+    
+    init(hostType: SabycomHost.HostType) {
+        self.hostType = hostType
+    }
+    
     func getUnreadConversationCount(for userId: String, channedUUID: String, completion: ((_ unreadConversationCount: Int) -> Void)?) {
         let path = "externalUser/\(userId)/\(channedUUID)/unread/\(channedUUID)"
-        let request = Request<BaseResponse<UnreadConversationCountResponse>>.get(path: path)
+        let request = Request<BaseResponse<UnreadConversationCountResponse>>.get(urlCreator: urlCreator(for: path))
         request.execute { response in
             if let count = response.result?.count {
                 completion?(count)
@@ -35,7 +41,7 @@ class Api {
                       "push_token": pushToken ?? ""]
         
         let path = "externalUser/\(user.uuid)/\(channedUUID)"
-        let request = Request<BaseResponse<Bool>>.put(path: path, params: params)
+        let request = Request<BaseResponse<Bool>>.put(urlCreator: urlCreator(for: path), params: params)
         request.execute { response in
             if response.result == true {
                 print("registered user id: \(user.uuid)")
@@ -50,4 +56,7 @@ class Api {
         }
     }
 
+    private func urlCreator(for path: String) -> URLCreator {
+        return URLCreator(host: hostType, path: path)
+    }
 }

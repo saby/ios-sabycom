@@ -10,7 +10,16 @@ import UIKit
 
 /// СБИС онлайн консультант.
 public class Sabycom {
-    private static let instance = SabycomImpl()
+    private static var _instance: SabycomImpl?
+    private static var instance: SabycomImpl {
+        get {
+            if _instance == nil {
+                _instance = SabycomImpl()
+            }
+            
+            return _instance!
+        }
+    }
     
     /// Количество непрочитанных сообщений
     public class var unreadConversationCount: Int {
@@ -19,8 +28,14 @@ public class Sabycom {
     
     /// Инициализация компонента. Нужно вызвать до вызова метода show(on:)
     /// - Parameter appId: API Ключ приложения
-    public class func initialize(appId: String) {
-        instance.initialize(appId: appId)
+    /// - Parameter host: Хост, к которому подключаться
+    public class func initialize(appId: String, host: SabycomHost.HostType = .prod) {
+        instance.initialize(appId: appId, host: host)
+    }
+    
+    /// Уничтожает компонент. После вызова этой функции для работы компонента нужно заново вызвать initialize(apikey:) и registerUser(_:)
+    public class func destroy() {
+        _instance = nil
     }
     
     /// Показывает виджет. Перед вызовом функции нужно обязяательно вызвать initialize(apikey:) и registerUser(_:)
@@ -68,7 +83,9 @@ public class Sabycom {
 private class SabycomImpl {
     private var viewModel = SabycomViewModel()
     
-    private lazy var api = Api()
+    private var hostType: SabycomHost.HostType = .prod
+    
+    private lazy var api = Api(hostType: hostType)
     
     private lazy var userService: UserService = UserServiceImpl(api: api)
     private lazy var unreadMessagesService: UnreadMessagesService = UnreadMessagesServiceImpl(api: api)
@@ -83,10 +100,12 @@ private class SabycomImpl {
         unreadMessagesService.unregisterObserver(self)
     }
     
-    func initialize(appId: String) {
+    func initialize(appId: String, host: SabycomHost.HostType) {
+        api.hostType = host
         viewModel.appId = appId
         unreadMessagesService.appId = appId
         userService.appId = appId
+        hostType = host
         
         configureController()
     }
@@ -134,7 +153,7 @@ private class SabycomImpl {
     
     private func configureController() {
         if let appId = viewModel.appId, !appId.isEmpty, let user = viewModel.user {
-            let host = SabycomHost(hostType: .test, appId: appId)
+            let host = SabycomHost(hostType: hostType, appId: appId)
             let interactor = SabycomInteractor(host: host, appId: appId, user: user)
             let presenter = SabycomPresenter(interactor: interactor, view: controller)
             controller.presenter = presenter

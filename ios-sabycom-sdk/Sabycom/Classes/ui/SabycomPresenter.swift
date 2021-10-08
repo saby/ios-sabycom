@@ -13,7 +13,7 @@ protocol SabycomView: AnyObject {
     
     func forceInitialize()
     func startedLoading()
-    func loadUrl(_ url: URL)
+    func load(_ url: URL)
 }
 
 class SabycomPresenter {
@@ -32,19 +32,11 @@ class SabycomPresenter {
     }
     
     private func setViewHandlers() {
-        view?.viewWillAppear = { [weak view] in
+        view?.didLoadView = { [weak view, weak interactor] in
             view?.startedLoading()
-            DispatchQueue.global(qos: .userInteractive).async { [weak self] in
-                guard let self = self else {
-                    return
-                }
-                
-                if let url = self.interactor.getUrl() {
-                    DispatchQueue.main.async { [weak view] in
-                        view?.loadUrl(url)
-                    }
-                }
-                
+            
+            if let url = interactor?.getUrl() {
+                view?.load(url)
             }
         }
     }

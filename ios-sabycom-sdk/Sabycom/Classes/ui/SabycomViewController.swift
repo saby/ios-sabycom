@@ -18,9 +18,13 @@ enum WebViewState: Equatable {
 
 class SabycomViewController: UIViewController, SabycomView {
     private enum Constants {
-        static let headerHeight: CGFloat = 44
-        static let headerMargins: CGFloat = 16
-        static let titleLabelFont = UIFont.systemFont(ofSize: 16)
+        static let popupCloseButtonSize: CGFloat = 44
+        static let popupWebViewMargin: CGFloat = 16
+        static let popupWebViewRatio: CGFloat = 0.75
+
+        static let containerBackgroundColor = UIColor(red: 244.0/255.0, green: 244.0/255.0, blue: 244.0/255.0, alpha: 1)
+        
+        static let animationDuration: TimeInterval = 0.3
     }
     
     var presenter: SabycomPresenter!
@@ -35,8 +39,11 @@ class SabycomViewController: UIViewController, SabycomView {
     private var _webView: WKWebView? = nil {
         didSet {
             _webView?.navigationDelegate = self
+            _webView?.uiDelegate = self
         }
     }
+    
+    private var popupWebView: WKWebView?
     
     private lazy var loadIndicator: UIActivityIndicatorView = {
         let loadIndicator = UIActivityIndicatorView(style: .gray)
@@ -56,6 +63,21 @@ class SabycomViewController: UIViewController, SabycomView {
         return loadIndicator
     }()
     
+    private lazy var popupWebViewContainer: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .black.withAlphaComponent(0.5)
+        return view
+    }()
+    
+    private lazy var closePopupButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setImage(UIImage.named("ic_close"), for: .normal)
+        button.addTarget(self, action: #selector(onClosePopup(_:)), for: .touchUpInside)
+        return button
+    }()
+    
     private lazy var jsHandler: SabycomWidgetJSHandler = {
         let handler = SabycomWidgetJSHandler()
         handler.delegate = self
@@ -70,6 +92,11 @@ class SabycomViewController: UIViewController, SabycomView {
     private var lastResponse: WebResponse?
     
     private let unreadMessagesService: UnreadMessagesService?
+    
+    private var webContainerHeightConstraint: NSLayoutConstraint?
+    
+    private var keyboardWillShowObserver: Any?
+    private var keyboardWillHideObserver: Any?
     
     init(unreadMessagesService: UnreadMessagesService) {
         self.unreadMessagesService = unreadMessagesService
@@ -96,7 +123,7 @@ class SabycomViewController: UIViewController, SabycomView {
         loadIndicator.startAnimating()
     }
     
-    func loadUrl(_ url: URL) {
+    func load(_ url: URL) {
         state = .loading(url: url)
         loadWebPage()
     }
@@ -116,7 +143,8 @@ class SabycomViewController: UIViewController, SabycomView {
         view.backgroundColor = .white
 
         setupViews()
-        setupWebViewConstraints()
+        setupPopupWebView()
+        setupWebView()
         updateViewState()
         
         didLoadView?()
@@ -126,6 +154,42 @@ class SabycomViewController: UIViewController, SabycomView {
         super.viewWillAppear(animated)
         
         viewWillAppear?()
+        
+        keyboardWillShowObserver = NotificationCenter.default.addObserver(
+            forName: UIResponder.keyboardWillShowNotification,
+            object: nil,
+            queue: .main) { [weak self] notification in
+                guard let heightConstraint = self?.webContainerHeightConstraint,
+                      let info = notification.userInfo,
+                      let keyboardRect = (info[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
+                    return
+                }
+
+                heightConstraint.constant = -keyboardRect.height
+            }
+        
+        keyboardWillHideObserver = NotificationCenter.default.addObserver(
+            forName: UIResponder.keyboardWillHideNotification,
+            object: nil,
+            queue: .main) { [weak self] _ in
+            
+                guard let heightConstraint = self?.webContainerHeightConstraint else {
+                    return
+                }
+                
+                heightConstraint.constant = 0
+            }
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        if let keyboardWillShowObserver = keyboardWillShowObserver {
+            NotificationCenter.default.removeObserver(keyboardWillShowObserver)
+        }
+        if let keyboardWillHideObserver = keyboardWillHideObserver {
+            NotificationCenter.default.removeObserver(keyboardWillHideObserver)
+        }
     }
     
     private func setupViews() {
@@ -133,11 +197,14 @@ class SabycomViewController: UIViewController, SabycomView {
         view.addSubview(webContainer)
         webContainer.addSubview(webViewLoadIndicator)
         
+        let heightConstraint = webContainer.heightAnchor.constraint(equalTo: view.heightAnchor, constant: 0)
+        self.webContainerHeightConstraint = heightConstraint
+        
         NSLayoutConstraint.activate([
             webContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             webContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             webContainer.topAnchor.constraint(equalTo: view.topAnchor),
-            webContainer.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            heightConstraint
         ])
         
         NSLayoutConstraint.activate([
@@ -150,27 +217,81 @@ class SabycomViewController: UIViewController, SabycomView {
             webViewLoadIndicator.centerYAnchor.constraint(equalTo: webContainer.centerYAnchor)
         ])
     }
+    
+    private func setupPopupWebView() {
+        view.addSubview(popupWebViewContainer)
+        popupWebViewContainer.addSubview(closePopupButton)
+        
+        popupWebViewContainer.isHidden = true
+        
+        NSLayoutConstraint.activate([
+            popupWebViewContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            popupWebViewContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            popupWebViewContainer.topAnchor.constraint(equalTo: view.topAnchor),
+            popupWebViewContainer.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+        
+        NSLayoutConstraint.activate([
+            closePopupButton.trailingAnchor.constraint(equalTo: popupWebViewContainer.trailingAnchor),
+            closePopupButton.topAnchor.constraint(equalTo: popupWebViewContainer.topAnchor),
+            closePopupButton.heightAnchor.constraint(equalToConstant: Constants.popupCloseButtonSize),
+            closePopupButton.widthAnchor.constraint(equalToConstant: Constants.popupCloseButtonSize)
+        ])
+    }
+    
+    private func showPopup(_ popupWebView: WKWebView) {
+        popupWebViewContainer.addSubview(popupWebView)
+        
+        self.popupWebView = popupWebView
+        popupWebView.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            popupWebView.widthAnchor.constraint(equalTo: popupWebViewContainer.widthAnchor, constant: -2 * Constants.popupWebViewMargin),
+            popupWebView.centerXAnchor.constraint(equalTo: popupWebViewContainer.centerXAnchor),
+            popupWebView.centerYAnchor.constraint(equalTo: popupWebViewContainer.centerYAnchor),
+            popupWebView.widthAnchor.constraint(equalTo: popupWebView.heightAnchor, multiplier: Constants.popupWebViewRatio, constant: 0)
+        ])
+        
+        popupWebViewContainer.alpha = 0
+        popupWebViewContainer.isHidden = false
+        
+        UIView.animate(withDuration: Constants.animationDuration) {
+            self.popupWebViewContainer.alpha = 1
+        }
+    }
+    
+    @objc
+    private func onClosePopup(_ sender: UIButton) {
+        UIView.animate(withDuration: Constants.animationDuration, delay: 0, options: []) {
+            self.popupWebViewContainer.alpha = 0
+        } completion: { _ in
+            self.popupWebViewContainer.isHidden = true
+            
+            self.popupWebView?.removeFromSuperview()
+            self.popupWebView = nil
+        }
+    }
+    
     // MARK: - WebPage helpers
     
-    private func setupWebViewConstraints() {
+    private func setupWebView() {
         guard let webView = _webView, isViewLoaded else {
             return
         }
         
         webContainer.addSubview(webView)
-        webView.scrollView.contentInsetAdjustmentBehavior = .never
         webView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             webView.leftAnchor.constraint(equalTo: webContainer.leftAnchor),
             webView.topAnchor.constraint(equalTo: webContainer.topAnchor),
             webView.rightAnchor.constraint(equalTo: webContainer.rightAnchor),
-            webView.bottomAnchor.constraint(equalTo: webContainer.bottomAnchor)
+            webView.bottomAnchor.constraint(equalTo: webContainer.safeAreaLayoutGuide.bottomAnchor)
         ])
-        
-        webView.configuration.suppressesIncrementalRendering = true
-        webView.configuration.preferences.javaScriptCanOpenWindowsAutomatically = true
+                
+        webView.scrollView.isScrollEnabled = false
         webView.scrollView.bounces = false
+        webView.scrollView.delegate = self
     }
     
     private func webview(completion: @escaping (WKWebView) -> Void) {
@@ -189,10 +310,13 @@ class SabycomViewController: UIViewController, SabycomView {
             
             let preferences = WKPreferences()
             preferences.javaScriptEnabled = true
+            preferences.javaScriptCanOpenWindowsAutomatically = true
             
             let configuration = WKWebViewConfiguration()
             configuration.preferences = preferences
-            
+            configuration.suppressesIncrementalRendering = true
+            configuration.dataDetectorTypes = [.all]
+            configuration.allowsInlineMediaPlayback = true
             
             let contentController = WKUserContentController()
             jsHandler.addTo(controller: contentController)
@@ -200,9 +324,8 @@ class SabycomViewController: UIViewController, SabycomView {
             configuration.userContentController = contentController
             
             self._webView = WKWebView(frame: view.bounds, configuration: configuration)
-            self._webView?.translatesAutoresizingMaskIntoConstraints = false
             
-            setupWebViewConstraints()
+            setupWebView()
             webViewInTheMaking = false
             executeWebViewRequests()
                         
@@ -267,6 +390,17 @@ extension SabycomViewController: SabycomWidgetJSHandlerDelegate {
 
 extension SabycomViewController: WKNavigationDelegate {
     
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+        if navigationAction.navigationType == .linkActivated {
+            if let url = navigationAction.request.url, UIApplication.shared.canOpenURL(url) {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            }
+            decisionHandler(.cancel)
+        } else {
+            decisionHandler(.allow)
+        }
+    }
+    
     func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse, decisionHandler: @escaping (WKNavigationResponsePolicy) -> Swift.Void) {
         lastResponse = WebResponse(wkResponse: navigationResponse)
         
@@ -278,9 +412,7 @@ extension SabycomViewController: WKNavigationDelegate {
     }
     
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        if lastResponse?.error != nil {
-            state = .error
-        } else if let url = webView.url {
+        if let url = webView.url {
             state = .loaded(url: url)
         } else {
             state = .error
@@ -289,6 +421,25 @@ extension SabycomViewController: WKNavigationDelegate {
     
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
         print("Error navigation \(error)")
+    }
+}
+
+extension SabycomViewController: WKUIDelegate {
+    func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration, for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
+        guard navigationAction.navigationType == .other else {
+            return webView
+        }
+
+        let popupWebView = WKWebView(frame: view.bounds, configuration: configuration)
+        showPopup(popupWebView)
+        return popupWebView
+      }
+}
+
+extension SabycomViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        // Чтобы не съезжало вверх при открытии клавиатуры
+        scrollView.setContentOffset(.zero, animated: false)
     }
 }
 

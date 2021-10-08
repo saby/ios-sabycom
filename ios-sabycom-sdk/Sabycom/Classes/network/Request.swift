@@ -59,27 +59,20 @@ struct Request<T: Codable> {
     }
 }
 
-private enum Host {
-    static let host = SabycomHost.init(hostType: .test, appId: nil)
-}
-
 extension Request {
     
-    static func get(path: String, params: [String: Any?] = [:], headers: [String: String] = [:]) -> Request {
-        let url = Host.host.createApiUrl() + path
-        let request = Request(url: url, method: .get, params: params, headers: headers)
+    static func get(urlCreator: URLCreator, params: [String: Any?] = [:], headers: [String: String] = [:]) -> Request {
+        let request = Request(url: urlCreator.url(), method: .get, params: params, headers: headers)
         return request
     }
     
-    static func post(path: String, params: [String: Any?] = [:], headers: [String: String] = [:]) -> Request {
-        let url = Host.host.createApiUrl() + path
-        let request = Request(url: url, method: .post, params: params, headers: headers)
+    static func post(urlCreator: URLCreator, params: [String: Any?] = [:], headers: [String: String] = [:]) -> Request {
+        let request = Request(url: urlCreator.url(), method: .post, params: params, headers: headers)
         return request
     }
     
-    static func put(path: String, params: [String: Any?] = [:], headers: [String: String] = [:]) -> Request {
-        let url = Host.host.createApiUrl() + path
-        let request = Request(url: url, method: .put, params: params, headers: headers)
+    static func put(urlCreator: URLCreator, params: [String: Any?] = [:], headers: [String: String] = [:]) -> Request {
+        let request = Request(url: urlCreator.url(), method: .put, params: params, headers: headers)
         return request
     }
 }
