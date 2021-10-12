@@ -16,7 +16,7 @@ class CreateUserInteractor {
     }
     
     func getCurrentUser() -> SabycomUser? {
-        return userStorage.getCurrentUser()
+        return userStorage.currentUser
     }
     
     func createOrUpdateUser(name: String, surname: String, email: String?, phone: String?) {

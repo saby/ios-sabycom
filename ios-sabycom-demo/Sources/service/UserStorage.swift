@@ -9,7 +9,7 @@
 import Sabycom
 
 protocol UserStorage {
-    func getCurrentUser() -> SabycomUser?
+    var currentUser: SabycomUser? { get }
     
     func saveUser(_ user: SabycomUser)
     
@@ -23,7 +23,7 @@ class UserStorageImpl: UserStorage {
         }
     }
     
-    func getCurrentUser() -> SabycomUser? {
+    var currentUser: SabycomUser? {
         guard let data = UserDefaults.standard.data(forKey: Constants.Keys.currentUser) else {
             return nil
         }

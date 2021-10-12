@@ -37,7 +37,7 @@ class ConfigurationInteractor {
     }
     
     func getCurrentUser() -> SabycomUser? {
-        return userStorage.getCurrentUser()
+        return userStorage.currentUser
     }
     
     func deleteCurrentUser() {

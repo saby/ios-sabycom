@@ -306,7 +306,7 @@ class SabycomViewController: UIViewController, SabycomView {
         }
         // Если webview не создано - запускаем процес инициализации.
         guard let webView = _webView else {
-            self.webViewInTheMaking = true
+            webViewInTheMaking = true
             
             let preferences = WKPreferences()
             preferences.javaScriptEnabled = true
@@ -323,7 +323,7 @@ class SabycomViewController: UIViewController, SabycomView {
             
             configuration.userContentController = contentController
             
-            self._webView = WKWebView(frame: view.bounds, configuration: configuration)
+            _webView = WKWebView(frame: view.bounds, configuration: configuration)
             
             setupWebView()
             webViewInTheMaking = false

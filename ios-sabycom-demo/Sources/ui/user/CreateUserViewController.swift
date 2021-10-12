@@ -21,10 +21,10 @@ class CreateUserViewController: UIViewController, CreateUserView {
     
     var viewDidLoadHandler: (() -> Void)?
     
-    var nameChanged: ((_ name: String) -> Void)?
-    var surnameChanged: ((_ name: String) -> Void)?
-    var phoneChanged: ((_ name: String) -> Void)?
-    var emailChanged: ((_ name: String) -> Void)?
+    var didChangeName: ((_ name: String) -> Void)?
+    var didChangeSurname: ((_ surname: String) -> Void)?
+    var didChangePhone: ((_ phone: String) -> Void)?
+    var didChangeEmail: ((_ email: String) -> Void)?
     
     var onSaveClicked: (() -> Void)?
     
@@ -114,19 +114,19 @@ class CreateUserViewController: UIViewController, CreateUserView {
     
     private func setupTextFieldsHandlers() {
         nameTextField.didChange = { [weak self] in
-            self?.nameChanged?(self?.nameTextField.text ?? "")
+            self?.didChangeName?(self?.nameTextField.text ?? "")
         }
         
         surnameTextField.didChange = { [weak self] in
-            self?.surnameChanged?(self?.surnameTextField.text ?? "")
+            self?.didChangeSurname?(self?.surnameTextField.text ?? "")
         }
         
         emailTextField.didChange = { [weak self] in
-            self?.emailChanged?(self?.emailTextField.text ?? "")
+            self?.didChangeEmail?(self?.emailTextField.text ?? "")
         }
         
         phoneTextField.didChange = { [weak self] in
-            self?.phoneChanged?(self?.phoneTextField.text ?? "")
+            self?.didChangePhone?(self?.phoneTextField.text ?? "")
         }
     }
     

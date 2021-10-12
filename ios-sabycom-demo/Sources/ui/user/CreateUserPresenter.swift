@@ -12,10 +12,10 @@ import Sabycom
 protocol CreateUserView: AnyObject {
     var viewDidLoadHandler: (() -> Void)? { get set }
     
-    var nameChanged: ((_ name: String) -> Void)? { get set }
-    var surnameChanged: ((_ name: String) -> Void)? { get set }
-    var phoneChanged: ((_ name: String) -> Void)? { get set }
-    var emailChanged: ((_ name: String) -> Void)? { get set }
+    var didChangeName: ((_ name: String) -> Void)? { get set }
+    var didChangeSurname: ((_ surname: String) -> Void)? { get set }
+    var didChangePhone: ((_ phone: String) -> Void)? { get set }
+    var didChangeEmail: ((_ email: String) -> Void)? { get set }
     
     var onSaveClicked: (() -> Void)? { get set }
     
@@ -82,22 +82,22 @@ class CreateUserPresenter {
             }
         }
         
-        view?.nameChanged = { [weak self] name in
+        view?.didChangeName = { [weak self] name in
             self?.model.name = name
             self?.view?.clearRequiredFields()
         }
         
-        view?.surnameChanged = { [weak self] surname in
+        view?.didChangeSurname = { [weak self] surname in
             self?.model.surname = surname
             self?.view?.clearRequiredFields()
         }
         
-        view?.emailChanged = { [weak self] email in
+        view?.didChangeEmail = { [weak self] email in
             self?.model.email = email
             self?.view?.clearRequiredFields()
         }
         
-        view?.phoneChanged = { [weak self] phone in
+        view?.didChangePhone = { [weak self] phone in
             self?.model.phone = phone
             self?.view?.clearRequiredFields()
         }

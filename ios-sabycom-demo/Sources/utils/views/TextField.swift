@@ -12,25 +12,25 @@ class TextField: UITextField, UITextFieldDelegate {
     
     var defaultColor: UIColor? {
         didSet {
-            self.updateColors()
+            updateColors()
         }
     }
     
     var activeColor: UIColor? {
         didSet {
-            self.updateColors()
+            updateColors()
         }
     }
     
     var errorColor: UIColor? {
         didSet {
-            self.updateColors()
+            updateColors()
         }
     }
     
     var isErrorMode = false {
         didSet {
-            self.updateColors()
+            updateColors()
         }
     }
     
@@ -94,10 +94,10 @@ class TextField: UITextField, UITextFieldDelegate {
     }
     
     func delegateIfNeeded() -> Void {
-        if self.delegate == nil {
-            self.delegate = self
-        } else if !self.delegate!.isEqual(self){
-            self.delegate = self
+        if delegate == nil {
+            delegate = self
+        } else if !delegate!.isEqual(self){
+            delegate = self
         }
     }
     
@@ -159,15 +159,15 @@ class TextField: UITextField, UITextFieldDelegate {
     }
     
     private func initialize(){
-        self.addTarget(self, action:#selector(textFieldDidChange(textField:)), for: .editingChanged)
+        addTarget(self, action:#selector(textFieldDidChange(textField:)), for: .editingChanged)
         
-        self.delegateIfNeeded()
+        delegateIfNeeded()
         
-        self.addSubview(underlineView)
+        addSubview(underlineView)
         NSLayoutConstraint.activate([
-            underlineView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 0),
-            underlineView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: 0),
-            underlineView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 1),
+            underlineView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0),
+            underlineView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
+            underlineView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 1),
             underlineView.heightAnchor.constraint(equalToConstant: 1)
         ])
     }
