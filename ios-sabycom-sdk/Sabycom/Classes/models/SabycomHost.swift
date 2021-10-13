@@ -7,15 +7,17 @@
 
 import Foundation
 
-struct SabycomHost {
+// Хост, к которому подключается виджет
+public struct SabycomHost {
     private static let baseHostString = "consultant.sbis.ru/consultant/"
     private static let baseApiUrlString = "consultant.sbis.ru/service/restapi/"
     
-    enum HostType {
+    public enum HostType: String, CaseIterable {
         case prod
         case fix
         case test
         case pretest
+        case dev
         
         var prefix: String {
             switch self {
@@ -27,7 +29,14 @@ struct SabycomHost {
                 return "test-"
             case .pretest:
                 return "pre-test-"
+            case .dev:
+                return "dev-"
             }
+        }
+        
+        // Название для отображения
+        public var visibleName: String {
+            return prefix + "consultant"
         }
     }
     

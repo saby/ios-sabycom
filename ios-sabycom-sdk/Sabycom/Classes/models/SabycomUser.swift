@@ -9,7 +9,7 @@
 import Foundation
 
 /// Модель пользователя
-public struct SabycomUser: Equatable {
+public struct SabycomUser: Codable, Equatable {
     /// Уникальный идентификатор пользователя
     public let uuid: String
     

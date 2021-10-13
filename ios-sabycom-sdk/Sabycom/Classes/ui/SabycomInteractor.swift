@@ -14,6 +14,15 @@ class SabycomInteractor {
     
     private var user: SabycomUser
     
+    private var lastUsedUrl: URL? {
+        get {
+            UserDefaults.standard.url(forKey: "SabycomWidget.LastUsedURL")
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: "SabycomWidget.LastUsedURL")
+        }
+    }
+    
     init(host: SabycomHost, appId: String, user: SabycomUser) {
         self.host = host
         self.appId = appId
@@ -34,7 +43,7 @@ class SabycomInteractor {
         
         let params: [String: Any] = ["ep": userInfo]
         
-        guard let paramsData = try? JSONSerialization.data(withJSONObject: params, options: []) else {
+        guard let paramsData = try? JSONSerialization.data(withJSONObject: params, options: [.sortedKeys]) else {
             return defaultUrl
         }
         
@@ -47,7 +56,17 @@ class SabycomInteractor {
         }
 
         urlComponents.queryItems = [URLQueryItem(name: "p", value: p)]
-        return urlComponents.url
+        let resultUrl = urlComponents.url
+        
+        if let lastUsedUrl = lastUsedUrl, lastUsedUrl != resultUrl,
+           let cookies = HTTPCookieStorage.shared.cookies(for: lastUsedUrl.absoluteURL) {
+            cookies.forEach {
+                HTTPCookieStorage.shared.deleteCookie($0)
+            }
+        }
+        
+        lastUsedUrl = resultUrl
+        return resultUrl
     }
     
     func updateUser(_ user: SabycomUser) {
