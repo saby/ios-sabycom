@@ -184,7 +184,11 @@ class ConfigurationViewController: UIViewController, ConfigurationView {
             userInfoStackView.isHidden = false
             addUserButton.isHidden = true
             
-            usernameLabel.text = [user.name, user.surname].compactMap { $0 }.joined(separator: " ")
+            var name = [user.name, user.surname].compactMap { $0 }.joined(separator: " ")
+            if name.isEmpty {
+                name = "Пустое имя пользователя"
+            }
+            usernameLabel.text = name
             phoneLabel.text = user.phone
             emailLabel.text = user.email
         } else {
