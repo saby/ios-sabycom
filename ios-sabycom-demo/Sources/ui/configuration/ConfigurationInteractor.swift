@@ -40,6 +40,18 @@ class ConfigurationInteractor {
         return userStorage.currentUser
     }
     
+    func getCurrentUserOrCreateEmpty() -> SabycomUser {
+        guard let user = userStorage.currentUser else {
+            let userId = UUID().uuidString
+            
+            let user = SabycomUser(uuid: userId)
+            userStorage.saveUser(user)
+            
+            return user
+        }
+        return user
+    }
+    
     func deleteCurrentUser() {
         userStorage.deleteCurrentUser()
     }

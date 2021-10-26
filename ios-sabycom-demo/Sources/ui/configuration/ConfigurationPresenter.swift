@@ -88,15 +88,12 @@ class ConfigurationPresenter {
     }
     
     private func start() {
-        guard let user = interactor.getCurrentUser() else {
-            router.performAction(.showError(ErrorMessage.userIsEmpty))
-            return
-        }
-        
         guard let appId = interactor.getCurrentAppId() else {
             router.performAction(.showError(ErrorMessage.appIdIsEmpty))
             return
         }
+        
+        let user = interactor.getCurrentUserOrCreateEmpty()
         
         let hostType = interactor.getCurrentHostType() ?? .prod
         router.performAction(.goToMain(user, appId, hostType))
