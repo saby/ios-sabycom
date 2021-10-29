@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'Sabycom'
-  s.version          = '0.1.0'
+  s.version          = '21.5160'
   s.summary          = 'Виджет чата поддержки для мобильных приложений.'
 
 # This description is used to generate tags and improve search results.
