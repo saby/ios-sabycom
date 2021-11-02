@@ -28,6 +28,10 @@ class CreateUserViewController: UIViewController, CreateUserView {
     
     var onSaveClicked: (() -> Void)?
     
+    private lazy var textFieldPlaceholderAttributes: [NSAttributedString.Key: Any] = {
+        return [.foregroundColor : UIColor.black]
+    }()
+    
     private lazy var textFieldsStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
@@ -40,29 +44,30 @@ class CreateUserViewController: UIViewController, CreateUserView {
     
     private lazy var nameTextField: TextField = {
         let textField = createDefaultTextField()
-        textField.placeholder = "Имя"
+        textField.attributedPlaceholder = NSAttributedString(string: "Имя", attributes: textFieldPlaceholderAttributes)
         return textField
     }()
     
     private lazy var surnameTextField: TextField = {
         let textField = createDefaultTextField()
-        textField.placeholder = "Фамилия"
+        textField.attributedPlaceholder = NSAttributedString(string: "Фамилия", attributes: textFieldPlaceholderAttributes)
         return textField
     }()
     
     private lazy var emailTextField: TextField = {
         let textField = createDefaultTextField()
-        textField.placeholder = "Email"
+        textField.attributedPlaceholder = NSAttributedString(string: "Email", attributes: textFieldPlaceholderAttributes)
         textField.keyboardType = .emailAddress
         return textField
     }()
     
     private lazy var phoneTextField: TextField = {
         let textField = createDefaultTextField()
-        textField.placeholder = "Телефон"
+        textField.attributedPlaceholder = NSAttributedString(string: "Телефон", attributes: textFieldPlaceholderAttributes)
         textField.keyboardType = .phonePad
         return textField
     }()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
