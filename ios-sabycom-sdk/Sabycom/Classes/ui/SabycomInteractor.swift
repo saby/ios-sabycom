@@ -58,11 +58,8 @@ class SabycomInteractor {
         urlComponents.queryItems = [URLQueryItem(name: "p", value: p)]
         let resultUrl = urlComponents.url
         
-        if let lastUsedUrl = lastUsedUrl, lastUsedUrl != resultUrl,
-           let cookies = HTTPCookieStorage.shared.cookies(for: lastUsedUrl.absoluteURL) {
-            cookies.forEach {
-                HTTPCookieStorage.shared.deleteCookie($0)
-            }
+        if let lastUsedUrl = lastUsedUrl, lastUsedUrl != resultUrl {
+            deleteCookies(for: lastUsedUrl)
         }
         
         lastUsedUrl = resultUrl
@@ -71,5 +68,19 @@ class SabycomInteractor {
     
     func updateUser(_ user: SabycomUser) {
         self.user = user
+    }
+    
+    private func deleteCookies(for url: URL) {
+        if let cookies = HTTPCookieStorage.shared.cookies(for: url.absoluteURL) {
+            cookies.forEach {
+                HTTPCookieStorage.shared.deleteCookie($0)
+            }
+        }
+    }
+    
+    deinit {
+        if let lastUsedUrl = lastUsedUrl {
+            deleteCookies(for: lastUsedUrl)
+        }
     }
 }
