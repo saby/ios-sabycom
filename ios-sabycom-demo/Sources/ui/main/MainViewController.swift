@@ -18,6 +18,7 @@ class MainViewController: UIViewController {
     private let appId: String
     private let user: SabycomUser
     private let host: SabycomHost.HostType
+    private let notificationService: NotificationService
     
     private lazy var badgeLabel: UILabel = {
         let label = UILabel(frame: CGRect(x: 10, y: -10, width: 20, height: 20))
@@ -48,10 +49,14 @@ class MainViewController: UIViewController {
     
     private var unreadMessagesObserver: Any?
     
-    required init(appId: String, user: SabycomUser, host: SabycomHost.HostType) {
+    required init(appId: String,
+                  user: SabycomUser,
+                  host: SabycomHost.HostType,
+                  notificationService: NotificationService = DIContainer.shared.resolve(type: NotificationService.self)!) {
         self.appId = appId
         self.user = user
         self.host = host
+        self.notificationService = notificationService
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -70,6 +75,7 @@ class MainViewController: UIViewController {
         
         Sabycom.initialize(appId: appId, host: host)
         Sabycom.registerUser(user)
+        Sabycom.registerForPushNotifications(with: notificationService.fcmToken)
         
         unreadMessagesObserver = NotificationCenter.default.addObserver(
             forName: .SabycomUnreadConversationCountDidChange,
@@ -112,6 +118,10 @@ class MainViewController: UIViewController {
     @objc
     private func onSabycom(_ sender: Any) {
         Sabycom.show(on: self)
+        
+//        if let appDelegate = UIApplication.shared.delegate as? AppDelegate, let window = appDelegate.window, let controller = window.rootViewController {
+//            Sabycom.handlePushNotification(info: [:], parentView: controller.view)
+//        }
     }
     
     deinit {
