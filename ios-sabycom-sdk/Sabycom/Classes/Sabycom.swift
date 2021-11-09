@@ -75,8 +75,8 @@ public class Sabycom {
     
     /// Показывает всплывающую панель с сообщением
     /// - Parameter info: Payload пуша
-    public class func handlePushNotification(info: [String: String]) {
-        return instance.handlePushNotification(info: info)
+    public class func handlePushNotification(info: [String: String], parentView: UIView) {
+        instance.handlePushNotification(info: info, parentView: parentView)
     }
 }
 
@@ -147,8 +147,9 @@ private class SabycomImpl {
         return false
     }
 
-    func handlePushNotification(info: [String: String]) {
-        
+    func handlePushNotification(info: [String: String], parentView: UIView) {
+        let model = SabycomNotificationModel(channelName: "Чат с оператором длинное название канала для проверки верстки", channelAvatarUrl: "", message: "Сообщение длинное, чтобы проверить верстку и одну строкУ", messageDate: Date())
+        SabycomNotificationView.show(with: model, in: parentView)
     }
     
     private func configureController() {
