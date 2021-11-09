@@ -38,7 +38,8 @@ class Api {
                       "surname": user.surname ?? "",
                       "email": user.email ?? "",
                       "phone": user.phone ?? "",
-                      "push_token": pushToken ?? ""]
+                      "push_token": pushToken ?? "",
+                      "push_os": "ios"]
         
         let path = "externalUser/\(user.uuid)/\(channedUUID)"
         let request = Request<BaseResponse<Bool>>.put(urlCreator: urlCreator(for: path), params: params)

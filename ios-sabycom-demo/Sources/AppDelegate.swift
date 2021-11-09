@@ -8,20 +8,30 @@
 
 import UIKit
 import Sabycom
+import Firebase
+import FirebaseCore
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     
+    private lazy var notificationService: NotificationService? = {
+        DIContainer.shared.resolve(type: NotificationService.self)
+    }()
+    
     internal func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        FirebaseApp.configure()
         
-        let container = DIContainer.shared
-        container.register(type: UserStorage.self, component: UserStorageImpl())
+        registerDependencies()
         
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.rootViewController = createRootController()
         window?.makeKeyAndVisible()
+        
+        notificationService?.registerDelegate()
+        notificationService?.registerForRemoteNotifications()
+        
         return true
     }
 
@@ -46,7 +56,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
+    
+    //MARK: - Notifications -
+    
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        notificationService?.didRegisterForRemoteNotifications(with: deviceToken)
+    }
+    
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        notificationService?.didFailToRegisterForRemoteNotifications(with: error)
+    }
+    
+    //MARK: - Private -
 
+    private func registerDependencies() {
+        let container = DIContainer.shared
+        container.register(type: UserStorage.self, component: UserStorageImpl())
+        container.register(type: NotificationService.self, component: NotificationService())
+    }
+    
     private func createRootController() -> UIViewController {
         let interactor = ConfigurationInteractor()
         let controller = ConfigurationViewController()
@@ -58,5 +86,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         return navigationController
     }
+    
 }
 
