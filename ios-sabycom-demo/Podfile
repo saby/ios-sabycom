@@ -6,10 +6,10 @@ target 'ios-sabycom-demo' do
   pod 'Sabycom', :path => '../ios-sabycom-sdk'
   
   # Add the Firebase pod for Google Analytics
-  pod 'Firebase/Analytics'
+  pod 'Firebase/Analytics', '7.1.0'
 
   # Add the pod for Firebase Cloud Messaging
-  pod 'Firebase/Messaging'
+  pod 'Firebase/Messaging', '7.1.0'
   
   target 'Sabycom_Tests' do
     inherit! :search_paths
