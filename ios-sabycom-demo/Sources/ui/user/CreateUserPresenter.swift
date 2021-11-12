@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Sabycom
 
 protocol CreateUserView: AnyObject {
     var viewDidLoadHandler: (() -> Void)? { get set }

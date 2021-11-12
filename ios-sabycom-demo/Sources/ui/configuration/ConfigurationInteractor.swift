@@ -12,28 +12,28 @@ import Sabycom
 class ConfigurationInteractor {
     private let userStorage: UserStorage
     
-    init(userStorage: UserStorage = DIContainer.shared.resolve(type: UserStorage.self)!) {
+    private let configurationService: ConfigurationService
+    
+    init(userStorage: UserStorage = DIContainer.shared.resolve(type: UserStorage.self)!,
+         configurationService: ConfigurationService = DIContainer.shared.resolve(type: ConfigurationService.self)!) {
         self.userStorage = userStorage
+        self.configurationService = configurationService
     }
     
     func saveAppId(_ appId: String) {
-        UserDefaults.standard.set(appId, forKey: Constants.Keys.currentAppId)
+        configurationService.saveAppId(appId)
     }
     
     func getCurrentAppId() -> String? {
-        UserDefaults.standard.string(forKey: Constants.Keys.currentAppId)
+        configurationService.getCurrentAppId()
     }
     
     func saveHost(_ hostType: SabycomHost.HostType) {
-        UserDefaults.standard.set(hostType.rawValue, forKey: Constants.Keys.currentHost)
+        configurationService.saveHost(hostType)
     }
     
     func getCurrentHostType() -> SabycomHost.HostType? {
-        guard let hostTypeString = UserDefaults.standard.string(forKey: Constants.Keys.currentHost) else {
-            return nil
-        }
-        
-        return SabycomHost.HostType(rawValue: hostTypeString)
+        configurationService.getCurrentHostType()
     }
     
     func getCurrentUser() -> SabycomUser? {
@@ -56,10 +56,5 @@ class ConfigurationInteractor {
         userStorage.deleteCurrentUser()
     }
     
-    private enum Constants {
-        enum Keys {
-            static let currentAppId = "SabycomConfigurationInteractor.CurrentAppId"
-            static let currentHost = "SabycomConfigurationInteractor.CurrentHost"
-        }
-    }
+    
 }

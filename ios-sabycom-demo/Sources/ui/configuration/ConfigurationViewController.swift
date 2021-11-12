@@ -186,7 +186,7 @@ class ConfigurationViewController: UIViewController, ConfigurationView {
             
             var name = [user.name, user.surname].compactMap { $0 }.joined(separator: " ")
             if name.isEmpty {
-                name = "Пустое имя пользователя"
+                name = "Анонимный пользователь"
             }
             usernameLabel.text = name
             phoneLabel.text = user.phone
