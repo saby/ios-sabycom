@@ -8,11 +8,10 @@
 
 import Foundation
 import UserNotifications
-import FirebaseMessaging
 import Sabycom
 
-class NotificationService: NSObject, MessagingDelegate, UNUserNotificationCenterDelegate {
-    private (set) var fcmToken: String = ""
+class NotificationService: NSObject, UNUserNotificationCenterDelegate {
+    private (set) var token: String = ""
     
     func registerDelegate(){
         UNUserNotificationCenter.current().delegate = self
@@ -21,8 +20,6 @@ class NotificationService: NSObject, MessagingDelegate, UNUserNotificationCenter
     //MARK: - Push notifications -
     
     func registerForRemoteNotifications(){
-        Messaging.messaging().delegate = self
-        
         let authOptions: UNAuthorizationOptions = [.alert, .sound, .badge]
         UNUserNotificationCenter.current().requestAuthorization(options: authOptions) { (granted, error) in
             if granted {
@@ -42,31 +39,11 @@ class NotificationService: NSObject, MessagingDelegate, UNUserNotificationCenter
         // TODO: Добавить метод отписки от пушей
     }
     
-    //MARK: - MessagingDelegate -
-    
-    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
-        if let fcmToken = fcmToken {
-            self.fcmToken = fcmToken
-            Sabycom.registerForPushNotifications(with: fcmToken)
-        }
-    }
-    
     //MARK: - Remote Notification Callbacks -
     
     func didRegisterForRemoteNotifications(with deviceToken: Data){
-        var type = MessagingAPNSTokenType.prod
-        #if DEBUG
-            type = .sandbox
-        #endif
-        
-        Messaging.messaging().setAPNSToken(deviceToken, type: type)
-        
-        Messaging.messaging().token { token, _ in
-            if let fcmToken = token {
-                self.fcmToken = fcmToken
-                Sabycom.registerForPushNotifications(with: fcmToken)
-            }
-        }
+        token = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
+        Sabycom.registerForPushNotifications(with: token)
     }
     
     func didFailToRegisterForRemoteNotifications(with error: Error) {

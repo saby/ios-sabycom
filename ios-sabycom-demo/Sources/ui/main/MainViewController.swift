@@ -75,7 +75,7 @@ class MainViewController: UIViewController {
         
         Sabycom.initialize(appId: appId, host: host)
         Sabycom.registerUser(user)
-        Sabycom.registerForPushNotifications(with: notificationService.fcmToken)
+        Sabycom.registerForPushNotifications(with: notificationService.token)
         
         unreadMessagesObserver = NotificationCenter.default.addObserver(
             forName: .SabycomUnreadConversationCountDidChange,
