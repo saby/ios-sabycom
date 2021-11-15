@@ -57,7 +57,7 @@ public class Sabycom {
     }
     
     /// Подписаться на получение push-сообщений
-    /// - Parameter token: Токен, полученный от Firebase
+    /// - Parameter token: Apns токен
     public class func registerForPushNotifications(with token: String) {
         instance.registerForPushNotifications(with: token)
     }
@@ -69,13 +69,13 @@ public class Sabycom {
     
     /// Определить, пришел пуш от сервиса Sabycom или нет
     /// - Parameter info: Payload пуша
-    public class func isSabycomPushNotification(info: [String: String]) -> Bool {
+    public class func isSabycomPushNotification(info: [AnyHashable: Any]) -> Bool {
         return instance.isSabycomPushNotification(info: info)
     }
     
     /// Показывает всплывающую панель с сообщением
     /// - Parameter info: Payload пуша
-    public class func handlePushNotification(info: [String: String], parentView: UIView) {
+    public class func handlePushNotification(info: [AnyHashable: Any], parentView: UIView) {
         instance.handlePushNotification(info: info, parentView: parentView)
     }
 }
@@ -89,6 +89,7 @@ private class SabycomImpl {
     
     private lazy var userService: UserService = UserServiceImpl(api: api)
     private lazy var unreadMessagesService: UnreadMessagesService = UnreadMessagesServiceImpl(api: api)
+    private lazy var imagesService: ImagesService = ImagesServiceImpl(cacheService: ImagesCacheServiceImpl())
     
     private lazy var controller = SabycomViewController(unreadMessagesService: unreadMessagesService)
     
@@ -143,13 +144,24 @@ private class SabycomImpl {
         
     }
     
-    func isSabycomPushNotification(info: [String: String]) -> Bool {
-        return false
+    func isSabycomPushNotification(info: [AnyHashable: Any]) -> Bool {
+        guard let _ = SabycomNotificationModel(userInfo: info) else {
+            return false
+        }
+        
+        return true
     }
 
-    func handlePushNotification(info: [String: String], parentView: UIView) {
-        let model = SabycomNotificationModel(channelName: "Чат с оператором длинное название канала для проверки верстки", channelAvatarUrl: "", message: "Сообщение длинное, чтобы проверить верстку и одну строкУ", messageDate: Date())
-        SabycomNotificationView.show(with: model, in: parentView)
+    func handlePushNotification(info: [AnyHashable: Any], parentView: UIView) {
+        if controller.presentingViewController == nil {
+            guard let model = SabycomNotificationModel(userInfo: info) else {
+                return
+            }
+            unreadMessagesService.updateUnreadMessagesCount(model.unreadCount)
+            
+            let view = SabycomNotificationView(imagesService: imagesService, model: model, parentView: parentView)
+            view.show()
+        }
     }
     
     private func configureController() {

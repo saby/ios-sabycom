@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
+		8308AA7F273E924500047D47 /* SabycomService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8308AA7E273E924500047D47 /* SabycomService.swift */; };
+		8308AA81273E92E400047D47 /* ConfigurationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8308AA80273E92E400047D47 /* ConfigurationService.swift */; };
 		83254255270F19FB00F6FCE0 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83254254270F19FB00F6FCE0 /* MainViewController.swift */; };
 		83254258270F1E9700F6FCE0 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83254257270F1E9700F6FCE0 /* UIColor+Extension.swift */; };
 		8325425D270F26AA00F6FCE0 /* ConfigurationInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8325425C270F26AA00F6FCE0 /* ConfigurationInteractor.swift */; };
@@ -26,7 +28,6 @@
 		83C5735626C28D2F00E7454C /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 83C5734E26C28D2F00E7454C /* LaunchScreen.xib */; };
 		83C5735826C28D2F00E7454C /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 83C5735226C28D2F00E7454C /* Images.xcassets */; };
 		83C5735926C28D2F00E7454C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83C5735326C28D2F00E7454C /* AppDelegate.swift */; };
-		83DA6A5227316BF4007ADA95 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 83DA6A5127316BF4007ADA95 /* GoogleService-Info.plist */; };
 		83DA6A5427316EAC007ADA95 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83DA6A5327316EAC007ADA95 /* NotificationService.swift */; };
 		D456EA2D57EA3F0B31C6E944 /* Pods_Sabycom_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB359FCF962F3E915F561808 /* Pods_Sabycom_Tests.framework */; };
 		F30E162FE77E9FFFF3FA22B8 /* Pods_ios_sabycom_demo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 464C01B8931D08CFECEB53C5 /* Pods_ios_sabycom_demo.framework */; };
@@ -51,6 +52,8 @@
 		607FACEB1AFB9204008FA782 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
 		68C790FDAD74893F691F1626 /* Pods-Sabycom_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sabycom_Tests.debug.xcconfig"; path = "Target Support Files/Pods-Sabycom_Tests/Pods-Sabycom_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		7CBEF77729C206177EA422DE /* Pods-ios-sabycom-demo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios-sabycom-demo.release.xcconfig"; path = "Target Support Files/Pods-ios-sabycom-demo/Pods-ios-sabycom-demo.release.xcconfig"; sourceTree = "<group>"; };
+		8308AA7E273E924500047D47 /* SabycomService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SabycomService.swift; sourceTree = "<group>"; };
+		8308AA80273E92E400047D47 /* ConfigurationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationService.swift; sourceTree = "<group>"; };
 		83254254270F19FB00F6FCE0 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		83254257270F1E9700F6FCE0 /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
 		8325425C270F26AA00F6FCE0 /* ConfigurationInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationInteractor.swift; sourceTree = "<group>"; };
@@ -70,7 +73,6 @@
 		83C5735226C28D2F00E7454C /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		83C5735326C28D2F00E7454C /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		83C5735426C28D2F00E7454C /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		83DA6A5127316BF4007ADA95 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		83DA6A5327316EAC007ADA95 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		83DA6A5527317031007ADA95 /* ios-sabycom-demo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "ios-sabycom-demo.entitlements"; sourceTree = "<group>"; };
 		85294341A18B571CA2B859C2 /* Pods-ios-sabycom-demo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios-sabycom-demo.debug.xcconfig"; path = "Target Support Files/Pods-ios-sabycom-demo/Pods-ios-sabycom-demo.debug.xcconfig"; sourceTree = "<group>"; };
@@ -207,6 +209,8 @@
 			children = (
 				83254267271036A800F6FCE0 /* UserStorage.swift */,
 				83DA6A5327316EAC007ADA95 /* NotificationService.swift */,
+				8308AA7E273E924500047D47 /* SabycomService.swift */,
+				8308AA80273E92E400047D47 /* ConfigurationService.swift */,
 			);
 			path = service;
 			sourceTree = "<group>";
@@ -254,7 +258,6 @@
 		83C5737026C28DCE00E7454C /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				83DA6A5127316BF4007ADA95 /* GoogleService-Info.plist */,
 				83C5735226C28D2F00E7454C /* Images.xcassets */,
 				83C5735426C28D2F00E7454C /* Info.plist */,
 				83C5734E26C28D2F00E7454C /* LaunchScreen.xib */,
@@ -318,9 +321,11 @@
 						CreatedOnToolsVersion = 6.3.1;
 						DevelopmentTeam = WUMC7P4M43;
 						LastSwiftMigration = 0900;
+						ProvisioningStyle = Automatic;
 					};
 					607FACE41AFB9204008FA782 = {
 						CreatedOnToolsVersion = 6.3.1;
+						DevelopmentTeam = WUMC7P4M43;
 						LastSwiftMigration = 0900;
 						TestTargetID = 607FACCF1AFB9204008FA782;
 					};
@@ -350,7 +355,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				83DA6A5227316BF4007ADA95 /* GoogleService-Info.plist in Resources */,
 				8325427B2710485600F6FCE0 /* Colors.xcassets in Resources */,
 				83C5735826C28D2F00E7454C /* Images.xcassets in Resources */,
 				83C5735626C28D2F00E7454C /* LaunchScreen.xib in Resources */,
@@ -418,29 +422,11 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-ios-sabycom-demo/Pods-ios-sabycom-demo-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/FirebaseCore/FirebaseCore.framework",
-				"${BUILT_PRODUCTS_DIR}/FirebaseCoreDiagnostics/FirebaseCoreDiagnostics.framework",
-				"${BUILT_PRODUCTS_DIR}/FirebaseInstallations/FirebaseInstallations.framework",
-				"${BUILT_PRODUCTS_DIR}/FirebaseInstanceID/FirebaseInstanceID.framework",
-				"${BUILT_PRODUCTS_DIR}/FirebaseMessaging/FirebaseMessaging.framework",
-				"${BUILT_PRODUCTS_DIR}/GoogleDataTransport/GoogleDataTransport.framework",
-				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
-				"${BUILT_PRODUCTS_DIR}/PromisesObjC/FBLPromises.framework",
 				"${BUILT_PRODUCTS_DIR}/Sabycom/Sabycom.framework",
-				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FirebaseCore.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FirebaseCoreDiagnostics.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FirebaseInstallations.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FirebaseInstanceID.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FirebaseMessaging.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleDataTransport.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBLPromises.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Sabycom.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -464,10 +450,12 @@
 				8325427027103ED100F6FCE0 /* CreateUserInteractor.swift in Sources */,
 				8325427227103EDC00F6FCE0 /* CreateUserPresenter.swift in Sources */,
 				83254268271036A800F6FCE0 /* UserStorage.swift in Sources */,
+				8308AA7F273E924500047D47 /* SabycomService.swift in Sources */,
 				83C5735526C28D2F00E7454C /* ConfigurationViewController.swift in Sources */,
 				83254276271041F300F6FCE0 /* CreateUserModel.swift in Sources */,
 				83DA6A5427316EAC007ADA95 /* NotificationService.swift in Sources */,
 				8325426B2710391D00F6FCE0 /* DIContainer.swift in Sources */,
+				8308AA81273E92E400047D47 /* ConfigurationService.swift in Sources */,
 				83254258270F1E9700F6FCE0 /* UIColor+Extension.swift in Sources */,
 				8325427427103EE800F6FCE0 /* CreateUserRouter.swift in Sources */,
 			);
@@ -619,6 +607,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = ApplicationIcon;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = "ios-sabycom-demo.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = WUMC7P4M43;
 				INFOPLIST_FILE = "$(SRCROOT)/Resources/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -626,6 +616,7 @@
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "ru.tensor.sabycom-demo";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -639,6 +630,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = ApplicationIcon;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = "ios-sabycom-demo.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = WUMC7P4M43;
 				INFOPLIST_FILE = "$(SRCROOT)/Resources/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -646,6 +639,7 @@
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "ru.tensor.sabycom-demo";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -657,6 +651,7 @@
 			baseConfigurationReference = 68C790FDAD74893F691F1626 /* Pods-Sabycom_Tests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				DEVELOPMENT_TEAM = WUMC7P4M43;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -680,6 +675,7 @@
 			baseConfigurationReference = 46A2B27F4F4955C45524A335 /* Pods-Sabycom_Tests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				DEVELOPMENT_TEAM = WUMC7P4M43;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
 					"$(inherited)",

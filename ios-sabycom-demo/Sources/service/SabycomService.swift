@@ -1,0 +1,120 @@
+//
+//  SabycomService.swift
+//  ios-sabycom-demo
+//
+//  Created by Sergey Iskhakov on 12.11.2021.
+//  Copyright © 2021 Tensor. All rights reserved.
+//
+
+import UIKit
+import Sabycom
+
+protocol SabycomService {
+    var unreadConversationCount: Int { get }
+    
+    func show(on viewController: UIViewController)
+    func configureSabycom()
+    func destroySabycom()
+    
+    func isSabycomPushNotification(info: [AnyHashable: Any]) -> Bool
+    func handlePushNotification(info: [AnyHashable: Any], parentView: UIView)
+}
+class SabycomServiceImpl: SabycomService {
+    var unreadConversationCount: Int {
+        Sabycom.unreadConversationCount
+    }
+    
+    private let configurationService: ConfigurationService
+    private let userStorage: UserStorage
+    private let notififationService: NotificationService
+    
+    private var configurationServiceObserver: Any?
+    private var userStorageObserver: Any?
+    private var notificationServiceObserver: Any?
+    
+    init(configurationService: ConfigurationService = DIContainer.shared.resolve(type: ConfigurationService.self)!,
+         userStorage: UserStorage = DIContainer.shared.resolve(type: UserStorage.self)!,
+         notificationService: NotificationService = DIContainer.shared.resolve(type: NotificationService.self)!) {
+        self.configurationService = configurationService
+        self.userStorage = userStorage
+        self.notififationService = notificationService
+        
+        configurationServiceObserver = NotificationCenter.default.addObserver(
+            forName: .ConfigurationServiceConfigurationDidChange,
+            object: nil,
+            queue: .main) { [weak self] _ in
+                self?.initializeSabycom()
+            }
+        
+        userStorageObserver = NotificationCenter.default.addObserver(
+            forName: .UserStorageDidChange,
+            object: nil,
+            queue: .main) { [weak self] _ in
+                self?.registerSabycomUser()
+            }
+        
+        notificationServiceObserver = NotificationCenter.default.addObserver(
+            forName: .NotificationServiceDidChange,
+            object: nil,
+            queue: .main) { [weak self] _ in
+                self?.registerSabycomNotifications()
+            }
+        
+        configureSabycom()
+    }
+    
+    deinit {
+        if let configurationServiceObserver = configurationServiceObserver {
+            NotificationCenter.default.removeObserver(configurationServiceObserver)
+        }
+        
+        if let userStorageObserver = userStorageObserver {
+            NotificationCenter.default.removeObserver(userStorageObserver)
+        }
+        
+        if let notificationServiceObserver = notificationServiceObserver {
+            NotificationCenter.default.removeObserver(notificationServiceObserver)
+        }
+    }
+    
+    func show(on viewController: UIViewController) {
+        configureSabycom()
+        Sabycom.show(on: viewController)
+    }
+    
+    func configureSabycom() {
+        initializeSabycom()
+        registerSabycomUser()
+        registerSabycomNotifications()
+    }
+    
+    func destroySabycom() {
+        Sabycom.destroy()
+    }
+    
+    func isSabycomPushNotification(info: [AnyHashable: Any]) -> Bool {
+        Sabycom.isSabycomPushNotification(info: info)
+    }
+    
+    func handlePushNotification(info: [AnyHashable: Any], parentView: UIView) {
+        Sabycom.handlePushNotification(info: info, parentView: parentView)
+    }
+    
+    private func initializeSabycom() {
+        if let appId = configurationService.getCurrentAppId(), let host = configurationService.getCurrentHostType() {
+            Sabycom.initialize(appId: appId, host: host)
+        }
+    }
+    
+    private func registerSabycomUser() {
+        if let user = userStorage.currentUser {
+            Sabycom.registerUser(user)
+        }
+    }
+    
+    private func registerSabycomNotifications() {
+        if !notififationService.token.isEmpty {
+            Sabycom.registerForPushNotifications(with: notififationService.token)
+        }
+    }
+}

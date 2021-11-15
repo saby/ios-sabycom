@@ -1,6 +1,6 @@
 //
 //  SabycomNotificationView.swift
-//  FirebaseCore
+//  Sabycom
 //
 //  Created by Sergey Iskhakov on 03.11.2021.
 //
@@ -8,9 +8,11 @@
 import UIKit
 
 class SabycomNotificationView: UIView {
-    
+    private let imagesService: ImagesService
     private let model: SabycomNotificationModel
     private weak var parentView: UIView?
+    
+    private weak var imageLoadTask: ImageLoadTask?
     
     private lazy var containerView: UIView = {
         let containerView = UIView()
@@ -32,7 +34,7 @@ class SabycomNotificationView: UIView {
         return view
     }()
     
-    private lazy var channelNameLabel: UILabel = {
+    private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
@@ -82,12 +84,8 @@ class SabycomNotificationView: UIView {
         return closeButton
     }()
     
-    class func show(with model: SabycomNotificationModel, in view: UIView) {
-        let view = SabycomNotificationView(model: model, parentView: view)
-        view.show()
-    }
-    
-    init(model: SabycomNotificationModel, parentView: UIView) {
+    init(imagesService: ImagesService, model: SabycomNotificationModel, parentView: UIView) {
+        self.imagesService = imagesService
         self.model = model
         self.parentView = parentView
         
@@ -134,7 +132,7 @@ class SabycomNotificationView: UIView {
             addSubview(closeButton)
             
             containerView.addSubview(avatarView)
-            containerView.addSubview(channelNameLabel)
+            containerView.addSubview(titleLabel)
             containerView.addSubview(messageLabel)
             containerView.addSubview(messageDateLabel)
             containerView.addSubview(unreadCountLabel)
@@ -161,19 +159,19 @@ class SabycomNotificationView: UIView {
             ])
             
             NSLayoutConstraint.activate([
-                channelNameLabel.leadingAnchor.constraint(equalTo: avatarView.trailingAnchor, constant: Constants.labelsPaddingLeft),
-                channelNameLabel.trailingAnchor.constraint(equalTo: messageDateLabel.leadingAnchor, constant: -Constants.containerPaddingHorizontal),
-                channelNameLabel.bottomAnchor.constraint(equalTo: avatarView.centerYAnchor)
+                titleLabel.leadingAnchor.constraint(equalTo: avatarView.trailingAnchor, constant: Constants.labelsPaddingLeft),
+                titleLabel.trailingAnchor.constraint(equalTo: messageDateLabel.leadingAnchor, constant: -Constants.containerPaddingHorizontal),
+                titleLabel.bottomAnchor.constraint(equalTo: avatarView.centerYAnchor)
             ])
             
             NSLayoutConstraint.activate([
                 messageDateLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -Constants.containerPaddingHorizontal),
-                messageDateLabel.centerYAnchor.constraint(equalTo: channelNameLabel.centerYAnchor)
+                messageDateLabel.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor)
             ])
             
             NSLayoutConstraint.activate([
                 messageLabel.leadingAnchor.constraint(equalTo: avatarView.trailingAnchor, constant: Constants.labelsPaddingLeft),
-                messageLabel.trailingAnchor.constraint(equalTo: channelNameLabel.trailingAnchor),
+                messageLabel.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
                 messageLabel.topAnchor.constraint(equalTo: avatarView.centerYAnchor)
             ])
             
@@ -194,8 +192,10 @@ class SabycomNotificationView: UIView {
     }
     
     private func updateContent() {
-        channelNameLabel.text = model.channelName
-        messageLabel.text = model.message
+        imageLoadTask?.cancel()
+        
+        titleLabel.text = model.title
+        messageLabel.text = model.body
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd MMM"
@@ -204,6 +204,12 @@ class SabycomNotificationView: UIView {
         
         unreadCountLabel.isHidden = Sabycom.unreadConversationCount <= 0
         unreadCountLabel.text = "\(Sabycom.unreadConversationCount)"
+        
+        if let url = URL(string: model.operatorPhoto) {
+            imageLoadTask = imagesService.getImage(from: url) { [weak self] image in
+                self?.avatarView.image = image
+            }
+        }
     }
     
     override func layoutSubviews() {

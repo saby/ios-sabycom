@@ -6,20 +6,34 @@
 //  Copyright © 2021 Tensor. All rights reserved.
 //
 
-import Foundation
+import UIKit
 import UserNotifications
-import Sabycom
 
-class NotificationService: NSObject, UNUserNotificationCenterDelegate {
-    private (set) var token: String = ""
+protocol NotificationService {
+    var token: String { get }
     
-    func registerDelegate(){
-        UNUserNotificationCenter.current().delegate = self
+    func registerForRemoteNotifications()
+    func unregisterFromRemoteNotifications()
+    func didRegisterForRemoteNotifications(with deviceToken: Data)
+    func didFailToRegisterForRemoteNotifications(with error: Error)
+}
+
+class NotificationServiceImpl: NSObject, NotificationService, UNUserNotificationCenterDelegate {
+    private var sabycomService: SabycomService {
+        DIContainer.shared.resolve(type: SabycomService.self)!
+    }
+    
+    private (set) var token: String = "" {
+        didSet {
+            NotificationCenter.default.post(name: .NotificationServiceDidChange, object: nil)
+        }
     }
     
     //MARK: - Push notifications -
     
     func registerForRemoteNotifications(){
+        registerDelegate()
+        
         let authOptions: UNAuthorizationOptions = [.alert, .sound, .badge]
         UNUserNotificationCenter.current().requestAuthorization(options: authOptions) { (granted, error) in
             if granted {
@@ -33,7 +47,7 @@ class NotificationService: NSObject, UNUserNotificationCenterDelegate {
         }
     }
     
-    class func unregisterForRemoteNotifications(completion: ((_ succeeded: Bool, _ error: Error?) -> ())?) {
+    func unregisterFromRemoteNotifications() {
         UIApplication.shared.unregisterForRemoteNotifications()
         
         // TODO: Добавить метод отписки от пушей
@@ -43,19 +57,39 @@ class NotificationService: NSObject, UNUserNotificationCenterDelegate {
     
     func didRegisterForRemoteNotifications(with deviceToken: Data){
         token = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
-        Sabycom.registerForPushNotifications(with: token)
     }
     
     func didFailToRegisterForRemoteNotifications(with error: Error) {
         print("did fail to register for remote notifications. error: \(error.localizedDescription)")
     }
     
+    private func registerDelegate(){
+        UNUserNotificationCenter.current().delegate = self
+    }
+    
     //MARK: - UNUserNotificationCenterDelegate -
     
     public func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        completionHandler([.alert, .sound, .badge])
+        let userInfo = notification.request.content.userInfo
+        
+        if sabycomService.isSabycomPushNotification(info: userInfo), let appDelegate = UIApplication.shared.delegate as? AppDelegate, let window = appDelegate.window, let controller = window.rootViewController {
+            sabycomService.handlePushNotification(info: userInfo, parentView: controller.view)
+        }
+        
+        completionHandler([])
     }
     
     public func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        let userInfo = response.notification.request.content.userInfo
+        
+        if sabycomService.isSabycomPushNotification(info: userInfo), let appDelegate = UIApplication.shared.delegate as? AppDelegate, let window = appDelegate.window, let controller = window.rootViewController {
+            sabycomService.show(on: controller)
+        }
+        
+        completionHandler()
     }
+}
+
+extension NSNotification.Name {
+    static let NotificationServiceDidChange = NSNotification.Name(rawValue: "NotificationService.didChange")
 }

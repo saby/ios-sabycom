@@ -6,18 +6,14 @@
 //  Copyright © 2021 Tensor. All rights reserved.
 //
 
-import Foundation
 import UIKit
-import Sabycom
 
 class MainViewController: UIViewController {
     private enum Constants {
         static let margin: CGFloat = 16
     }
     
-    private let appId: String
-    private let user: SabycomUser
-    private let host: SabycomHost.HostType
+    private let sabycomService: SabycomService
     private let notificationService: NotificationService
     
     private lazy var badgeLabel: UILabel = {
@@ -49,14 +45,13 @@ class MainViewController: UIViewController {
     
     private var unreadMessagesObserver: Any?
     
-    required init(appId: String,
-                  user: SabycomUser,
-                  host: SabycomHost.HostType,
+    required init(sabycomService: SabycomService = DIContainer.shared.resolve(type: SabycomService.self)!,
                   notificationService: NotificationService = DIContainer.shared.resolve(type: NotificationService.self)!) {
-        self.appId = appId
-        self.user = user
-        self.host = host
+        self.sabycomService = sabycomService
         self.notificationService = notificationService
+        
+        sabycomService.configureSabycom()
+        
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -72,10 +67,6 @@ class MainViewController: UIViewController {
         setupViews()
         createRightBarButtonItem()
         updateUnreadMessagesCount()
-        
-        Sabycom.initialize(appId: appId, host: host)
-        Sabycom.registerUser(user)
-        Sabycom.registerForPushNotifications(with: notificationService.token)
         
         unreadMessagesObserver = NotificationCenter.default.addObserver(
             forName: .SabycomUnreadConversationCountDidChange,
@@ -106,7 +97,7 @@ class MainViewController: UIViewController {
     }
     
     private func updateUnreadMessagesCount() {
-        let count = Sabycom.unreadConversationCount
+        let count = sabycomService.unreadConversationCount
         
         if count > 0 {
             badgeLabel.isHidden = false
@@ -117,17 +108,13 @@ class MainViewController: UIViewController {
     }
     @objc
     private func onSabycom(_ sender: Any) {
-        Sabycom.show(on: self)
-        
-//        if let appDelegate = UIApplication.shared.delegate as? AppDelegate, let window = appDelegate.window, let controller = window.rootViewController {
-//            Sabycom.handlePushNotification(info: [:], parentView: controller.view)
-//        }
+        sabycomService.show(on: self)
     }
     
     deinit {
         if let unreadMessagesObserver = unreadMessagesObserver {
             NotificationCenter.default.removeObserver(unreadMessagesObserver)
         }
-        Sabycom.destroy()
+        sabycomService.destroySabycom()
     }
 }
