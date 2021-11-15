@@ -10,6 +10,27 @@
 		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
 		8308AA7F273E924500047D47 /* SabycomService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8308AA7E273E924500047D47 /* SabycomService.swift */; };
 		8308AA81273E92E400047D47 /* ConfigurationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8308AA80273E92E400047D47 /* ConfigurationService.swift */; };
+		8308AA892742319A00047D47 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83254254270F19FB00F6FCE0 /* MainViewController.swift */; };
+		8308AA8A2742319A00047D47 /* CreateUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8325426D27103EC700F6FCE0 /* CreateUserViewController.swift */; };
+		8308AA8B2742319A00047D47 /* ConfigurationRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83254260270F27AD00F6FCE0 /* ConfigurationRouter.swift */; };
+		8308AA8C2742319A00047D47 /* TextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832542782710465500F6FCE0 /* TextField.swift */; };
+		8308AA8D2742319A00047D47 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83C5735326C28D2F00E7454C /* AppDelegate.swift */; };
+		8308AA8E2742319A00047D47 /* ConfigurationPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8325425E270F26BB00F6FCE0 /* ConfigurationPresenter.swift */; };
+		8308AA8F2742319A00047D47 /* ConfigurationInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8325425C270F26AA00F6FCE0 /* ConfigurationInteractor.swift */; };
+		8308AA902742319A00047D47 /* CreateUserInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8325426F27103ED100F6FCE0 /* CreateUserInteractor.swift */; };
+		8308AA912742319A00047D47 /* CreateUserPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8325427127103EDC00F6FCE0 /* CreateUserPresenter.swift */; };
+		8308AA922742319A00047D47 /* UserStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83254267271036A800F6FCE0 /* UserStorage.swift */; };
+		8308AA932742319A00047D47 /* SabycomService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8308AA7E273E924500047D47 /* SabycomService.swift */; };
+		8308AA942742319A00047D47 /* ConfigurationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83C5734D26C28D2F00E7454C /* ConfigurationViewController.swift */; };
+		8308AA952742319A00047D47 /* CreateUserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83254275271041F300F6FCE0 /* CreateUserModel.swift */; };
+		8308AA962742319A00047D47 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83DA6A5327316EAC007ADA95 /* NotificationService.swift */; };
+		8308AA972742319A00047D47 /* DIContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8325426A2710391D00F6FCE0 /* DIContainer.swift */; };
+		8308AA982742319A00047D47 /* ConfigurationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8308AA80273E92E400047D47 /* ConfigurationService.swift */; };
+		8308AA992742319A00047D47 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83254257270F1E9700F6FCE0 /* UIColor+Extension.swift */; };
+		8308AA9A2742319A00047D47 /* CreateUserRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8325427327103EE800F6FCE0 /* CreateUserRouter.swift */; };
+		8308AA9E2742319A00047D47 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8325427A2710485600F6FCE0 /* Colors.xcassets */; };
+		8308AA9F2742319A00047D47 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 83C5735226C28D2F00E7454C /* Images.xcassets */; };
+		8308AAA02742319A00047D47 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 83C5734E26C28D2F00E7454C /* LaunchScreen.xib */; };
 		83254255270F19FB00F6FCE0 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83254254270F19FB00F6FCE0 /* MainViewController.swift */; };
 		83254258270F1E9700F6FCE0 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83254257270F1E9700F6FCE0 /* UIColor+Extension.swift */; };
 		8325425D270F26AA00F6FCE0 /* ConfigurationInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8325425C270F26AA00F6FCE0 /* ConfigurationInteractor.swift */; };
@@ -29,7 +50,8 @@
 		83C5735826C28D2F00E7454C /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 83C5735226C28D2F00E7454C /* Images.xcassets */; };
 		83C5735926C28D2F00E7454C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83C5735326C28D2F00E7454C /* AppDelegate.swift */; };
 		83DA6A5427316EAC007ADA95 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83DA6A5327316EAC007ADA95 /* NotificationService.swift */; };
-		D456EA2D57EA3F0B31C6E944 /* Pods_Sabycom_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB359FCF962F3E915F561808 /* Pods_Sabycom_Tests.framework */; };
+		8D7929A72723837E3377D5A1 /* Pods_ios_sabycom_demo_local.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46353DE7C63EDCCE3D14D4BF /* Pods_ios_sabycom_demo_local.framework */; };
+		CA6A8A86EF6AB5FDF0008A3B /* Pods_ios_sabycom_demo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 464C01B8931D08CFECEB53C5 /* Pods_ios_sabycom_demo.framework */; };
 		F30E162FE77E9FFFF3FA22B8 /* Pods_ios_sabycom_demo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 464C01B8931D08CFECEB53C5 /* Pods_ios_sabycom_demo.framework */; };
 /* End PBXBuildFile section */
 
@@ -44,16 +66,18 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		204652AAD4408F850649A487 /* Pods-ios-sabycom-demo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios-sabycom-demo.debug.xcconfig"; path = "Target Support Files/Pods-ios-sabycom-demo/Pods-ios-sabycom-demo.debug.xcconfig"; sourceTree = "<group>"; };
+		46353DE7C63EDCCE3D14D4BF /* Pods_ios_sabycom_demo_local.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ios_sabycom_demo_local.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		464C01B8931D08CFECEB53C5 /* Pods_ios_sabycom_demo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ios_sabycom_demo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		46A2B27F4F4955C45524A335 /* Pods-Sabycom_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sabycom_Tests.release.xcconfig"; path = "Target Support Files/Pods-Sabycom_Tests/Pods-Sabycom_Tests.release.xcconfig"; sourceTree = "<group>"; };
+		539399A8C42439462BC7F6E6 /* Pods-ios-sabycom-demo-local.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios-sabycom-demo-local.debug.xcconfig"; path = "Target Support Files/Pods-ios-sabycom-demo-local/Pods-ios-sabycom-demo-local.debug.xcconfig"; sourceTree = "<group>"; };
+		5A6477A939857E1AEE1CE201 /* Pods-ios-sabycom-demo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios-sabycom-demo.release.xcconfig"; path = "Target Support Files/Pods-ios-sabycom-demo/Pods-ios-sabycom-demo.release.xcconfig"; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* ios-sabycom-demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-sabycom-demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACE51AFB9204008FA782 /* Sabycom_Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Sabycom_Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACEB1AFB9204008FA782 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
-		68C790FDAD74893F691F1626 /* Pods-Sabycom_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sabycom_Tests.debug.xcconfig"; path = "Target Support Files/Pods-Sabycom_Tests/Pods-Sabycom_Tests.debug.xcconfig"; sourceTree = "<group>"; };
-		7CBEF77729C206177EA422DE /* Pods-ios-sabycom-demo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios-sabycom-demo.release.xcconfig"; path = "Target Support Files/Pods-ios-sabycom-demo/Pods-ios-sabycom-demo.release.xcconfig"; sourceTree = "<group>"; };
 		8308AA7E273E924500047D47 /* SabycomService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SabycomService.swift; sourceTree = "<group>"; };
 		8308AA80273E92E400047D47 /* ConfigurationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationService.swift; sourceTree = "<group>"; };
+		8308AAA52742319A00047D47 /* ios-sabycom-demo-local.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-sabycom-demo-local.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		83254254270F19FB00F6FCE0 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		83254257270F1E9700F6FCE0 /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
 		8325425C270F26AA00F6FCE0 /* ConfigurationInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationInteractor.swift; sourceTree = "<group>"; };
@@ -75,8 +99,7 @@
 		83C5735426C28D2F00E7454C /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		83DA6A5327316EAC007ADA95 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		83DA6A5527317031007ADA95 /* ios-sabycom-demo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "ios-sabycom-demo.entitlements"; sourceTree = "<group>"; };
-		85294341A18B571CA2B859C2 /* Pods-ios-sabycom-demo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios-sabycom-demo.debug.xcconfig"; path = "Target Support Files/Pods-ios-sabycom-demo/Pods-ios-sabycom-demo.debug.xcconfig"; sourceTree = "<group>"; };
-		CB359FCF962F3E915F561808 /* Pods_Sabycom_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Sabycom_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E9440274D48B0501EDBCB383 /* Pods-ios-sabycom-demo-local.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios-sabycom-demo-local.release.xcconfig"; path = "Target Support Files/Pods-ios-sabycom-demo-local/Pods-ios-sabycom-demo-local.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,6 +108,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F30E162FE77E9FFFF3FA22B8 /* Pods_ios_sabycom_demo.framework in Frameworks */,
+				CA6A8A86EF6AB5FDF0008A3B /* Pods_ios_sabycom_demo.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -92,7 +116,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D456EA2D57EA3F0B31C6E944 /* Pods_Sabycom_Tests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8308AA9B2742319A00047D47 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D7929A72723837E3377D5A1 /* Pods_ios_sabycom_demo_local.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -102,8 +133,8 @@
 		0BEBD6A642A060C1D7144D2F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				CB359FCF962F3E915F561808 /* Pods_Sabycom_Tests.framework */,
 				464C01B8931D08CFECEB53C5 /* Pods_ios_sabycom_demo.framework */,
+				46353DE7C63EDCCE3D14D4BF /* Pods_ios_sabycom_demo_local.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -111,10 +142,10 @@
 		46EA215C669050380AA288DD /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				68C790FDAD74893F691F1626 /* Pods-Sabycom_Tests.debug.xcconfig */,
-				46A2B27F4F4955C45524A335 /* Pods-Sabycom_Tests.release.xcconfig */,
-				85294341A18B571CA2B859C2 /* Pods-ios-sabycom-demo.debug.xcconfig */,
-				7CBEF77729C206177EA422DE /* Pods-ios-sabycom-demo.release.xcconfig */,
+				204652AAD4408F850649A487 /* Pods-ios-sabycom-demo.debug.xcconfig */,
+				5A6477A939857E1AEE1CE201 /* Pods-ios-sabycom-demo.release.xcconfig */,
+				539399A8C42439462BC7F6E6 /* Pods-ios-sabycom-demo-local.debug.xcconfig */,
+				E9440274D48B0501EDBCB383 /* Pods-ios-sabycom-demo-local.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -137,6 +168,7 @@
 			children = (
 				607FACD01AFB9204008FA782 /* ios-sabycom-demo.app */,
 				607FACE51AFB9204008FA782 /* Sabycom_Tests.xctest */,
+				8308AAA52742319A00047D47 /* ios-sabycom-demo-local.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -292,7 +324,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 607FACF21AFB9204008FA782 /* Build configuration list for PBXNativeTarget "Sabycom_Tests" */;
 			buildPhases = (
-				3F3CA8F426BB205F35A2A0C9 /* [CP] Check Pods Manifest.lock */,
 				607FACE11AFB9204008FA782 /* Sources */,
 				607FACE21AFB9204008FA782 /* Frameworks */,
 				607FACE31AFB9204008FA782 /* Resources */,
@@ -307,6 +338,25 @@
 			productReference = 607FACE51AFB9204008FA782 /* Sabycom_Tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		8308AA862742319A00047D47 /* ios-sabycom-demo-local */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8308AAA22742319A00047D47 /* Build configuration list for PBXNativeTarget "ios-sabycom-demo-local" */;
+			buildPhases = (
+				CB0B698ABE42655D2E15D9CB /* [CP] Check Pods Manifest.lock */,
+				8308AA882742319A00047D47 /* Sources */,
+				8308AA9B2742319A00047D47 /* Frameworks */,
+				8308AA9D2742319A00047D47 /* Resources */,
+				250257E9A5F218B472E8D5CD /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "ios-sabycom-demo-local";
+			productName = Sabycom;
+			productReference = 8308AAA52742319A00047D47 /* ios-sabycom-demo-local.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -319,15 +369,18 @@
 				TargetAttributes = {
 					607FACCF1AFB9204008FA782 = {
 						CreatedOnToolsVersion = 6.3.1;
-						DevelopmentTeam = WUMC7P4M43;
 						LastSwiftMigration = 0900;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 					};
 					607FACE41AFB9204008FA782 = {
 						CreatedOnToolsVersion = 6.3.1;
 						DevelopmentTeam = WUMC7P4M43;
 						LastSwiftMigration = 0900;
 						TestTargetID = 607FACCF1AFB9204008FA782;
+					};
+					8308AA862742319A00047D47 = {
+						DevelopmentTeam = WUMC7P4M43;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -346,6 +399,7 @@
 			targets = (
 				607FACCF1AFB9204008FA782 /* ios-sabycom-demo */,
 				607FACE41AFB9204008FA782 /* Sabycom_Tests */,
+				8308AA862742319A00047D47 /* ios-sabycom-demo-local */,
 			);
 		};
 /* End PBXProject section */
@@ -368,29 +422,35 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		8308AA9D2742319A00047D47 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8308AA9E2742319A00047D47 /* Colors.xcassets in Resources */,
+				8308AA9F2742319A00047D47 /* Images.xcassets in Resources */,
+				8308AAA02742319A00047D47 /* LaunchScreen.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		3F3CA8F426BB205F35A2A0C9 /* [CP] Check Pods Manifest.lock */ = {
+		250257E9A5F218B472E8D5CD /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputFileListPaths = (
-			);
 			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
+				"${PODS_ROOT}/Target Support Files/Pods-ios-sabycom-demo-local/Pods-ios-sabycom-demo-local-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Sabycom/Sabycom.framework",
 			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
+			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Sabycom_Tests-checkManifestLockResult.txt",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Sabycom.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ios-sabycom-demo-local/Pods-ios-sabycom-demo-local-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		42D1EB743268A7C175F803B5 /* [CP] Check Pods Manifest.lock */ = {
@@ -433,6 +493,28 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ios-sabycom-demo/Pods-ios-sabycom-demo-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		CB0B698ABE42655D2E15D9CB /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-ios-sabycom-demo-local-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -466,6 +548,31 @@
 			buildActionMask = 2147483647;
 			files = (
 				607FACEC1AFB9204008FA782 /* Tests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8308AA882742319A00047D47 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8308AA892742319A00047D47 /* MainViewController.swift in Sources */,
+				8308AA8A2742319A00047D47 /* CreateUserViewController.swift in Sources */,
+				8308AA8B2742319A00047D47 /* ConfigurationRouter.swift in Sources */,
+				8308AA8C2742319A00047D47 /* TextField.swift in Sources */,
+				8308AA8D2742319A00047D47 /* AppDelegate.swift in Sources */,
+				8308AA8E2742319A00047D47 /* ConfigurationPresenter.swift in Sources */,
+				8308AA8F2742319A00047D47 /* ConfigurationInteractor.swift in Sources */,
+				8308AA902742319A00047D47 /* CreateUserInteractor.swift in Sources */,
+				8308AA912742319A00047D47 /* CreateUserPresenter.swift in Sources */,
+				8308AA922742319A00047D47 /* UserStorage.swift in Sources */,
+				8308AA932742319A00047D47 /* SabycomService.swift in Sources */,
+				8308AA942742319A00047D47 /* ConfigurationViewController.swift in Sources */,
+				8308AA952742319A00047D47 /* CreateUserModel.swift in Sources */,
+				8308AA962742319A00047D47 /* NotificationService.swift in Sources */,
+				8308AA972742319A00047D47 /* DIContainer.swift in Sources */,
+				8308AA982742319A00047D47 /* ConfigurationService.swift in Sources */,
+				8308AA992742319A00047D47 /* UIColor+Extension.swift in Sources */,
+				8308AA9A2742319A00047D47 /* CreateUserRouter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -602,14 +709,14 @@
 		};
 		607FACF01AFB9204008FA782 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 85294341A18B571CA2B859C2 /* Pods-ios-sabycom-demo.debug.xcconfig */;
+			baseConfigurationReference = 204652AAD4408F850649A487 /* Pods-ios-sabycom-demo.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = ApplicationIcon;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = "ios-sabycom-demo.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = WUMC7P4M43;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = "$(SRCROOT)/Resources/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 0.1.0;
@@ -625,14 +732,14 @@
 		};
 		607FACF11AFB9204008FA782 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7CBEF77729C206177EA422DE /* Pods-ios-sabycom-demo.release.xcconfig */;
+			baseConfigurationReference = 5A6477A939857E1AEE1CE201 /* Pods-ios-sabycom-demo.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = ApplicationIcon;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = "ios-sabycom-demo.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = WUMC7P4M43;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = "$(SRCROOT)/Resources/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 0.1.0;
@@ -648,7 +755,6 @@
 		};
 		607FACF31AFB9204008FA782 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 68C790FDAD74893F691F1626 /* Pods-Sabycom_Tests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				DEVELOPMENT_TEAM = WUMC7P4M43;
@@ -672,7 +778,6 @@
 		};
 		607FACF41AFB9204008FA782 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 46A2B27F4F4955C45524A335 /* Pods-Sabycom_Tests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				DEVELOPMENT_TEAM = WUMC7P4M43;
@@ -687,6 +792,52 @@
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 4.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Sabycom_Example.app/Sabycom_Example";
+			};
+			name = Release;
+		};
+		8308AAA32742319A00047D47 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 539399A8C42439462BC7F6E6 /* Pods-ios-sabycom-demo-local.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = ApplicationIcon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				CODE_SIGN_ENTITLEMENTS = "ios-sabycom-demo.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = WUMC7P4M43;
+				INFOPLIST_FILE = "$(SRCROOT)/Resources/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 0.1.0;
+				MODULE_NAME = ExampleApp;
+				PRODUCT_BUNDLE_IDENTIFIER = "ru.tensor.sabycom-demo";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		8308AAA42742319A00047D47 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E9440274D48B0501EDBCB383 /* Pods-ios-sabycom-demo-local.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = ApplicationIcon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				CODE_SIGN_ENTITLEMENTS = "ios-sabycom-demo.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = WUMC7P4M43;
+				INFOPLIST_FILE = "$(SRCROOT)/Resources/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 0.1.0;
+				MODULE_NAME = ExampleApp;
+				PRODUCT_BUNDLE_IDENTIFIER = "ru.tensor.sabycom-demo";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -716,6 +867,15 @@
 			buildConfigurations = (
 				607FACF31AFB9204008FA782 /* Debug */,
 				607FACF41AFB9204008FA782 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8308AAA22742319A00047D47 /* Build configuration list for PBXNativeTarget "ios-sabycom-demo-local" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8308AAA32742319A00047D47 /* Debug */,
+				8308AAA42742319A00047D47 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
