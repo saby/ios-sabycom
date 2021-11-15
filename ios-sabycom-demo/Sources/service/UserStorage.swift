@@ -35,10 +35,21 @@ class UserStorageImpl: UserStorage {
     func saveUser(_ user: SabycomUser) {
         if let data = try? JSONEncoder().encode(user) {
             UserDefaults.standard.set(data, forKey: Constants.Keys.currentUser)
+            userDidChange()
         }
     }
     
     func deleteCurrentUser() {
         UserDefaults.standard.removeObject(forKey: Constants.Keys.currentUser)
+        userDidChange()
+    }
+    
+    private func userDidChange() {
+        NotificationCenter.default.post(name: .UserStorageDidChange, object: nil)
     }
 }
+
+extension NSNotification.Name {
+    static let UserStorageDidChange = NSNotification.Name(rawValue: "UserStorage.userDidChange")
+}
+

@@ -39,7 +39,7 @@ class SabycomConfigurationRouterImpl: ConfigurationRouter {
     }
     
     private func goToMain(_ user: SabycomUser, appId: String, hostType: SabycomHost.HostType){
-        let controller = MainViewController(appId: appId, user: user, host: hostType)
+        let controller = MainViewController()
         navigationController?.pushViewController(controller, animated: true)
     }
     

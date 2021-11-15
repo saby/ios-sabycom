@@ -8,8 +8,6 @@
 
 import UIKit
 import Sabycom
-import Firebase
-import FirebaseCore
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -21,15 +19,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }()
     
     internal func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        FirebaseApp.configure()
-        
         registerDependencies()
         
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.rootViewController = createRootController()
         window?.makeKeyAndVisible()
         
-        notificationService?.registerDelegate()
         notificationService?.registerForRemoteNotifications()
         
         return true
@@ -71,8 +66,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private func registerDependencies() {
         let container = DIContainer.shared
+        container.register(type: ConfigurationService.self, component: ConfigurationServiceImpl())
         container.register(type: UserStorage.self, component: UserStorageImpl())
-        container.register(type: NotificationService.self, component: NotificationService())
+        container.register(type: NotificationService.self, component: NotificationServiceImpl())
+        container.register(type: SabycomService.self, component: SabycomServiceImpl())
     }
     
     private func createRootController() -> UIViewController {
