@@ -58,7 +58,7 @@ class SabycomInteractor {
         urlComponents.queryItems = [URLQueryItem(name: "p", value: p)]
         let resultUrl = urlComponents.url
         
-        if let lastUsedUrl = lastUsedUrl, lastUsedUrl != resultUrl {
+        if let lastUsedUrl = lastUsedUrl {
             deleteCookies(for: lastUsedUrl)
         }
         
@@ -75,12 +75,6 @@ class SabycomInteractor {
             cookies.forEach {
                 HTTPCookieStorage.shared.deleteCookie($0)
             }
-        }
-    }
-    
-    deinit {
-        if let lastUsedUrl = lastUsedUrl {
-            deleteCookies(for: lastUsedUrl)
         }
     }
 }
