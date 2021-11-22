@@ -38,7 +38,7 @@ public class Sabycom {
         _instance = nil
     }
     
-    /// Показывает виджет. Перед вызовом функции нужно обязяательно вызвать initialize(apikey:) и registerUser(_:)
+    /// Показывает виджет. Перед вызовом функции нужно обязяательно вызвать initialize(apikey:) и registerUser(_:) или registerAnonymousUser()
     /// - Parameter viewController: UIViewController, в котором будет показан виджет
     public class func show(on viewController: UIViewController) {
         instance.show(on: viewController)
@@ -50,10 +50,14 @@ public class Sabycom {
     }
     
     /// Добавить информацию о пользователе. Метод должен быть вызван до show(on:).
-    /// Метод необходимо вызывать даже если нет информации о пользователе, в таком случае необходимо передать только идентификатор пользователя SabycomUser
     /// - Parameter user: Информация о пользователе
     public class func registerUser(_ user: SabycomUser) {
         instance.registerUser(user)
+    }
+    
+    /// Зарегистрировать анонимного пользователя. Используется, если в приложении нет авторизации
+    public class func registerAnonymousUser() {
+        instance.registerAnonymousUser()
     }
     
     /// Подписаться на получение push-сообщений
@@ -87,7 +91,8 @@ private class SabycomImpl {
     
     private lazy var api = Api(hostType: hostType)
     
-    private lazy var userService: UserService = UserServiceImpl(api: api)
+    private lazy var userStorage: UserStorage = UserStorageImpl()
+    private lazy var userService: UserService = UserServiceImpl(api: api, userStorage: userStorage)
     private lazy var unreadMessagesService: UnreadMessagesService = UnreadMessagesServiceImpl(api: api)
     private lazy var imagesService: ImagesService = ImagesServiceImpl(cacheService: ImagesCacheServiceImpl())
     
@@ -124,12 +129,16 @@ private class SabycomImpl {
     }
     
     func registerUser(_ user: SabycomUser) {
-        viewModel.user = user
-        unreadMessagesService.user = user
-        userService.user = user
+        userService.registerUser(user)
         
-        configureController()
+        configure(with: user)
      }
+    
+    func registerAnonymousUser() {
+        let user = userService.registerAnonymousUser()
+        
+        configure(with: user)
+    }
     
     func getUnreadConversationCount() -> Int {
         return unreadMessagesService.unreadMessagesCount
@@ -162,6 +171,13 @@ private class SabycomImpl {
             let view = SabycomNotificationView(imagesService: imagesService, model: model, parentView: parentView)
             view.show()
         }
+    }
+    
+    private func configure(with user: SabycomUser) {
+        viewModel.user = user
+        unreadMessagesService.user = user
+        
+        configureController()
     }
     
     private func configureController() {

@@ -15,6 +15,7 @@ protocol ConfigurationView: AnyObject {
     var onCreateUserClicked: (() -> Void)? { get set }
     var onDeleteUserClicked: (() -> Void)? { get set }
     var onStartClicked: (() -> Void)? { get set }
+    var onStartAnonymousClicked: (() -> Void)? { get set }
     
     var onHostChanged: ((_ host: SabycomHost.HostType) -> Void)? { get set }
     
@@ -85,18 +86,29 @@ class ConfigurationPresenter {
             self?.start()
         }
     
+        view?.onStartAnonymousClicked = { [weak self] in
+            self?.startAnonymous()
+        }
     }
     
     private func start() {
-        guard let appId = interactor.getCurrentAppId() else {
+        guard interactor.getCurrentAppId() != nil else {
             router.performAction(.showError(ErrorMessage.appIdIsEmpty))
             return
         }
         
-        let user = interactor.getCurrentUserOrCreateEmpty()
+        guard interactor.getCurrentUser() != nil else {
+            router.performAction(.showError(ErrorMessage.userIsEmpty))
+            return
+        }
         
-        let hostType = interactor.getCurrentHostType() ?? .prod
-        router.performAction(.goToMain(user, appId, hostType))
+        router.performAction(.goToMain)
+    }
+    
+    private func startAnonymous() {
+        interactor.registerAnonymousUser()
+        
+        router.performAction(.goToMain)
     }
     
     private enum ErrorMessage {
