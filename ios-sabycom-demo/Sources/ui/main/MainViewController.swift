@@ -17,7 +17,7 @@ class MainViewController: UIViewController {
     private let notificationService: NotificationService
     
     private lazy var badgeLabel: UILabel = {
-        let label = UILabel(frame: CGRect(x: 10, y: -10, width: 20, height: 20))
+        let label = UILabel(frame: CGRect(x: 20, y: 0, width: 20, height: 20))
         label.layer.cornerRadius = label.bounds.size.height / 2
         label.textAlignment = .center
         label.layer.masksToBounds = true
@@ -87,7 +87,7 @@ class MainViewController: UIViewController {
     }
     
     private func createRightBarButtonItem(){
-        let rightButton = UIButton(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
+        let rightButton = UIButton(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
         rightButton.setImage(UIImage(named: "saby_logo"), for: .normal)
         rightButton.addTarget(self, action: #selector(onSabycom(_:)), for: .touchUpInside)
         rightButton.addSubview(badgeLabel)

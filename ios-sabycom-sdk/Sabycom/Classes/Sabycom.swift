@@ -61,9 +61,9 @@ public class Sabycom {
     }
     
     /// Подписаться на получение push-сообщений
-    /// - Parameter token: Apns токен
-    public class func registerForPushNotifications(with token: String) {
-        instance.registerForPushNotifications(with: token)
+    /// - Parameter deviceToken: Apns токен
+    public class func registerForPushNotifications(with deviceToken: Data, tokenType: SabycomAPNSTokenType = .prod) {
+        instance.registerForPushNotifications(with: deviceToken, tokenType: tokenType)
     }
     
     /// Отписаться от получения push-сообщений
@@ -144,7 +144,9 @@ private class SabycomImpl {
         return unreadMessagesService.unreadMessagesCount
     }
     
-    func registerForPushNotifications(with token: String) {
+    func registerForPushNotifications(with deviceToken: Data, tokenType: SabycomAPNSTokenType) {
+        let tokenString = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
+        let token = SabycomPushToken(tokenString: tokenString, tokenType: tokenType)
         viewModel.pushToken = token
         userService.pushToken = token
     }

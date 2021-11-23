@@ -9,7 +9,7 @@ import Foundation
 
 protocol UserService {
     var appId: String? { get set }
-    var pushToken: String? { get set }
+    var pushToken: SabycomPushToken? { get set }
     
     func registerUser(_ user: SabycomUser)
     func registerAnonymousUser() -> SabycomUser
@@ -38,7 +38,7 @@ class UserServiceImpl: UserService {
         }
     }
     
-    var pushToken: String? {
+    var pushToken: SabycomPushToken? {
         set {
             if _pushToken != newValue {
                 _pushToken = newValue
@@ -61,7 +61,7 @@ class UserServiceImpl: UserService {
         }
     }
     
-    private var _pushToken: String? {
+    private var _pushToken: SabycomPushToken? {
         didSet {
             sendUserData()
         }

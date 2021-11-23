@@ -10,5 +10,5 @@ import Foundation
 struct SabycomViewModel {
     var appId: String?
     var user: SabycomUser?
-    var pushToken: String?
+    var pushToken: SabycomPushToken?
 }
