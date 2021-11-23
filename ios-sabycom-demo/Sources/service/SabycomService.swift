@@ -13,6 +13,7 @@ protocol SabycomService {
     var unreadConversationCount: Int { get }
     
     func show(on viewController: UIViewController)
+    func registerAnonymousUser()
     func configureSabycom()
     func destroySabycom()
     
@@ -75,6 +76,10 @@ class SabycomServiceImpl: SabycomService {
         if let notificationServiceObserver = notificationServiceObserver {
             NotificationCenter.default.removeObserver(notificationServiceObserver)
         }
+    }
+    
+    func registerAnonymousUser() {
+        Sabycom.registerAnonymousUser()
     }
     
     func show(on viewController: UIViewController) {
