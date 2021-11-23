@@ -10,7 +10,7 @@ import UIKit
 import UserNotifications
 
 protocol NotificationService {
-    var token: String { get }
+    var deviceToken: Data? { get }
     
     func registerForRemoteNotifications()
     func unregisterFromRemoteNotifications()
@@ -23,7 +23,7 @@ class NotificationServiceImpl: NSObject, NotificationService, UNUserNotification
         DIContainer.shared.resolve(type: SabycomService.self)!
     }
     
-    private (set) var token: String = "" {
+    private (set) var deviceToken: Data? {
         didSet {
             NotificationCenter.default.post(name: .NotificationServiceDidChange, object: nil)
         }
@@ -56,7 +56,7 @@ class NotificationServiceImpl: NSObject, NotificationService, UNUserNotification
     //MARK: - Remote Notification Callbacks -
     
     func didRegisterForRemoteNotifications(with deviceToken: Data){
-        token = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
+        self.deviceToken = deviceToken
     }
     
     func didFailToRegisterForRemoteNotifications(with error: Error) {
