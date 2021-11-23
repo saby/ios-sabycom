@@ -15,7 +15,7 @@ protocol ConfigurationRouter: AnyObject {
 }
 
 enum ConfigurationRouterAction {
-    case goToMain(SabycomUser, String, SabycomHost.HostType)
+    case goToMain
     case createOrEditUser
     case showError(String)
 }
@@ -29,8 +29,8 @@ class SabycomConfigurationRouterImpl: ConfigurationRouter {
     
     func performAction(_ action: ConfigurationRouterAction) {
         switch action {
-        case .goToMain(let user, let appId, let hostType):
-            goToMain(user, appId: appId, hostType: hostType)
+        case .goToMain:
+            goToMain()
         case .createOrEditUser:
             createOrEditUser()
         case .showError(let errorMessage):
@@ -38,7 +38,7 @@ class SabycomConfigurationRouterImpl: ConfigurationRouter {
         }
     }
     
-    private func goToMain(_ user: SabycomUser, appId: String, hostType: SabycomHost.HostType){
+    private func goToMain(){
         let controller = MainViewController()
         navigationController?.pushViewController(controller, animated: true)
     }

@@ -14,10 +14,14 @@ class ConfigurationInteractor {
     
     private let configurationService: ConfigurationService
     
+    private let sabycomService: SabycomService
+    
     init(userStorage: UserStorage = DIContainer.shared.resolve(type: UserStorage.self)!,
-         configurationService: ConfigurationService = DIContainer.shared.resolve(type: ConfigurationService.self)!) {
+         configurationService: ConfigurationService = DIContainer.shared.resolve(type: ConfigurationService.self)!,
+         sabycomService: SabycomService = DIContainer.shared.resolve(type: SabycomService.self)!) {
         self.userStorage = userStorage
         self.configurationService = configurationService
+        self.sabycomService = sabycomService
     }
     
     func saveAppId(_ appId: String) {
@@ -40,21 +44,11 @@ class ConfigurationInteractor {
         return userStorage.currentUser
     }
     
-    func getCurrentUserOrCreateEmpty() -> SabycomUser {
-        guard let user = userStorage.currentUser else {
-            let userId = UUID().uuidString
-            
-            let user = SabycomUser(uuid: userId)
-            userStorage.saveUser(user)
-            
-            return user
-        }
-        return user
-    }
-    
     func deleteCurrentUser() {
         userStorage.deleteCurrentUser()
     }
     
-    
+    func registerAnonymousUser() {
+        sabycomService.registerAnonymousUser()
+    }
 }

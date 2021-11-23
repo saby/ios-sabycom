@@ -8,16 +8,15 @@
 import Foundation
 
 protocol UserService {
-    var user: SabycomUser? { get set }
     var appId: String? { get set }
     var pushToken: String? { get set }
     
-    func updateUser()
+    func registerUser(_ user: SabycomUser)
+    func registerAnonymousUser() -> SabycomUser
 }
 
 class UserServiceImpl: UserService {
-    
-    var user: SabycomUser? {
+    private (set) var user: SabycomUser? {
         set {
             if _user != newValue {
                 _user = newValue
@@ -52,29 +51,54 @@ class UserServiceImpl: UserService {
     
     private var _user: SabycomUser? {
         didSet {
-            updateUser()
+            sendUserData()
         }
     }
     
     private var _appId: String? {
         didSet {
-            updateUser()
+            sendUserData()
         }
     }
     
     private var _pushToken: String? {
         didSet {
-            updateUser()
+            sendUserData()
         }
     }
     
     private let api: Api
+    private let userStorage: UserStorage
     
-    init(api: Api) {
+    init(api: Api, userStorage: UserStorage) {
         self.api = api
+        self.userStorage = userStorage
     }
     
-    func updateUser() {
+    func registerUser(_ user: SabycomUser) {
+        self.user = user
+        
+        userStorage.deleteAnonymousUser()
+    }
+    
+    func registerAnonymousUser() -> SabycomUser {
+        guard let anonymousUser = userStorage.anonymousUser else {
+            let userId = UUID().uuidString
+            
+            let user = SabycomUser(uuid: userId)
+            userStorage.saveAnonymousUser(user)
+            
+            self.user = user
+            
+            return user
+        }
+        
+        self.user = anonymousUser
+        
+        return anonymousUser
+    }
+    
+    private func sendUserData() {
         if let user = user, let appId = appId {
             api.registerUser(user, channedUUID: appId, pushToken: pushToken, completion: nil)
         }

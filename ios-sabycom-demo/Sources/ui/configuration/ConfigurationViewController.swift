@@ -137,6 +137,21 @@ class ConfigurationViewController: UIViewController, ConfigurationView {
         return button
     }()
     
+    private lazy var startAnonymousButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.clipsToBounds = true
+        button.contentEdgeInsets = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        button.addTarget(self, action: #selector(goToMainAsAnonymous(_:)), for: .touchUpInside)
+        button.setTitle("Анонимный пользователь", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.setBackgroundImage(Constants.accentColor.withAlphaComponent(0.3).image(), for: .highlighted)
+        button.layer.cornerRadius = Constants.startButtonHeight / 2
+        button.layer.borderColor = Constants.accentColor.cgColor
+        button.layer.borderWidth = 2
+        return button
+    }()
+    
     var presenter: ConfigurationPresenter!
     
     var viewDidLoadHandler: (() -> Void)?
@@ -146,6 +161,7 @@ class ConfigurationViewController: UIViewController, ConfigurationView {
     var onCreateUserClicked: (() -> Void)?
     var onDeleteUserClicked: (() -> Void)?
     var onStartClicked: (() -> Void)?
+    var onStartAnonymousClicked: (() -> Void)?
     var onHostChanged: ((SabycomHost.HostType) -> Void)?
     var onAppIdChanged: ((String) -> Void)?
     
@@ -241,12 +257,20 @@ class ConfigurationViewController: UIViewController, ConfigurationView {
         ])
         
         view.addSubview(startButton)
+        view.addSubview(startAnonymousButton)
         view.addSubview(serverPickerView)
         
         NSLayoutConstraint.activate([
             startButton.heightAnchor.constraint(equalToConstant: Constants.startButtonHeight),
             startButton.topAnchor.constraint(equalTo: userStackView.bottomAnchor, constant: Constants.startButtonTopMargin),
-            startButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+            startButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            startButton.widthAnchor.constraint(equalTo: startAnonymousButton.widthAnchor)
+        ])
+        
+        NSLayoutConstraint.activate([
+            startAnonymousButton.heightAnchor.constraint(equalToConstant: Constants.startButtonHeight),
+            startAnonymousButton.topAnchor.constraint(equalTo: startButton.bottomAnchor, constant: Constants.startButtonTopMargin),
+            startAnonymousButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
         
         NSLayoutConstraint.activate([
@@ -274,6 +298,11 @@ class ConfigurationViewController: UIViewController, ConfigurationView {
     @objc
     private func goToMain(_ sender: UIButton) {
         onStartClicked?()
+    }
+    
+    @objc
+    private func goToMainAsAnonymous(_ sender: UIButton) {
+        onStartAnonymousClicked?()
     }
 }
 
