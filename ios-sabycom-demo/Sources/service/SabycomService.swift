@@ -26,7 +26,7 @@ class SabycomServiceImpl: SabycomService {
     }
     
     private let configurationService: ConfigurationService
-    private let userStorage: UserStorage
+    private var userStorage: UserStorage
     private let notififationService: NotificationService
     
     private var configurationServiceObserver: Any?
@@ -79,6 +79,7 @@ class SabycomServiceImpl: SabycomService {
     }
     
     func registerAnonymousUser() {
+        userStorage.registeredAsAnonymous = true
         Sabycom.registerAnonymousUser()
     }
     
@@ -89,7 +90,12 @@ class SabycomServiceImpl: SabycomService {
     
     func configureSabycom() {
         initializeSabycom()
-        registerSabycomUser()
+        
+        if userStorage.registeredAsAnonymous {
+            registerAnonymousUser()
+        } else {
+            registerSabycomUser()
+        }
         registerSabycomNotifications()
     }
     
@@ -118,8 +124,14 @@ class SabycomServiceImpl: SabycomService {
     }
     
     private func registerSabycomNotifications() {
-        if !notififationService.token.isEmpty {
-            Sabycom.registerForPushNotifications(with: notififationService.token)
+        if let deviceToken = notififationService.deviceToken {
+            var tokenType = SabycomAPNSTokenType.prod
+            
+            #if DEBUG
+                tokenType = .sandbox
+            #endif
+            
+            Sabycom.registerForPushNotifications(with: deviceToken, tokenType: tokenType)
         }
     }
 }

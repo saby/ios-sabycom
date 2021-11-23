@@ -11,6 +11,8 @@ import Sabycom
 protocol UserStorage {
     var currentUser: SabycomUser? { get }
     
+    var registeredAsAnonymous: Bool { get set }
+    
     func saveUser(_ user: SabycomUser)
     
     func deleteCurrentUser()
@@ -20,6 +22,8 @@ class UserStorageImpl: UserStorage {
     private enum Constants {
         enum Keys {
             static let currentUser = "SabycomConfigurationInteractor.CurrentUser"
+            
+            static let registeredAsAnonymous = "SabycomUserStorage.RegisteredAsAnonymous"
         }
     }
     
@@ -32,9 +36,19 @@ class UserStorageImpl: UserStorage {
         return user
     }
     
+    var registeredAsAnonymous: Bool {
+        get {
+            UserDefaults.standard.bool(forKey: Constants.Keys.registeredAsAnonymous)
+        }
+        set {
+            UserDefaults.standard.set(true, forKey: Constants.Keys.registeredAsAnonymous)
+        }
+    }
+    
     func saveUser(_ user: SabycomUser) {
         if let data = try? JSONEncoder().encode(user) {
             UserDefaults.standard.set(data, forKey: Constants.Keys.currentUser)
+            registeredAsAnonymous = false
             userDidChange()
         }
     }
