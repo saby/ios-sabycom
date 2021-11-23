@@ -51,4 +51,8 @@ class ConfigurationInteractor {
     func registerAnonymousUser() {
         sabycomService.registerAnonymousUser()
     }
+    
+    func clearAnonymousUser() {
+        sabycomService.clearAnonymousUser()
+    }
 }
