@@ -14,6 +14,7 @@ protocol SabycomService {
     
     func show(on viewController: UIViewController)
     func registerAnonymousUser()
+    func clearAnonymousUser()
     func configureSabycom()
     func destroySabycom()
     
@@ -81,6 +82,10 @@ class SabycomServiceImpl: SabycomService {
     func registerAnonymousUser() {
         userStorage.registeredAsAnonymous = true
         Sabycom.registerAnonymousUser()
+    }
+    
+    func clearAnonymousUser() {
+        userStorage.registeredAsAnonymous = false
     }
     
     func show(on viewController: UIViewController) {

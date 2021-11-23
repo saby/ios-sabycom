@@ -102,6 +102,8 @@ class ConfigurationPresenter {
             return
         }
         
+        interactor.clearAnonymousUser()
+        
         router.performAction(.goToMain)
     }
     
