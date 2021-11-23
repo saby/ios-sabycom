@@ -1,23 +1,8 @@
-#
-# Be sure to run `pod lib lint Sabycom.podspec' to ensure this is a
-# valid spec before submitting.
-#
-# Any lines starting with a # are optional, but their use is encouraged
-# To learn more about a Podspec see https://guides.cocoapods.org/syntax/podspec.html
-#
-
 Pod::Spec.new do |s|
   s.name             = 'Sabycom'
   s.version          = '21.6219'
-  s.summary          = 'Виджет чата поддержки для мобильных приложений.'
-
-# This description is used to generate tags and improve search results.
-#   * Think: What does it do? Why did you write it? What is the focus?
-#   * Try to keep it short, snappy and to the point.
-#   * Write the description between the DESC delimiters below.
-#   * Finally, don't worry about the indent, CocoaPods strips it!
-
-  s.description      = 'Виджет чата поддержки для мобильных приложений'
+  s.summary          = 'Виджет чата поддержки.'
+  s.description      = 'Виджет чата поддержки СБИС.'
 
   s.homepage         = 'https://github.com/saby/ios-sabycom'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
@@ -26,10 +11,11 @@ Pod::Spec.new do |s|
 
   s.ios.deployment_target = '12.2'
 
+  s.swift_versions = ['5.4', '5.5']
   s.source_files = 'Sabycom/Classes/**/*'
   
-   s.resource_bundles = {
-     'Sabycom' => ['Sabycom/Assets/**/*']
-   }
+  s.resource_bundles = {
+    'Sabycom' => ['Sabycom/Assets/**/*']
+  }
 
 end
