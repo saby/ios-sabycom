@@ -35,15 +35,21 @@ class SabycomViewController: UIViewController, SabycomView {
         }
     }
     
-   // MARK: - Private properties
+    // MARK: - Private properties
+    
+    private var documentInteractionController: UIDocumentInteractionController?
+    
+    private var attachmentLoadingTask: URLSessionDataTask?
+    private var attachmentLoadingTaskObservation: NSKeyValueObservation?
+    
+    private var delayProgressStart: DispatchWorkItem?
+    
     private var _webView: WKWebView? = nil {
         didSet {
             _webView?.navigationDelegate = self
             _webView?.uiDelegate = self
         }
     }
-    
-    private var popupWebView: WKWebView?
     
     private lazy var loadIndicator: UIActivityIndicatorView = {
         let loadIndicator = UIActivityIndicatorView(style: .gray)
@@ -63,18 +69,28 @@ class SabycomViewController: UIViewController, SabycomView {
         return loadIndicator
     }()
     
-    private lazy var popupWebViewContainer: UIView = {
+    private lazy var attachmentProgressContainerView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .black.withAlphaComponent(0.5)
         return view
     }()
     
-    private lazy var closePopupButton: UIButton = {
+    private lazy var attachmentProgressLabel: UILabel = {
+        let view = UILabel()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.textColor = .white
+        view.font = .systemFont(ofSize: 20)
+        view.textAlignment = .center
+        view.numberOfLines = 2
+        return view
+    }()
+    
+    private lazy var closeAttachmentProgressContainerButton: UIButton = {
         let button = UIButton(type: .custom)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage.named("ic_close"), for: .normal)
-        button.addTarget(self, action: #selector(onClosePopup(_:)), for: .touchUpInside)
+        button.addTarget(self, action: #selector(onCloseAttachmentDownloadingProgress(_:)), for: .touchUpInside)
         return button
     }()
     
@@ -106,6 +122,11 @@ class SabycomViewController: UIViewController, SabycomView {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        attachmentLoadingTask?.cancel()
+        attachmentLoadingTaskObservation?.invalidate()
     }
     
     //MARK: - SabycomView -
@@ -143,7 +164,7 @@ class SabycomViewController: UIViewController, SabycomView {
         view.backgroundColor = .white
 
         setupViews()
-        setupPopupWebView()
+        setupAttachmentProgressView()
         setupWebView()
         updateViewState()
         
@@ -218,58 +239,38 @@ class SabycomViewController: UIViewController, SabycomView {
         ])
     }
     
-    private func setupPopupWebView() {
-        view.addSubview(popupWebViewContainer)
-        popupWebViewContainer.addSubview(closePopupButton)
+    private func setupAttachmentProgressView() {
+        view.addSubview(attachmentProgressContainerView)
+        attachmentProgressContainerView.addSubview(closeAttachmentProgressContainerButton)
+        attachmentProgressContainerView.addSubview(attachmentProgressLabel)
         
-        popupWebViewContainer.isHidden = true
+        attachmentProgressContainerView.isHidden = true
         
         NSLayoutConstraint.activate([
-            popupWebViewContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            popupWebViewContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            popupWebViewContainer.topAnchor.constraint(equalTo: view.topAnchor),
-            popupWebViewContainer.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            attachmentProgressContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            attachmentProgressContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            attachmentProgressContainerView.topAnchor.constraint(equalTo: view.topAnchor),
+            attachmentProgressContainerView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
         
         NSLayoutConstraint.activate([
-            closePopupButton.trailingAnchor.constraint(equalTo: popupWebViewContainer.trailingAnchor),
-            closePopupButton.topAnchor.constraint(equalTo: popupWebViewContainer.topAnchor),
-            closePopupButton.heightAnchor.constraint(equalToConstant: Constants.popupCloseButtonSize),
-            closePopupButton.widthAnchor.constraint(equalToConstant: Constants.popupCloseButtonSize)
+            closeAttachmentProgressContainerButton.trailingAnchor.constraint(equalTo: attachmentProgressContainerView.trailingAnchor),
+            closeAttachmentProgressContainerButton.topAnchor.constraint(equalTo: attachmentProgressContainerView.topAnchor),
+            closeAttachmentProgressContainerButton.heightAnchor.constraint(equalToConstant: Constants.popupCloseButtonSize),
+            closeAttachmentProgressContainerButton.widthAnchor.constraint(equalToConstant: Constants.popupCloseButtonSize)
         ])
-    }
-    
-    private func showPopup(_ popupWebView: WKWebView) {
-        popupWebViewContainer.addSubview(popupWebView)
-        
-        self.popupWebView = popupWebView
-        popupWebView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            popupWebView.widthAnchor.constraint(equalTo: popupWebViewContainer.widthAnchor, constant: -2 * Constants.popupWebViewMargin),
-            popupWebView.centerXAnchor.constraint(equalTo: popupWebViewContainer.centerXAnchor),
-            popupWebView.centerYAnchor.constraint(equalTo: popupWebViewContainer.centerYAnchor),
-            popupWebView.widthAnchor.constraint(equalTo: popupWebView.heightAnchor, multiplier: Constants.popupWebViewRatio, constant: 0)
+            attachmentProgressLabel.leadingAnchor.constraint(equalTo: attachmentProgressContainerView.leadingAnchor, constant: Constants.popupWebViewMargin),
+            attachmentProgressLabel.trailingAnchor.constraint(equalTo: attachmentProgressContainerView.trailingAnchor, constant: -Constants.popupWebViewMargin),
+            attachmentProgressLabel.centerYAnchor.constraint(equalTo: attachmentProgressContainerView.centerYAnchor)
         ])
-        
-        popupWebViewContainer.alpha = 0
-        popupWebViewContainer.isHidden = false
-        
-        UIView.animate(withDuration: Constants.animationDuration) {
-            self.popupWebViewContainer.alpha = 1
-        }
     }
     
     @objc
-    private func onClosePopup(_ sender: UIButton) {
-        UIView.animate(withDuration: Constants.animationDuration, delay: 0, options: []) {
-            self.popupWebViewContainer.alpha = 0
-        } completion: { _ in
-            self.popupWebViewContainer.isHidden = true
-            
-            self.popupWebView?.removeFromSuperview()
-            self.popupWebView = nil
-        }
+    private func onCloseAttachmentDownloadingProgress(_ sender: UIButton) {
+        cancelAttachmentDownloading()
+        hideAttachmentDownloadingProgress()
     }
     
     // MARK: - WebPage helpers
@@ -376,6 +377,100 @@ class SabycomViewController: UIViewController, SabycomView {
             webViewLoadIndicator.stopAnimating()
         }
     }
+    
+    // MARK: - Attachments downloading -
+    
+    private func share(url: URL?) {
+        if let url = url {
+            
+            updateProgressLabel(with: 0)
+            showAttachmentDownloadingProgress()
+            cancelAttachmentDownloading()
+            
+            let task = URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
+                guard let self = self, let data = data, error == nil else {
+                    DispatchQueue.main.async { [weak self] in
+                        self?.hideAttachmentDownloadingProgress()
+                    }
+                    return
+                }
+                
+                let tmpURL = FileManager.default.temporaryDirectory
+                    .appendingPathComponent(response?.suggestedFilename ?? "fileName.png")
+                
+                do {
+                    try data.write(to: tmpURL)
+                    DispatchQueue.main.async { [weak self] in
+                        guard let self = self else {
+                            return
+                        }
+                        self.hideAttachmentDownloadingProgress()
+                        self.showDocumentInteractionController(with: tmpURL)
+                    }
+                } catch {
+                    print(error)
+                }
+
+            }
+            
+            attachmentLoadingTaskObservation = task.progress.observe(\.fractionCompleted) { [weak self] progress, _ in
+                DispatchQueue.main.async { [weak self] in
+                    self?.updateProgressLabel(with: progress.fractionCompleted)
+                }
+            }
+            
+            attachmentLoadingTask = task
+            attachmentLoadingTask?.resume()
+        }
+    }
+    
+    private func showDocumentInteractionController(with url: URL) {
+        let documentInteractionController = UIDocumentInteractionController()
+        documentInteractionController.url = url
+        documentInteractionController.uti = url.typeIdentifier ?? "public.data, public.content"
+        documentInteractionController.name = url.localizedName ?? url.lastPathComponent
+        documentInteractionController.presentOptionsMenu(from: view.frame, in: view, animated: true)
+        
+        self.documentInteractionController = documentInteractionController
+    }
+    
+    private func updateProgressLabel(with progress: Double) {
+        attachmentProgressLabel.text = "Загрузка\n\(Int(progress * 100))%"
+    }
+    
+    private func cancelAttachmentDownloading() {
+        attachmentLoadingTask?.cancel()
+        attachmentLoadingTask = nil
+    }
+    
+    private func showAttachmentDownloadingProgress() {
+        let delayStart = DispatchWorkItem { [weak self] in
+            guard let self = self else {
+                return
+            }
+            self.attachmentProgressContainerView.alpha = 0
+            self.attachmentProgressContainerView.isHidden = false
+            
+            UIView.animate(withDuration: Constants.animationDuration) {
+                self.attachmentProgressContainerView.alpha = 1
+            }
+        }
+        self.delayProgressStart = delayStart
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2), execute: delayStart)
+    }
+    
+    private func hideAttachmentDownloadingProgress() {
+        delayProgressStart?.cancel()
+        delayProgressStart = nil
+        
+        if !attachmentProgressContainerView.isHidden {
+            UIView.animate(withDuration: Constants.animationDuration, delay: 0, options: []) {
+                self.attachmentProgressContainerView.alpha = 0
+            } completion: { _ in
+                self.attachmentProgressContainerView.isHidden = true
+            }
+        }
+    }
 }
 
 extension SabycomViewController: SabycomWidgetJSHandlerDelegate {
@@ -430,10 +525,10 @@ extension SabycomViewController: WKUIDelegate {
             return webView
         }
 
-        let popupWebView = WKWebView(frame: view.bounds, configuration: configuration)
-        showPopup(popupWebView)
-        return popupWebView
-      }
+        share(url: navigationAction.request.url)
+        
+        return WKWebView(frame: view.bounds, configuration: configuration)
+    }
 }
 
 extension SabycomViewController: UIScrollViewDelegate {
@@ -470,3 +565,11 @@ private struct WebResponse {
     
 }
 
+extension URL {
+    var typeIdentifier: String? {
+        return (try? resourceValues(forKeys: [.typeIdentifierKey]))?.typeIdentifier
+    }
+    var localizedName: String? {
+        return (try? resourceValues(forKeys: [.localizedNameKey]))?.localizedName
+    }
+}
