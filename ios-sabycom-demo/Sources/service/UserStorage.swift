@@ -41,7 +41,7 @@ class UserStorageImpl: UserStorage {
             UserDefaults.standard.bool(forKey: Constants.Keys.registeredAsAnonymous)
         }
         set {
-            UserDefaults.standard.set(true, forKey: Constants.Keys.registeredAsAnonymous)
+            UserDefaults.standard.set(newValue, forKey: Constants.Keys.registeredAsAnonymous)
         }
     }
     
