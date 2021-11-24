@@ -36,6 +36,8 @@ public class Sabycom {
     /// Уничтожает компонент. После вызова этой функции для работы компонента нужно заново вызвать initialize(apikey:) и registerUser(_:)
     public class func destroy() {
         _instance = nil
+        
+        SabycomNotificationView.destroy()
     }
     
     /// Показывает виджет. Перед вызовом функции нужно обязяательно вызвать initialize(apikey:) и registerUser(_:) или registerAnonymousUser()

@@ -114,6 +114,10 @@ class SabycomNotificationView: UIView {
         instance?.hide()
     }
     
+    class func destroy() {
+        instance = nil
+    }
+    
     private func update(with model: SabycomNotificationModel) {
         self.model = model
         updateContent()
