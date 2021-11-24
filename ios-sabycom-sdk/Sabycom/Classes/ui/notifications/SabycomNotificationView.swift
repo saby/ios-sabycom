@@ -8,9 +8,11 @@
 import UIKit
 
 class SabycomNotificationView: UIView {
+    private static var instance: SabycomNotificationView?
+    
     private let imagesService: ImagesService
-    private let model: SabycomNotificationModel
-    private weak var parentView: UIView?
+    
+    private var model: SabycomNotificationModel?
     
     private weak var imageLoadTask: ImageLoadTask?
     
@@ -84,29 +86,57 @@ class SabycomNotificationView: UIView {
         return closeButton
     }()
     
-    init(imagesService: ImagesService, model: SabycomNotificationModel, parentView: UIView) {
-        self.imagesService = imagesService
-        self.model = model
-        self.parentView = parentView
-        
-        super.init(frame: .zero)
-        
-        initializeViews()
-        updateContent()
-    }
-    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func show() {
-        alpha = 0
+    private init(imagesService: ImagesService) {
+        self.imagesService = imagesService
         
-        setNeedsLayout()
-        layoutIfNeeded()
+        super.init(frame: .zero)
         
-        UIView.animate(withDuration: Constants.animationDuration) {
-            self.alpha = 1
+        initializeViews()
+        initializeGestureRecognizer()
+    }
+    
+    class func show(imagesService: ImagesService, model: SabycomNotificationModel, parentView: UIView) {
+        if model.unreadCount > 0 {
+            let instance = SabycomNotificationView.instance ?? SabycomNotificationView(imagesService: imagesService)
+            
+            self.instance = instance
+            
+            instance.update(with: model)
+            instance.show(in: parentView)
+        }
+    }
+    
+    class func hide() {
+        instance?.hide()
+    }
+    
+    private func update(with model: SabycomNotificationModel) {
+        self.model = model
+        updateContent()
+    }
+    
+    private func show(in parentView: UIView) {
+        if superview == nil {
+            parentView.addSubview(self)
+            
+            NSLayoutConstraint.activate([
+                leadingAnchor.constraint(equalTo: parentView.safeAreaLayoutGuide.leadingAnchor),
+                trailingAnchor.constraint(equalTo: parentView.safeAreaLayoutGuide.trailingAnchor),
+                bottomAnchor.constraint(equalTo: parentView.safeAreaLayoutGuide.bottomAnchor)
+            ])
+            
+            alpha = 0
+            
+            setNeedsLayout()
+            layoutIfNeeded()
+            
+            UIView.animate(withDuration: Constants.animationDuration) {
+                self.alpha = 1
+            }
         }
     }
     
@@ -125,90 +155,94 @@ class SabycomNotificationView: UIView {
     private func initializeViews() {
         self.translatesAutoresizingMaskIntoConstraints = false
         
-        if let parentView = parentView {
-            parentView.addSubview(self)
-            
-            addSubview(containerView)
-            addSubview(closeButton)
-            
-            containerView.addSubview(avatarView)
-            containerView.addSubview(titleLabel)
-            containerView.addSubview(messageLabel)
-            containerView.addSubview(messageDateLabel)
-            containerView.addSubview(unreadCountLabel)
-            
-            NSLayoutConstraint.activate([
-                leadingAnchor.constraint(equalTo: parentView.safeAreaLayoutGuide.leadingAnchor),
-                trailingAnchor.constraint(equalTo: parentView.safeAreaLayoutGuide.trailingAnchor),
-                bottomAnchor.constraint(equalTo: parentView.safeAreaLayoutGuide.bottomAnchor)
-            ])
-            
-            NSLayoutConstraint.activate([
-                containerView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.containerMarginHorizontal),
-                containerView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Constants.containerMarginHorizontal),
-                containerView.topAnchor.constraint(equalTo: topAnchor, constant: Constants.containerMarginTop),
-                containerView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -Constants.containerMarginBottom)
-            ])
-            
-            NSLayoutConstraint.activate([
-                avatarView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: Constants.containerPaddingHorizontal),
-                avatarView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: Constants.containerPaddingTop),
-                avatarView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -Constants.containerPaddingBottom),
-                avatarView.widthAnchor.constraint(equalToConstant: Constants.avatarSize),
-                avatarView.heightAnchor.constraint(equalToConstant: Constants.avatarSize)
-            ])
-            
-            NSLayoutConstraint.activate([
-                titleLabel.leadingAnchor.constraint(equalTo: avatarView.trailingAnchor, constant: Constants.labelsPaddingLeft),
-                titleLabel.trailingAnchor.constraint(equalTo: messageDateLabel.leadingAnchor, constant: -Constants.containerPaddingHorizontal),
-                titleLabel.bottomAnchor.constraint(equalTo: avatarView.centerYAnchor)
-            ])
-            
-            NSLayoutConstraint.activate([
-                messageDateLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -Constants.containerPaddingHorizontal),
-                messageDateLabel.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor)
-            ])
-            
-            NSLayoutConstraint.activate([
-                messageLabel.leadingAnchor.constraint(equalTo: avatarView.trailingAnchor, constant: Constants.labelsPaddingLeft),
-                messageLabel.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
-                messageLabel.topAnchor.constraint(equalTo: avatarView.centerYAnchor)
-            ])
-            
-            NSLayoutConstraint.activate([
-                unreadCountLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -Constants.containerPaddingHorizontal),
-                unreadCountLabel.centerYAnchor.constraint(equalTo: messageLabel.centerYAnchor),
-                unreadCountLabel.widthAnchor.constraint(greaterThanOrEqualTo: unreadCountLabel.heightAnchor),
-                unreadCountLabel.heightAnchor.constraint(equalToConstant: Constants.unreadCountHeight)
-            ])
-            
-            NSLayoutConstraint.activate([
-                closeButton.centerXAnchor.constraint(equalTo: containerView.rightAnchor),
-                closeButton.centerYAnchor.constraint(equalTo: containerView.topAnchor, constant: Constants.closeButtonMarginTop),
-                closeButton.widthAnchor.constraint(equalToConstant: Constants.closeButtonSize),
-                closeButton.heightAnchor.constraint(equalToConstant: Constants.closeButtonSize)
-            ])
-        }
+        addSubview(containerView)
+        addSubview(closeButton)
+        
+        containerView.addSubview(avatarView)
+        containerView.addSubview(titleLabel)
+        containerView.addSubview(messageLabel)
+        containerView.addSubview(messageDateLabel)
+        containerView.addSubview(unreadCountLabel)
+        
+        NSLayoutConstraint.activate([
+            containerView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.containerMarginHorizontal),
+            containerView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Constants.containerMarginHorizontal),
+            containerView.topAnchor.constraint(equalTo: topAnchor, constant: Constants.containerMarginTop),
+            containerView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -Constants.containerMarginBottom)
+        ])
+        
+        NSLayoutConstraint.activate([
+            avatarView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: Constants.containerPaddingHorizontal),
+            avatarView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: Constants.containerPaddingTop),
+            avatarView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -Constants.containerPaddingBottom),
+            avatarView.widthAnchor.constraint(equalToConstant: Constants.avatarSize),
+            avatarView.heightAnchor.constraint(equalToConstant: Constants.avatarSize)
+        ])
+        
+        NSLayoutConstraint.activate([
+            titleLabel.leadingAnchor.constraint(equalTo: avatarView.trailingAnchor, constant: Constants.labelsPaddingLeft),
+            titleLabel.trailingAnchor.constraint(equalTo: messageDateLabel.leadingAnchor, constant: -Constants.containerPaddingHorizontal),
+            titleLabel.bottomAnchor.constraint(equalTo: avatarView.centerYAnchor)
+        ])
+        
+        NSLayoutConstraint.activate([
+            messageDateLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -Constants.containerPaddingHorizontal),
+            messageDateLabel.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor)
+        ])
+        
+        NSLayoutConstraint.activate([
+            messageLabel.leadingAnchor.constraint(equalTo: avatarView.trailingAnchor, constant: Constants.labelsPaddingLeft),
+            messageLabel.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
+            messageLabel.topAnchor.constraint(equalTo: avatarView.centerYAnchor)
+        ])
+        
+        NSLayoutConstraint.activate([
+            unreadCountLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -Constants.containerPaddingHorizontal),
+            unreadCountLabel.centerYAnchor.constraint(equalTo: messageLabel.centerYAnchor),
+            unreadCountLabel.widthAnchor.constraint(greaterThanOrEqualTo: unreadCountLabel.heightAnchor),
+            unreadCountLabel.heightAnchor.constraint(equalToConstant: Constants.unreadCountHeight)
+        ])
+        
+        NSLayoutConstraint.activate([
+            closeButton.centerXAnchor.constraint(equalTo: containerView.rightAnchor),
+            closeButton.centerYAnchor.constraint(equalTo: containerView.topAnchor, constant: Constants.closeButtonMarginTop),
+            closeButton.widthAnchor.constraint(equalToConstant: Constants.closeButtonSize),
+            closeButton.heightAnchor.constraint(equalToConstant: Constants.closeButtonSize)
+        ])
+    }
+    
+    private func initializeGestureRecognizer() {
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(onOpenSabycom))
+        addGestureRecognizer(tapRecognizer)
     }
     
     private func updateContent() {
         imageLoadTask?.cancel()
         
-        titleLabel.text = model.title
-        messageLabel.text = model.body
-        
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd MMM"
-        
-        messageDateLabel.text = dateFormatter.string(from: model.messageDate)
-        
-        unreadCountLabel.isHidden = Sabycom.unreadConversationCount <= 0
-        unreadCountLabel.text = "\(Sabycom.unreadConversationCount)"
-        
-        if let url = URL(string: model.operatorPhoto) {
-            imageLoadTask = imagesService.getImage(from: url) { [weak self] image in
-                self?.avatarView.image = image
+        if let model = model {
+            titleLabel.text = model.title
+            messageLabel.text = model.body.isEmpty ? " " : model.body
+            
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "dd MMM"
+            
+            messageDateLabel.text = dateFormatter.string(from: model.messageDate)
+            
+            unreadCountLabel.isHidden = Sabycom.unreadConversationCount <= 0
+            unreadCountLabel.text = "\(Sabycom.unreadConversationCount)"
+            
+            if let url = URL(string: model.operatorPhoto) {
+                imageLoadTask = imagesService.getImage(from: url) { [weak self] image in
+                    self?.avatarView.image = image
+                }
             }
+        }
+    }
+    
+    @objc private func onOpenSabycom() {
+        hide()
+        if let viewController = UIApplication.shared.windows.first?.rootViewController {
+            Sabycom.show(on: viewController)
         }
     }
     

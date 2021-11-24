@@ -170,8 +170,7 @@ private class SabycomImpl {
             }
             unreadMessagesService.updateUnreadMessagesCount(model.unreadCount)
             
-            let view = SabycomNotificationView(imagesService: imagesService, model: model, parentView: parentView)
-            view.show()
+            SabycomNotificationView.show(imagesService: imagesService, model: model, parentView: parentView)
         }
     }
     
@@ -211,6 +210,9 @@ private class SabycomImpl {
 extension SabycomImpl: UnreadMessagesCountObservable {
     func unreadMessagesCountChanged(_ count: Int) {
         DispatchQueue.main.async {
+            if count == 0 {
+                SabycomNotificationView.hide()
+            }
             NotificationCenter.default.post(name: .SabycomUnreadConversationCountDidChange, object: nil)
         }
     }
