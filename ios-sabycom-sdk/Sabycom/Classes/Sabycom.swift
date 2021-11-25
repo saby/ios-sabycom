@@ -36,6 +36,8 @@ public class Sabycom {
     /// Уничтожает компонент. После вызова этой функции для работы компонента нужно заново вызвать initialize(apikey:) и registerUser(_:)
     public class func destroy() {
         _instance = nil
+        
+        SabycomNotificationView.destroy()
     }
     
     /// Показывает виджет. Перед вызовом функции нужно обязяательно вызвать initialize(apikey:) и registerUser(_:) или registerAnonymousUser()
@@ -170,8 +172,7 @@ private class SabycomImpl {
             }
             unreadMessagesService.updateUnreadMessagesCount(model.unreadCount)
             
-            let view = SabycomNotificationView(imagesService: imagesService, model: model, parentView: parentView)
-            view.show()
+            SabycomNotificationView.show(imagesService: imagesService, model: model, parentView: parentView)
         }
     }
     
@@ -211,6 +212,9 @@ private class SabycomImpl {
 extension SabycomImpl: UnreadMessagesCountObservable {
     func unreadMessagesCountChanged(_ count: Int) {
         DispatchQueue.main.async {
+            if count == 0 {
+                SabycomNotificationView.hide()
+            }
             NotificationCenter.default.post(name: .SabycomUnreadConversationCountDidChange, object: nil)
         }
     }
