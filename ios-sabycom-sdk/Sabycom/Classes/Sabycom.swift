@@ -98,7 +98,7 @@ private class SabycomImpl {
     private lazy var unreadMessagesService: UnreadMessagesService = UnreadMessagesServiceImpl(api: api)
     private lazy var imagesService: ImagesService = ImagesServiceImpl(cacheService: ImagesCacheServiceImpl())
     
-    private lazy var controller = SabycomViewController(unreadMessagesService: unreadMessagesService)
+    private weak var controller: UIViewController?
     
     init() {
         unreadMessagesService.registerObserver(self)
@@ -114,8 +114,6 @@ private class SabycomImpl {
         unreadMessagesService.appId = appId
         userService.appId = appId
         hostType = host
-        
-        configureController()
     }
     
     func show(on viewController: UIViewController) {
@@ -123,11 +121,16 @@ private class SabycomImpl {
             return
         }
         
+        guard let controller = createController() else {
+            return
+        }
+        
         viewController.present(controller, animated: true, completion: nil)
     }
     
     func hide() {
-        controller.dismiss(animated: true, completion: nil)
+        controller?.dismiss(animated: true, completion: nil)
+        controller = nil
     }
     
     func registerUser(_ user: SabycomUser) {
@@ -166,7 +169,7 @@ private class SabycomImpl {
     }
 
     func handlePushNotification(info: [AnyHashable: Any], parentView: UIView) {
-        if controller.presentingViewController == nil {
+        if controller?.presentingViewController == nil {
             guard let model = SabycomNotificationModel(userInfo: info) else {
                 return
             }
@@ -179,19 +182,21 @@ private class SabycomImpl {
     private func configure(with user: SabycomUser) {
         viewModel.user = user
         unreadMessagesService.user = user
-        
-        configureController()
     }
     
-    private func configureController() {
-        if let appId = viewModel.appId, !appId.isEmpty, let user = viewModel.user {
-            let host = SabycomHost(hostType: hostType, appId: appId)
-            let interactor = SabycomInteractor(host: host, appId: appId, user: user)
-            let presenter = SabycomPresenter(interactor: interactor, view: controller)
-            controller.presenter = presenter
-            
-            presenter.forceInitialize()
+    private func createController() -> SabycomViewController? {
+        guard let appId = viewModel.appId, !appId.isEmpty, let user = viewModel.user else {
+            return nil
         }
+        
+        let host = SabycomHost(hostType: hostType, appId: appId)
+        let interactor = SabycomInteractor(host: host, appId: appId, user: user)
+        let controller = SabycomViewController(unreadMessagesService: unreadMessagesService)
+        controller.presenter = SabycomPresenter(interactor: interactor, view: controller)
+        
+        self.controller = controller
+        
+        return controller
     }
     
     private func tryGetAppIdAndUser() -> (appId: String, user: SabycomUser)? {
