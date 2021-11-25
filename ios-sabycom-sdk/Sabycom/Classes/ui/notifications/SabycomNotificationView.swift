@@ -100,14 +100,17 @@ class SabycomNotificationView: UIView {
     }
     
     class func show(imagesService: ImagesService, model: SabycomNotificationModel, parentView: UIView) {
-        if model.unreadCount > 0 {
-            let instance = SabycomNotificationView.instance ?? SabycomNotificationView(imagesService: imagesService)
-            
-            self.instance = instance
-            
-            instance.update(with: model)
-            instance.show(in: parentView)
+        guard model.unreadCount > 0 else {
+            print("Нет непрочитанных сообщений. Плашку не показываем")
+            return
         }
+        
+        let instance = SabycomNotificationView.instance ?? SabycomNotificationView(imagesService: imagesService)
+        
+        self.instance = instance
+        
+        instance.update(with: model)
+        instance.show(in: parentView)
     }
     
     class func hide() {
@@ -124,23 +127,26 @@ class SabycomNotificationView: UIView {
     }
     
     private func show(in parentView: UIView) {
-        if superview == nil {
-            parentView.addSubview(self)
-            
-            NSLayoutConstraint.activate([
-                leadingAnchor.constraint(equalTo: parentView.safeAreaLayoutGuide.leadingAnchor),
-                trailingAnchor.constraint(equalTo: parentView.safeAreaLayoutGuide.trailingAnchor),
-                bottomAnchor.constraint(equalTo: parentView.safeAreaLayoutGuide.bottomAnchor)
-            ])
-            
-            alpha = 0
-            
-            setNeedsLayout()
-            layoutIfNeeded()
-            
-            UIView.animate(withDuration: Constants.animationDuration) {
-                self.alpha = 1
-            }
+        guard superview == nil else {
+            print("Плашка уже показывается. Еще раз не показываем")
+            return
+        }
+        
+        parentView.addSubview(self)
+        
+        NSLayoutConstraint.activate([
+            leadingAnchor.constraint(equalTo: parentView.safeAreaLayoutGuide.leadingAnchor),
+            trailingAnchor.constraint(equalTo: parentView.safeAreaLayoutGuide.trailingAnchor),
+            bottomAnchor.constraint(equalTo: parentView.safeAreaLayoutGuide.bottomAnchor)
+        ])
+        
+        alpha = 0
+        
+        setNeedsLayout()
+        layoutIfNeeded()
+        
+        UIView.animate(withDuration: Constants.animationDuration) {
+            self.alpha = 1
         }
     }
     
