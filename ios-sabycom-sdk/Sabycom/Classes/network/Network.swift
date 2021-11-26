@@ -48,6 +48,7 @@ class Network: NetworkDispatcher {
         var headers = headers
         headers["Content-Type"] = "application/json"
         urlRequest.allHTTPHeaderFields = headers
+        urlRequest.httpShouldHandleCookies = false
         
         session.dataTask(with: urlRequest) { (data, response, error) in
             if let error = error {

@@ -11,7 +11,6 @@ protocol SabycomView: AnyObject {
     var didLoadView: (() -> Void)? { get set }
     var viewWillAppear: (() -> Void)? { get set }
     
-    func forceInitialize()
     func startedLoading()
     func load(_ url: URL)
 }
@@ -25,10 +24,6 @@ class SabycomPresenter {
         self.view = view
         
         setViewHandlers()
-    }
-    
-    func forceInitialize() {
-        view?.forceInitialize()
     }
     
     private func setViewHandlers() {
