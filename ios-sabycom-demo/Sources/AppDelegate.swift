@@ -14,6 +14,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     
+    private var unreadMessagesObserver: Any?
+    
     private lazy var notificationService: NotificationService? = {
         DIContainer.shared.resolve(type: NotificationService.self)
     }()
@@ -26,6 +28,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.makeKeyAndVisible()
         
         notificationService?.registerForRemoteNotifications()
+        
+        subscribeUnreadMessagesCount()
         
         return true
     }
@@ -45,7 +49,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
-        application.applicationIconBadgeNumber = 0
+        application.applicationIconBadgeNumber = Sabycom.unreadConversationCount
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
@@ -63,6 +67,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     //MARK: - Private -
+    
+    private func subscribeUnreadMessagesCount() {
+        unreadMessagesObserver = NotificationCenter.default.addObserver(
+            forName: .SabycomUnreadConversationCountDidChange,
+            object: nil,
+            queue: .main) { _ in
+                UIApplication.shared.applicationIconBadgeNumber = Sabycom.unreadConversationCount
+            }
+    }
 
     private func registerDependencies() {
         let container = DIContainer.shared
@@ -83,6 +96,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         return navigationController
     }
-    
 }
 
