@@ -97,7 +97,6 @@
 		83C5735426C28D2F00E7454C /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		83DA6A5327316EAC007ADA95 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		83DA6A5527317031007ADA95 /* ios-sabycom-demo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "ios-sabycom-demo.entitlements"; sourceTree = "<group>"; };
-		83EC454F274CCC3F00935A33 /* ios-sabycom-demo copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "ios-sabycom-demo copy-Info.plist"; path = "/Users/iskhakov.s/Documents/PROJECTS/tensor/ios-sabycom/ios-sabycom-demo/ios-sabycom-demo copy-Info.plist"; sourceTree = "<absolute>"; };
 		89C56629FFE951BF4724FB09 /* Pods-ios-sabycom-demo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios-sabycom-demo.debug.xcconfig"; path = "Target Support Files/Pods-ios-sabycom-demo/Pods-ios-sabycom-demo.debug.xcconfig"; sourceTree = "<group>"; };
 		8B9CC67100EC5A0A3D761933 /* Pods-ios-sabycom-demo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios-sabycom-demo.release.xcconfig"; path = "Target Support Files/Pods-ios-sabycom-demo/Pods-ios-sabycom-demo.release.xcconfig"; sourceTree = "<group>"; };
 		E9440274D48B0501EDBCB383 /* Pods-ios-sabycom-demo-local.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios-sabycom-demo-local.release.xcconfig"; path = "Target Support Files/Pods-ios-sabycom-demo-local/Pods-ios-sabycom-demo-local.release.xcconfig"; sourceTree = "<group>"; };
@@ -161,7 +160,6 @@
 				607FACD11AFB9204008FA782 /* Products */,
 				46EA215C669050380AA288DD /* Pods */,
 				0BEBD6A642A060C1D7144D2F /* Frameworks */,
-				83EC454F274CCC3F00935A33 /* ios-sabycom-demo copy-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};

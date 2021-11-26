@@ -135,10 +135,6 @@ class SabycomViewController: UIViewController, SabycomView {
     
     var viewWillAppear: (() -> Void)?
     
-    func forceInitialize() {
-        view.setNeedsLayout()
-    }
-    
     func startedLoading() {
         webContainer.isHidden = true
         loadIndicator.startAnimating()
@@ -204,6 +200,9 @@ class SabycomViewController: UIViewController, SabycomView {
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+    
+        _webView?.stopLoading()
+        _webView = nil
         
         if let keyboardWillShowObserver = keyboardWillShowObserver {
             NotificationCenter.default.removeObserver(keyboardWillShowObserver)
