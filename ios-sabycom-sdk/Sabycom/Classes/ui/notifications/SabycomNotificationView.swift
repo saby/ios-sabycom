@@ -86,6 +86,8 @@ class SabycomNotificationView: UIView {
         return closeButton
     }()
     
+    private var appDidEnterBackgroundObserver: Any?
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -97,6 +99,17 @@ class SabycomNotificationView: UIView {
         
         initializeViews()
         initializeGestureRecognizer()
+        
+        subscribeApplicationStateChanges()
+    }
+    
+    deinit {
+        imageLoadTask?.cancel()
+        imageLoadTask = nil
+        
+        if let appDidEnterBackgroundObserver = appDidEnterBackgroundObserver {
+            NotificationCenter.default.removeObserver(appDidEnterBackgroundObserver)
+        }
     }
     
     class func show(imagesService: ImagesService, model: SabycomNotificationModel, parentView: UIView) {
@@ -254,6 +267,15 @@ class SabycomNotificationView: UIView {
         if let viewController = UIApplication.shared.windows.first?.rootViewController {
             Sabycom.show(on: viewController)
         }
+    }
+    
+    private func subscribeApplicationStateChanges() {
+        appDidEnterBackgroundObserver = NotificationCenter.default.addObserver(
+            forName: UIApplication.didEnterBackgroundNotification,
+            object: nil,
+            queue: .main) { [weak self] _ in
+                self?.hide()
+            }
     }
     
     override func layoutSubviews() {
