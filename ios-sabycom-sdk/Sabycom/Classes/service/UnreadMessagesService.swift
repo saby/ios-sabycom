@@ -24,7 +24,9 @@ protocol UnreadMessagesService {
 
 class UnreadMessagesServiceImpl: UnreadMessagesService {
     private enum Constants {
-        static let minUpdateTimeInterval: TimeInterval = 5
+        static let minUpdateTimeInterval: TimeInterval = 60
+        
+        static let checkUpdatePossibilitySeconds: Int = 10
     }
     
     var user: SabycomUser? {
@@ -51,10 +53,21 @@ class UnreadMessagesServiceImpl: UnreadMessagesService {
     
     private var lastUpdateTimeInterval: TimeInterval?
     
+    private var loadingMessagesCount: Bool = false
+    
+    private var updateUnreadMessagesWorker: DispatchWorkItem?
+    
     init(api: Api) {
         self.api = api
+        
+        scheduleUpdateUnreadMessagesWorker()
     }
 
+    deinit {
+        updateUnreadMessagesWorker?.cancel()
+        updateUnreadMessagesWorker = nil
+    }
+    
     func updateUnreadMessagesCount(_ count: Int) {
         notifyObservers(with: count)
     }
@@ -74,20 +87,53 @@ class UnreadMessagesServiceImpl: UnreadMessagesService {
         }
     }
 
-    private func loadUnreadMessagesCount(force: Bool) {
-        if let uuid = user?.uuid, let appId = appId {
-            let timePassedInterval = ProcessInfo.processInfo.systemUptime - (lastUpdateTimeInterval ?? 0)
-            if force || lastUpdateTimeInterval == nil || timePassedInterval >= Constants.minUpdateTimeInterval {
-                lastUpdateTimeInterval = ProcessInfo.processInfo.systemUptime
-                
-                api.getUnreadConversationCount(for: uuid, channedUUID: appId) { [weak self] count in
-                    self?.notifyObservers(with: count)
-                }
+    @discardableResult
+    private func loadUnreadMessagesCount(force: Bool) -> Bool {
+        guard let uuid = user?.uuid, let appId = appId else {
+            return false
+        }
+        
+        let timePassedInterval = ProcessInfo.processInfo.systemUptime - (lastUpdateTimeInterval ?? 0)
+        guard !loadingMessagesCount && (force || lastUpdateTimeInterval == nil || timePassedInterval >= Constants.minUpdateTimeInterval) else {
+            return false
+        }
+        
+        loadingMessagesCount = true
+        
+        api.getUnreadConversationCount(for: uuid, channedUUID: appId) { [weak self] count in
+            self?.loadingMessagesCount = false
+            self?.notifyObservers(with: count)
+        }
+        
+        return true
+    }
+    
+    private func scheduleUpdateUnreadMessagesWorker() {
+        let worker = DispatchWorkItem { [weak self] in
+            guard let self = self else {
+                return
+            }
+            
+            if !self.loadUnreadMessagesCount(force: false) {
+                self.scheduleUpdateUnreadMessagesWorker()
             }
         }
+        
+        self.updateUnreadMessagesWorker?.cancel()
+        self.updateUnreadMessagesWorker = worker
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(Constants.checkUpdatePossibilitySeconds), execute: worker)
     }
     
     private func notifyObservers(with count: Int) -> Void {
+        lastUpdateTimeInterval = ProcessInfo.processInfo.systemUptime
+        
+        scheduleUpdateUnreadMessagesWorker()
+        
+        guard unreadMessagesCount != count else {
+            return
+        }
+        
         queue.sync {
             unreadMessagesCount = count
             
