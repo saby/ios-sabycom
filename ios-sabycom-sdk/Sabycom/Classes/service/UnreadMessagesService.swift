@@ -11,7 +11,7 @@ protocol UnreadMessagesCountObservable: AnyObject {
     func unreadMessagesCountChanged(_ count: Int)
 }
 
-protocol UnreadMessagesService {
+protocol UnreadMessagesService: AnyObject {
     var user: SabycomUser? { get set }
     var appId: String? { get set }
     var unreadMessagesCount: Int { get }

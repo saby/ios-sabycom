@@ -115,6 +115,5 @@ class MainViewController: UIViewController {
         if let unreadMessagesObserver = unreadMessagesObserver {
             NotificationCenter.default.removeObserver(unreadMessagesObserver)
         }
-        sabycomService.destroySabycom()
     }
 }
