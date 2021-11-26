@@ -121,6 +121,10 @@ private class SabycomImpl {
             return
         }
         
+        guard controller == nil else {
+            return
+        }
+        
         guard let controller = createController() else {
             return
         }
