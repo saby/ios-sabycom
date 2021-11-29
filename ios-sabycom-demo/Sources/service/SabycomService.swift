@@ -16,7 +16,7 @@ protocol SabycomService {
     func registerAnonymousUser()
     func clearAnonymousUser()
     func configureSabycom()
-    func destroySabycom()
+    func logout()
     
     func isSabycomPushNotification(info: [AnyHashable: Any]) -> Bool
     func handlePushNotification(info: [AnyHashable: Any], parentView: UIView)
@@ -104,8 +104,8 @@ class SabycomServiceImpl: SabycomService {
         registerSabycomNotifications()
     }
     
-    func destroySabycom() {
-        Sabycom.destroy()
+    func logout() {
+        Sabycom.logout()
     }
     
     func isSabycomPushNotification(info: [AnyHashable: Any]) -> Bool {

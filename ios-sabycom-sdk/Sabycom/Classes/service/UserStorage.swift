@@ -7,8 +7,10 @@
 
 import Foundation
 
-protocol UserStorage {
+protocol UserStorage: AnyObject {
     var anonymousUser: SabycomUser? { get }
+    
+    var currentUserId: String? { get set }
     
     func saveAnonymousUser(_ user: SabycomUser)
     
@@ -18,12 +20,22 @@ protocol UserStorage {
 class UserStorageImpl: UserStorage {
     private enum Constants {
         enum Keys {
-            static let currentUser = "Sabycom.AnonymousUser"
+            static let anonymousUser = "Sabycom.AnonymousUser"
+            static let currentUser = "Sabycom.CurrentUserId"
+        }
+    }
+    
+    var currentUserId: String? {
+        get {
+            UserDefaults.standard.string(forKey: Constants.Keys.currentUser)
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: Constants.Keys.currentUser)
         }
     }
     
     var anonymousUser: SabycomUser? {
-        guard let data = UserDefaults.standard.data(forKey: Constants.Keys.currentUser) else {
+        guard let data = UserDefaults.standard.data(forKey: Constants.Keys.anonymousUser) else {
             return nil
         }
         
@@ -33,11 +45,11 @@ class UserStorageImpl: UserStorage {
     
     func saveAnonymousUser(_ user: SabycomUser) {
         if let data = try? JSONEncoder().encode(user) {
-            UserDefaults.standard.set(data, forKey: Constants.Keys.currentUser)
+            UserDefaults.standard.set(data, forKey: Constants.Keys.anonymousUser)
         }
     }
     
     func deleteAnonymousUser() {
-        UserDefaults.standard.removeObject(forKey: Constants.Keys.currentUser)
+        UserDefaults.standard.removeObject(forKey: Constants.Keys.anonymousUser)
     }
 }

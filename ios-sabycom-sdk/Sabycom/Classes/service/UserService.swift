@@ -11,8 +11,11 @@ protocol UserService {
     var appId: String? { get set }
     var pushToken: SabycomPushToken? { get set }
     
+    var currentUserId: String? { get }
+    
     func registerUser(_ user: SabycomUser)
     func registerAnonymousUser() -> SabycomUser
+    func logout(completion: (() -> Void)?)
 }
 
 class UserServiceImpl: UserService {
@@ -67,6 +70,10 @@ class UserServiceImpl: UserService {
         }
     }
     
+    var currentUserId: String? {
+        userStorage.currentUserId
+    }
+    
     private let api: Api
     private let userStorage: UserStorage
     
@@ -79,6 +86,7 @@ class UserServiceImpl: UserService {
         self.user = user
         
         userStorage.deleteAnonymousUser()
+        userStorage.currentUserId = user.uuid
     }
     
     func registerAnonymousUser() -> SabycomUser {
@@ -87,6 +95,7 @@ class UserServiceImpl: UserService {
             
             let user = SabycomUser(uuid: userId)
             userStorage.saveAnonymousUser(user)
+            userStorage.currentUserId = userId
             
             self.user = user
             
@@ -98,9 +107,19 @@ class UserServiceImpl: UserService {
         return anonymousUser
     }
     
-    private func sendUserData() {
+    func logout(completion: (() -> Void)?) {
+        sendUserData(unsubscribe: true) { [weak self] in
+            self?.userStorage.currentUserId = nil
+            
+            completion?()
+        }
+    }
+    
+    private func sendUserData(unsubscribe: Bool = false, completion: (() -> Void)? = nil) {
         if let user = user, let appId = appId {
-            api.registerUser(user, channedUUID: appId, pushToken: pushToken, completion: nil)
+            api.registerUser(user, channedUUID: appId, pushToken: pushToken, unsubscribe: unsubscribe) { userId in
+                completion?()
+            }
         }
     }
 }

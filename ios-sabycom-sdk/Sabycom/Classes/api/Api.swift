@@ -31,7 +31,7 @@ class Api {
         }
     }
     
-    func registerUser(_ user: SabycomUser, channedUUID: String, pushToken: SabycomPushToken?, completion:((_ userId: String?) -> Void)?) {
+    func registerUser(_ user: SabycomUser, channedUUID: String, pushToken: SabycomPushToken?, unsubscribe: Bool = false, completion:((_ userId: String?) -> Void)?) {
         let params = ["id": user.uuid,
                       "service_id": channedUUID,
                       "name": user.name ?? "",
@@ -40,7 +40,8 @@ class Api {
                       "phone": user.phone ?? "",
                       "push_token": pushToken?.tokenString ?? "",
                       "push_debug": pushToken?.tokenType == .sandbox ? true : false,
-                      "push_os": "ios"] as [String : Any]
+                      "push_os": "ios",
+                      "push_unsubscribe": unsubscribe ? "true" : "false"] as [String : Any]
         
         let path = "externalUser/\(user.uuid)/\(channedUUID)"
         let request = Request<BaseResponse<Bool>>.put(urlCreator: urlCreator(for: path), params: params)
