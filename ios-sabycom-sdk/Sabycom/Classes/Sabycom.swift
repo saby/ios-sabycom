@@ -33,13 +33,6 @@ public class Sabycom {
         instance.initialize(appId: appId, host: host)
     }
     
-    /// Уничтожает компонент. После вызова этой функции для работы компонента нужно заново вызвать initialize(apikey:) и registerUser(_:)
-    public class func destroy() {
-        _instance = nil
-        
-        SabycomNotificationView.destroy()
-    }
-    
     /// Показывает виджет. Перед вызовом функции нужно обязяательно вызвать initialize(apikey:) и registerUser(_:) или registerAnonymousUser()
     /// - Parameter viewController: UIViewController, в котором будет показан виджет
     public class func show(on viewController: UIViewController) {
@@ -68,9 +61,9 @@ public class Sabycom {
         instance.registerForPushNotifications(with: deviceToken, tokenType: tokenType)
     }
     
-    /// Отписаться от получения push-сообщений
-    public class func unregisterFromPushNotifications() {
-        instance.unregisterFromPushNotifications()
+    /// Удалить информацию о пользователе и отписаться от получения push-сообщений
+    public class func logout() {
+        instance.logout()
     }
     
     /// Определить, пришел пуш от сервиса Sabycom или нет
@@ -160,12 +153,16 @@ private class SabycomImpl {
         userService.pushToken = token
     }
     
-    func unregisterFromPushNotifications() {
+    func logout() {
+        userService.logout(completion: nil)
         
+        viewModel.user = nil
+        unreadMessagesService.user = nil
+        unreadMessagesService.updateUnreadMessagesCount(0)
     }
     
     func isSabycomPushNotification(info: [AnyHashable: Any]) -> Bool {
-        guard let _ = SabycomNotificationModel(userInfo: info) else {
+        guard let model = SabycomNotificationModel(userInfo: info), model.addresseeId.lowercased() == userService.currentUserId?.lowercased() else {
             return false
         }
         

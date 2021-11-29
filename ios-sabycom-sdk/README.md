@@ -118,9 +118,9 @@ func application(_ application: UIApplication, didRegisterForRemoteNotifications
     }
 ```
 
-7. Чтобы отписаться от уведомлений, вызовите функцию
+7. Чтобы удалить информацию о пользователе и отписаться от уведомлений, вызовите функцию
 ```
-Sabycom.unregisterFromPushNotifications()
+Sabycom.logout()
 ```
 
 8. Для того, чтобы показать всплывающее уведомление о новом сообщении, вызовите следующие функции

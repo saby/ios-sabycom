@@ -46,6 +46,7 @@ class ConfigurationInteractor {
     
     func deleteCurrentUser() {
         userStorage.deleteCurrentUser()
+        sabycomService.logout()
     }
     
     func registerAnonymousUser() {
