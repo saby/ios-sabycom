@@ -6,7 +6,7 @@ Pod::Spec.new do |s|
 
   s.homepage         = 'https://github.com/saby/ios-sabycom'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { 'iskhakovsa' => 'sa.ishakov@tensor.ru' }
+  s.author           = { 'Tensor' => 'appdev2@tensor.ru' }
   s.source           = { :git => 'https://github.com/saby/ios-sabycom.git', :tag => s.version.to_s }
 
   s.ios.deployment_target = '12.2'
