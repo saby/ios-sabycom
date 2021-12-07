@@ -73,11 +73,7 @@ class ImagesCacheServiceImpl: ImagesCacheService {
             
         }
         
-        let data = url.path.data(using: .utf8)
-        guard let imageName = data?.base64EncodedString() else {
-            return nil
-        }
-        
+        let imageName = url.dataRepresentation.base64EncodedString()
         let imageUrl = cacheDirectoryURL.appendingPathComponent(imageName)
         return imageUrl
     }
