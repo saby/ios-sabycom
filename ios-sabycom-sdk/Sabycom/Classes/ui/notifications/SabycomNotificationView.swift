@@ -241,6 +241,7 @@ class SabycomNotificationView: UIView {
     
     private func updateContent() {
         imageLoadTask?.cancel()
+        avatarView.image = nil
         
         if let model = model {
             titleLabel.text = model.title
