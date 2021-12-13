@@ -16,6 +16,7 @@ protocol UnreadMessagesService: AnyObject {
     var appId: String? { get set }
     var unreadMessagesCount: Int { get }
     
+    func loadUnreadMessagesCount(force: Bool) -> Bool
     func updateUnreadMessagesCount(_ count: Int)
     
     func registerObserver(_ observer: UnreadMessagesCountObservable)
@@ -88,7 +89,7 @@ class UnreadMessagesServiceImpl: UnreadMessagesService {
     }
 
     @discardableResult
-    private func loadUnreadMessagesCount(force: Bool) -> Bool {
+    func loadUnreadMessagesCount(force: Bool) -> Bool {
         guard let uuid = user?.uuid, let appId = appId else {
             return false
         }
