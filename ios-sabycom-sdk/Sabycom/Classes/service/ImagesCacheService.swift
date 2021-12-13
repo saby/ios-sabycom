@@ -5,7 +5,7 @@
 //  Created by Sergey Iskhakov on 12.11.2021.
 //
 
-import Foundation
+import UIKit
 
 protocol ImagesCacheService {
     func saveImage(_ image: UIImage, url: URL)
