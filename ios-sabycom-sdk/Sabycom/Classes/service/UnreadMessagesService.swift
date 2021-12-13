@@ -31,13 +31,15 @@ class UnreadMessagesServiceImpl: UnreadMessagesService {
     
     var user: SabycomUser? {
         didSet {
-            loadUnreadMessagesCount(force: false)
+            let force = oldValue != user
+            loadUnreadMessagesCount(force: force)
         }
     }
     
     var appId: String? {
         didSet {
-            loadUnreadMessagesCount(force: false)
+            let force = oldValue != appId
+            loadUnreadMessagesCount(force: force)
         }
     }
     var unreadMessagesCount: Int = 0
