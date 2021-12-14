@@ -5,7 +5,7 @@
 //  Created by Sergey Iskhakov on 19.08.2021.
 //
 
-import Foundation
+import UIKit
 
 extension UIImage {
     class func named(_ name: String) -> UIImage {
