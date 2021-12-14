@@ -93,11 +93,18 @@ private class SabycomImpl {
     
     private weak var controller: UIViewController?
     
+    private var appWillEnterForegroundObserver: Any?
+    
     init() {
+        subscribeApplicationStateChanges()
         unreadMessagesService.registerObserver(self)
     }
     
     deinit {
+        if let appWillEnterForegroundObserver = appWillEnterForegroundObserver {
+            NotificationCenter.default.removeObserver(appWillEnterForegroundObserver)
+        }
+        
         unreadMessagesService.unregisterObserver(self)
     }
     
@@ -212,6 +219,15 @@ private class SabycomImpl {
         }
         
         return (appId, user)
+    }
+    
+    private func subscribeApplicationStateChanges() {
+        appWillEnterForegroundObserver = NotificationCenter.default.addObserver(
+            forName: UIApplication.willEnterForegroundNotification,
+            object: nil,
+            queue: .main) { [weak unreadMessagesService] _ in
+                let _ = unreadMessagesService?.loadUnreadMessagesCount(force: true)
+            }
     }
 }
 
