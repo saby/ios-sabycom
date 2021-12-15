@@ -48,6 +48,7 @@ class SabycomViewController: UIViewController, SabycomView {
         didSet {
             _webView?.navigationDelegate = self
             _webView?.uiDelegate = self
+            _webView?.scrollView.contentInsetAdjustmentBehavior = .never
         }
     }
     
@@ -286,7 +287,7 @@ class SabycomViewController: UIViewController, SabycomView {
             webView.leftAnchor.constraint(equalTo: webContainer.leftAnchor),
             webView.topAnchor.constraint(equalTo: webContainer.topAnchor),
             webView.rightAnchor.constraint(equalTo: webContainer.rightAnchor),
-            webView.bottomAnchor.constraint(equalTo: webContainer.safeAreaLayoutGuide.bottomAnchor)
+            webView.bottomAnchor.constraint(equalTo: webContainer.bottomAnchor)
         ])
                 
         webView.scrollView.isScrollEnabled = false
