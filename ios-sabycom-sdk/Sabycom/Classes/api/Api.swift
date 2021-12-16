@@ -41,7 +41,7 @@ class Api {
                       "push_token": pushToken?.tokenString ?? "",
                       "push_debug": pushToken?.tokenType == .sandbox ? true : false,
                       "push_os": "ios",
-                      "push_unsubscribe": unsubscribe ? "true" : "false"] as [String : Any]
+                      "push_unsubscribe": unsubscribe] as [String : Any]
         
         let path = "externalUser/\(user.uuid)/\(channedUUID)"
         let request = Request<BaseResponse<Bool>>.put(urlCreator: urlCreator(for: path), params: params)
