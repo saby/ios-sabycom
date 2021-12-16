@@ -8,7 +8,7 @@
 import UIKit
 
 extension UIImage {
-    class func named(_ name: String) -> UIImage {
-        return UIImage.init(named: name, in: Bundle.mainSdk, compatibleWith: nil)!
+    class func named(_ name: String) -> UIImage? {
+        return UIImage.init(named: name, in: Bundle.mainSdk, compatibleWith: nil)
     }
 }

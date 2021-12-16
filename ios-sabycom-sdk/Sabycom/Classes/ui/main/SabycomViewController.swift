@@ -428,7 +428,9 @@ class SabycomViewController: UIViewController, SabycomView {
         documentInteractionController.url = url
         documentInteractionController.uti = url.typeIdentifier ?? "public.data, public.content"
         documentInteractionController.name = url.localizedName ?? url.lastPathComponent
-        documentInteractionController.presentOptionsMenu(from: view.frame, in: view, animated: true)
+
+        let frame = CGRect(x: view.frame.width / 2 - 1, y: view.frame.height / 2 - 1, width: 2, height: 2)
+        documentInteractionController.presentOptionsMenu(from: frame, in: view, animated: true)
         
         self.documentInteractionController = documentInteractionController
     }
