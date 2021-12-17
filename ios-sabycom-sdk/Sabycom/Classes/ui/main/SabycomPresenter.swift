@@ -27,6 +27,7 @@ class SabycomPresenter {
         
         setViewHandlers()
         subscribeApplicationStateChanges()
+        removeNotifications()
     }
     
     deinit {
@@ -49,10 +50,28 @@ class SabycomPresenter {
         appWillEnterForegroundObserver = NotificationCenter.default.addObserver(
             forName: UIApplication.willEnterForegroundNotification,
             object: nil,
-            queue: .main) { [weak view, weak interactor] _ in
-                if let url = interactor?.getUrl() {
-                    view?.load(url)
+            queue: .main) { [weak self] _ in
+                if let url = self?.interactor.getUrl() {
+                    self?.view?.load(url)
                 }
+                
+                self?.removeNotifications()
             }
+    }
+    
+    private func removeNotifications() {
+        UNUserNotificationCenter.current().getDeliveredNotifications { notifications in
+            let result: [UNNotification] = notifications.compactMap { notification in
+                let userInfo = notification.request.content.userInfo
+                
+                guard Sabycom.isSabycomPushNotification(info: userInfo) else {
+                    return nil
+                }
+                
+                return notification
+            }
+            
+            UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: result.map { $0.request.identifier })
+        }
     }
 }
