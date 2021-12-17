@@ -471,6 +471,26 @@ class SabycomViewController: UIViewController, SabycomView {
             }
         }
     }
+    
+    override open func present(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)? = nil) {
+        defer {
+            super.present(viewControllerToPresent, animated: flag, completion: completion)
+        }
+        guard #available(iOS 14, *) else {
+            if viewControllerToPresent is UIDocumentMenuViewController {
+                viewControllerToPresent.popoverPresentationController?.delegate = self
+            }
+            
+            return
+        }        
+    }
+}
+
+extension SabycomViewController: UIPopoverPresentationControllerDelegate {
+    func prepareForPopoverPresentation(_ popoverPresentationController: UIPopoverPresentationController) {
+        popoverPresentationController.sourceView = self.view
+        popoverPresentationController.sourceRect = CGRect(x: 80, y: self.view.frame.height - 80, width: 2, height: 2)
+    }
 }
 
 extension SabycomViewController: SabycomWidgetJSHandlerDelegate {
