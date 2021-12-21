@@ -11,7 +11,6 @@ protocol SabycomView: AnyObject {
     var didLoadView: (() -> Void)? { get set }
     var viewWillAppear: (() -> Void)? { get set }
     
-    func startedLoading()
     func load(_ url: URL)
 }
 
@@ -38,8 +37,6 @@ class SabycomPresenter {
     
     private func setViewHandlers() {
         view?.didLoadView = { [weak view, weak interactor] in
-            view?.startedLoading()
-            
             if let url = interactor?.getUrl() {
                 view?.load(url)
             }
