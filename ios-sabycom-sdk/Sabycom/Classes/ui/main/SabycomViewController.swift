@@ -21,6 +21,8 @@ class SabycomViewController: UIViewController, SabycomView {
         static let popupCloseButtonSize: CGFloat = 44
         static let popupWebViewMargin: CGFloat = 16
         static let popupWebViewRatio: CGFloat = 0.75
+        
+        static let margin: CGFloat = 16
 
         static let containerBackgroundColor = UIColor(red: 244.0/255.0, green: 244.0/255.0, blue: 244.0/255.0, alpha: 1)
         
@@ -52,12 +54,6 @@ class SabycomViewController: UIViewController, SabycomView {
         }
     }
     
-    private lazy var loadIndicator: UIActivityIndicatorView = {
-        let loadIndicator = UIActivityIndicatorView(style: .gray)
-        loadIndicator.translatesAutoresizingMaskIntoConstraints = false
-        return loadIndicator
-    }()
-    
     private lazy var webContainer: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -67,6 +63,7 @@ class SabycomViewController: UIViewController, SabycomView {
     private lazy var webViewLoadIndicator: UIActivityIndicatorView = {
         let loadIndicator = UIActivityIndicatorView(style: .gray)
         loadIndicator.translatesAutoresizingMaskIntoConstraints = false
+        loadIndicator.hidesWhenStopped = true
         return loadIndicator
     }()
     
@@ -93,6 +90,18 @@ class SabycomViewController: UIViewController, SabycomView {
         button.setImage(UIImage.named("ic_close"), for: .normal)
         button.addTarget(self, action: #selector(onCloseAttachmentDownloadingProgress(_:)), for: .touchUpInside)
         return button
+    }()
+    
+    private lazy var errorLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont.systemFont(ofSize: 16)
+        label.numberOfLines = 0
+        label.textColor = .gray
+        label.textAlignment = .center
+        label.text = Localization.shared.text(forKey: "NetworkErrorMessage")
+        label.isHidden = true
+        return label
     }()
     
     private lazy var jsHandler: SabycomWidgetJSHandler = {
@@ -135,11 +144,6 @@ class SabycomViewController: UIViewController, SabycomView {
     var didLoadView: (() -> Void)?
     
     var viewWillAppear: (() -> Void)?
-    
-    func startedLoading() {
-        webContainer.isHidden = true
-        loadIndicator.startAnimating()
-    }
     
     func load(_ url: URL) {
         state = .loading(url: url)
@@ -214,9 +218,9 @@ class SabycomViewController: UIViewController, SabycomView {
     }
     
     private func setupViews() {
-        view.addSubview(loadIndicator)
         view.addSubview(webContainer)
-        webContainer.addSubview(webViewLoadIndicator)
+        view.addSubview(errorLabel)
+        view.addSubview(webViewLoadIndicator)
         
         let heightConstraint = webContainer.heightAnchor.constraint(equalTo: view.heightAnchor, constant: 0)
         self.webContainerHeightConstraint = heightConstraint
@@ -229,13 +233,14 @@ class SabycomViewController: UIViewController, SabycomView {
         ])
         
         NSLayoutConstraint.activate([
-            loadIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            loadIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+            webViewLoadIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            webViewLoadIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
         
         NSLayoutConstraint.activate([
-            webViewLoadIndicator.centerXAnchor.constraint(equalTo: webContainer.centerXAnchor),
-            webViewLoadIndicator.centerYAnchor.constraint(equalTo: webContainer.centerYAnchor)
+            errorLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.margin),
+            errorLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.margin),
+            errorLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
     
@@ -368,13 +373,16 @@ class SabycomViewController: UIViewController, SabycomView {
         case .loading:
             webContainer.isHidden = true
             webViewLoadIndicator.startAnimating()
+            errorLabel.isHidden = true
             
         case .preparing, .loaded:
             webContainer.isHidden = false
             webViewLoadIndicator.stopAnimating()
+            errorLabel.isHidden = true
         case .error:
             webContainer.isHidden = true
             webViewLoadIndicator.stopAnimating()
+            errorLabel.isHidden = false
         }
     }
     
