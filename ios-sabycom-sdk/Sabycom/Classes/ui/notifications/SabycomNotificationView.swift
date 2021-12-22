@@ -16,6 +16,16 @@ class SabycomNotificationView: UIView {
     
     private weak var imageLoadTask: ImageLoadTask?
     
+    private lazy var stackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.distribution = .fill
+        stackView.alignment = .center
+        stackView.axis = .horizontal
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.spacing = Constants.labelsPaddingLeft
+        return stackView
+    }()
+    
     private lazy var containerView: UIView = {
         let containerView = UIView()
         containerView.backgroundColor = .white
@@ -26,6 +36,13 @@ class SabycomNotificationView: UIView {
         containerView.layer.shadowOffset = Constants.containerShadowOffset
         containerView.layer.shadowOpacity = 1
         containerView.layer.shadowRadius = Constants.containerShadowRadius
+        return containerView
+    }()
+    
+    private lazy var messageContainerView: UIView = {
+        let containerView = UIView()
+        containerView.backgroundColor = .clear
+        containerView.translatesAutoresizingMaskIntoConstraints = false
         return containerView
     }()
     
@@ -181,11 +198,15 @@ class SabycomNotificationView: UIView {
         addSubview(containerView)
         addSubview(closeButton)
         
-        containerView.addSubview(avatarView)
-        containerView.addSubview(titleLabel)
-        containerView.addSubview(messageLabel)
-        containerView.addSubview(messageDateLabel)
-        containerView.addSubview(unreadCountLabel)
+        containerView.addSubview(stackView)
+        
+        messageContainerView.addSubview(titleLabel)
+        messageContainerView.addSubview(messageLabel)
+        messageContainerView.addSubview(messageDateLabel)
+        messageContainerView.addSubview(unreadCountLabel)
+        
+        stackView.addArrangedSubview(avatarView)
+        stackView.addArrangedSubview(messageContainerView)
         
         NSLayoutConstraint.activate([
             containerView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.containerMarginHorizontal),
@@ -195,32 +216,35 @@ class SabycomNotificationView: UIView {
         ])
         
         NSLayoutConstraint.activate([
-            avatarView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: Constants.containerPaddingHorizontal),
-            avatarView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: Constants.containerPaddingTop),
-            avatarView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -Constants.containerPaddingBottom),
+            stackView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: Constants.containerPaddingHorizontal),
+            stackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -Constants.containerPaddingHorizontal),
+            stackView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: Constants.containerPaddingTop),
+            stackView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -Constants.containerPaddingBottom),
             avatarView.widthAnchor.constraint(equalToConstant: Constants.avatarSize),
             avatarView.heightAnchor.constraint(equalToConstant: Constants.avatarSize)
         ])
         
         NSLayoutConstraint.activate([
-            titleLabel.leadingAnchor.constraint(equalTo: avatarView.trailingAnchor, constant: Constants.labelsPaddingLeft),
+            titleLabel.leadingAnchor.constraint(equalTo: messageContainerView.leadingAnchor),
             titleLabel.trailingAnchor.constraint(equalTo: messageDateLabel.leadingAnchor, constant: -Constants.containerPaddingHorizontal),
-            titleLabel.bottomAnchor.constraint(equalTo: avatarView.centerYAnchor)
+            titleLabel.bottomAnchor.constraint(equalTo: avatarView.centerYAnchor),
+            titleLabel.topAnchor.constraint(greaterThanOrEqualTo: messageContainerView.topAnchor, constant: Constants.messagePaddingTop)
         ])
         
         NSLayoutConstraint.activate([
-            messageDateLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -Constants.containerPaddingHorizontal),
+            messageDateLabel.trailingAnchor.constraint(equalTo: messageContainerView.trailingAnchor),
             messageDateLabel.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor)
         ])
         
         NSLayoutConstraint.activate([
-            messageLabel.leadingAnchor.constraint(equalTo: avatarView.trailingAnchor, constant: Constants.labelsPaddingLeft),
+            messageLabel.leadingAnchor.constraint(equalTo: messageContainerView.leadingAnchor),
             messageLabel.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
-            messageLabel.topAnchor.constraint(equalTo: avatarView.centerYAnchor)
+            messageLabel.topAnchor.constraint(equalTo: avatarView.centerYAnchor),
+            messageLabel.bottomAnchor.constraint(lessThanOrEqualTo: messageContainerView.bottomAnchor, constant: -Constants.messagePaddingBottom)
         ])
         
         NSLayoutConstraint.activate([
-            unreadCountLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -Constants.containerPaddingHorizontal),
+            unreadCountLabel.trailingAnchor.constraint(equalTo: messageContainerView.trailingAnchor),
             unreadCountLabel.centerYAnchor.constraint(equalTo: messageLabel.centerYAnchor),
             unreadCountLabel.widthAnchor.constraint(greaterThanOrEqualTo: unreadCountLabel.heightAnchor),
             unreadCountLabel.heightAnchor.constraint(equalToConstant: Constants.unreadCountHeight)
@@ -260,6 +284,8 @@ class SabycomNotificationView: UIView {
                     self?.avatarView.image = image
                 }
             }
+            
+            avatarView.isHidden = model.operatorPhoto.isEmpty
         }
     }
     
@@ -296,6 +322,9 @@ class SabycomNotificationView: UIView {
         static let containerPaddingHorizontal: CGFloat = 11
         static let containerPaddingTop: CGFloat = 9
         static let containerPaddingBottom: CGFloat = 11
+        
+        static let messagePaddingTop: CGFloat = 7
+        static let messagePaddingBottom: CGFloat = 5
         
         static let containerCornerRadius: CGFloat = 8
         
