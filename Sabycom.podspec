@@ -14,8 +14,6 @@ Pod::Spec.new do |s|
   s.swift_versions = ['5.4', '5.5']
   s.source_files = 'ios-sabycom-sdk/Sabycom/Classes/**/*'
   
-  s.resource_bundles = {
-    'Sabycom' => ['ios-sabycom-sdk/Sabycom/Assets/**/*']
-  }
+  s.resource_bundles = { 'Sabycom' => ['ios-sabycom-sdk/Sabycom/Assets/**/*'] }
 
 end
