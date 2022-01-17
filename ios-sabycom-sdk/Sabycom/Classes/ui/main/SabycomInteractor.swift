@@ -8,11 +8,11 @@
 import Foundation
 
 class SabycomInteractor {
-    private let host: SabycomHost
+    let host: SabycomHost
     
-    private let appId: String
+    let appId: String
     
-    private var user: SabycomUser
+    private (set) var user: SabycomUser
     
     private var lastUsedUrl: URL? {
         get {
