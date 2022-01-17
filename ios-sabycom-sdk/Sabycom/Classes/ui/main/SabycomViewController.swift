@@ -12,6 +12,7 @@ import UIKit
 enum WebViewState: Equatable {
     case preparing
     case loading(url: URL)
+    case loadingFromArchive(url: URL)
     case loaded(url: URL)
     case error
 }
@@ -142,12 +143,37 @@ class SabycomViewController: UIViewController, SabycomView {
     //MARK: - SabycomView -
     
     var didLoadView: (() -> Void)?
-    
+    var didLoadWebView: (() -> Void)?
     var viewWillAppear: (() -> Void)?
+    var viewWillDisappear: (() -> Void)?
     
     func load(_ url: URL) {
         state = .loading(url: url)
         loadWebPage()
+    }
+    
+    func load(archive archiveUrl: URL) {
+        state = .loadingFromArchive(url: archiveUrl)
+        loadWebPage()
+    }
+    
+    func createWebArchive(completion: @escaping (Data?) -> Void) {
+        if case .loaded = state, #available(iOS 14.0, *) {
+            _webView?.createWebArchiveData(completionHandler: { result in
+                switch result {
+                case .success(let data):
+                    completion(data)
+                case .failure:
+                    completion(nil)
+                }
+            })
+        } else {
+            completion(nil)
+        }
+    }
+    
+    func evaluateJavaScript(_ script: String) {
+        _webView?.evaluateJavaScript(script, completionHandler: nil)
     }
     
     // MARK: - Lifecycle
@@ -201,6 +227,12 @@ class SabycomViewController: UIViewController, SabycomView {
                 
                 heightConstraint.constant = 0
             }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        viewWillDisappear?()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -344,21 +376,29 @@ class SabycomViewController: UIViewController, SabycomView {
     }
     
     private func loadWebPage() {
-        let currentUrl: URL?
+        var archiveUrl: URL?
+        var currentUrl: URL?
         
         switch state {
+        case .loadingFromArchive(let url):
+            archiveUrl = url
         case .loading(let url), .loaded(let url):
             currentUrl = url
         default:
+            archiveUrl = nil
             currentUrl = nil
         }
-        guard isViewLoaded, let url = currentUrl else {
+        guard isViewLoaded else {
             return
         }
                 
         webview { webView in
-            let request = URLRequest(url: url, cachePolicy: .useProtocolCachePolicy)
-            _ = webView.load(request)
+            if let archiveUrl = archiveUrl {
+                _ = webView.loadFileURL(archiveUrl, allowingReadAccessTo: archiveUrl)
+            } else if let url = currentUrl {
+                let request = URLRequest(url: url, cachePolicy: .useProtocolCachePolicy)
+                _ = webView.load(request)
+            }
         }
     }
     
@@ -370,7 +410,7 @@ class SabycomViewController: UIViewController, SabycomView {
         }
         
         switch state {
-        case .loading:
+        case .loading, .loadingFromArchive:
             webContainer.isHidden = true
             webViewLoadIndicator.startAnimating()
             errorLabel.isHidden = true
@@ -539,6 +579,7 @@ extension SabycomViewController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         if let url = webView.url {
             state = .loaded(url: url)
+            didLoadWebView?()
         } else {
             state = .error
         }

@@ -9,36 +9,114 @@ import UIKit
 
 protocol SabycomView: AnyObject {
     var didLoadView: (() -> Void)? { get set }
+    var didLoadWebView: (() -> Void)? { get set }
     var viewWillAppear: (() -> Void)? { get set }
+    var viewWillDisappear: (() -> Void)? { get set }
     
     func load(_ url: URL)
+    func load(archive archiveUrl: URL)
+    func createWebArchive(completion: @escaping (_ data: Data?) -> Void)
+    func evaluateJavaScript(_ script: String)
 }
 
 class SabycomPresenter {
     private let interactor: SabycomInteractor
+    private let webArchivesStorage: WebArchivesStorage
     private weak var view: SabycomView?
+    private let reachabilityService: ReachabilityService
     
     private var appWillEnterForegroundObserver: Any?
     
-    init(interactor: SabycomInteractor, view: SabycomView) {
+    private var loadedFromArchive: Bool = false
+    
+    init(interactor: SabycomInteractor,
+         view: SabycomView,
+         webArchivesStorage: WebArchivesStorage,
+         reachabilityService: ReachabilityService) {
         self.interactor = interactor
+        self.webArchivesStorage = webArchivesStorage
         self.view = view
+        self.reachabilityService = reachabilityService
         
         setViewHandlers()
         subscribeApplicationStateChanges()
         removeNotifications()
+        
+        reachabilityService.registerObserver(self)
     }
     
     deinit {
         if let appWillEnterForegroundObserver = appWillEnterForegroundObserver {
             NotificationCenter.default.removeObserver(appWillEnterForegroundObserver)
         }
+        
+        reachabilityService.unregisterObserver(self)
     }
     
     private func setViewHandlers() {
-        view?.didLoadView = { [weak view, weak interactor] in
-            if let url = interactor?.getUrl() {
-                view?.load(url)
+        view?.didLoadView = { [weak self] in
+            guard let self = self else {
+                return
+            }
+            
+            if !self.reachabilityService.isAvailable, let archiveUrl = self.webArchivesStorage.getWebArchiveURL() {
+                self.loadFromArchive(archiveUrl)
+            } else {
+                self.loadFromCloud()
+            }
+        }
+        
+        view?.viewWillDisappear = { [weak self] in
+            guard let self = self else {
+                return
+            }
+            
+            if !self.loadedFromArchive {
+                self.view?.createWebArchive(completion: { [weak self] data in
+                    guard let data = data else {
+                        return
+                    }
+                    self?.webArchivesStorage.saveWebArchive(data)
+                })
+            }
+        }
+        
+        view?.didLoadWebView = { [weak self] in
+            guard let self = self else {
+                return
+            }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self.notifyUINetworkChanged(self.reachabilityService.isAvailable)
+            }
+        }
+    }
+    
+    private func loadFromArchive(_ archiveUrl: URL) {
+        loadedFromArchive = true
+        view?.load(archive: archiveUrl)
+    }
+    
+    private func loadFromCloud() {
+        if let url = self.interactor.getUrl() {
+            loadedFromArchive = false
+            view?.load(url)
+        }
+    }
+    
+    private func notifyUINetworkChanged(_ available: Bool) {
+        var params = [String: Any]()
+        params["channel"] = interactor.appId
+        params["action"] = "setOfflineMode"
+        params["value"] = ["isOffline": !available]
+        params["windowId"] = "chat"
+        
+        if let jsonData = try? JSONSerialization.data(withJSONObject: params, options: []),
+            let json = String(data: jsonData, encoding: .utf8) {
+            let script = "window.postMessage('\(json)');"
+            
+            DispatchQueue.main.async { [weak view] in
+                view?.evaluateJavaScript(script)
             }
         }
     }
@@ -69,6 +147,22 @@ class SabycomPresenter {
             }
             
             UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: result.map { $0.request.identifier })
+        }
+    }
+}
+
+extension SabycomPresenter: ReachabilityObservable {
+    func reachabilityChanged(_ available: Bool) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else {
+                return
+            }
+            
+            if available, self.loadedFromArchive {
+                self.loadFromCloud()
+            }
+            
+            self.notifyUINetworkChanged(available)
         }
     }
 }

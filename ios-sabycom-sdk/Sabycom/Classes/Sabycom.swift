@@ -90,6 +90,8 @@ private class SabycomImpl {
     private lazy var userService: UserService = UserServiceImpl(api: api, userStorage: userStorage)
     private lazy var unreadMessagesService: UnreadMessagesService = UnreadMessagesServiceImpl(api: api)
     private lazy var imagesService: ImagesService = ImagesServiceImpl(cacheService: ImagesCacheServiceImpl())
+    private lazy var webArchivesStorage: WebArchivesStorage = WebArchivesStorageImpl()
+    private lazy var reachabilityService: ReachabilityService = ReachabilityServiceImpl()
     
     private weak var controller: UIViewController?
     
@@ -200,7 +202,7 @@ private class SabycomImpl {
         let host = SabycomHost(hostType: hostType, appId: appId)
         let interactor = SabycomInteractor(host: host, appId: appId, user: user)
         let controller = SabycomViewController(unreadMessagesService: unreadMessagesService)
-        controller.presenter = SabycomPresenter(interactor: interactor, view: controller)
+        controller.presenter = SabycomPresenter(interactor: interactor, view: controller, webArchivesStorage: webArchivesStorage, reachabilityService: reachabilityService)
         
         self.controller = controller
         
