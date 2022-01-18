@@ -104,11 +104,11 @@ class SabycomPresenter {
     
     private func createArchive() {
         if !loadedFromArchive {
-            view?.createWebArchive(completion: { [weak self] data in
+            view?.createWebArchive(completion: { [weak webArchivesStorage] data in
                 guard let data = data else {
                     return
                 }
-                self?.webArchivesStorage.saveWebArchive(data)
+                webArchivesStorage?.saveWebArchive(data)
             })
         }
     }
