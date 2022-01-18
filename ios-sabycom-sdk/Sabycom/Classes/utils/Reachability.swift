@@ -5,6 +5,7 @@
 //  Created by Sergey Iskhakov on 17.01.2022.
 //
 
+import Foundation
 import SystemConfiguration
 
 /// Ошибка доступа в интернет
