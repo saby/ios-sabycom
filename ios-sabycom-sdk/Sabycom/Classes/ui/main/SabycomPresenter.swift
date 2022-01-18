@@ -26,6 +26,7 @@ class SabycomPresenter {
     private let reachabilityService: ReachabilityService
     
     private var appWillEnterForegroundObserver: Any?
+    private var appWillEnterBackgroundObserver: Any?
     
     private var loadedFromArchive: Bool = false
     
@@ -59,11 +60,7 @@ class SabycomPresenter {
                 return
             }
             
-            if !self.reachabilityService.isAvailable, let archiveUrl = self.webArchivesStorage.getWebArchiveURL() {
-                self.loadFromArchive(archiveUrl)
-            } else {
-                self.loadFromCloud()
-            }
+            self.load()
         }
         
         view?.viewWillDisappear = { [weak self] in
@@ -71,14 +68,7 @@ class SabycomPresenter {
                 return
             }
             
-            if !self.loadedFromArchive {
-                self.view?.createWebArchive(completion: { [weak self] data in
-                    guard let data = data else {
-                        return
-                    }
-                    self?.webArchivesStorage.saveWebArchive(data)
-                })
-            }
+            self.createArchive()
         }
         
         view?.didLoadWebView = { [weak self] in
@@ -92,6 +82,14 @@ class SabycomPresenter {
         }
     }
     
+    private func load() {
+        if !reachabilityService.isAvailable, let archiveUrl = webArchivesStorage.getWebArchiveURL() {
+            loadFromArchive(archiveUrl)
+        } else {
+            loadFromCloud()
+        }
+    }
+    
     private func loadFromArchive(_ archiveUrl: URL) {
         loadedFromArchive = true
         view?.load(archive: archiveUrl)
@@ -101,6 +99,17 @@ class SabycomPresenter {
         if let url = self.interactor.getUrl() {
             loadedFromArchive = false
             view?.load(url)
+        }
+    }
+    
+    private func createArchive() {
+        if !loadedFromArchive {
+            view?.createWebArchive(completion: { [weak webArchivesStorage] data in
+                guard let data = data else {
+                    return
+                }
+                webArchivesStorage?.saveWebArchive(data)
+            })
         }
     }
     
@@ -126,11 +135,15 @@ class SabycomPresenter {
             forName: UIApplication.willEnterForegroundNotification,
             object: nil,
             queue: .main) { [weak self] _ in
-                if let url = self?.interactor.getUrl() {
-                    self?.view?.load(url)
-                }
-                
+                self?.load()
                 self?.removeNotifications()
+            }
+        
+        appWillEnterBackgroundObserver = NotificationCenter.default.addObserver(
+            forName: UIApplication.didEnterBackgroundNotification,
+            object: nil,
+            queue: .main) { [weak self] _ in
+                self?.createArchive()
             }
     }
     
