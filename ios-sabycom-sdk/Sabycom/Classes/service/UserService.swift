@@ -11,6 +11,8 @@ protocol UserService {
     var appId: String? { get set }
     var pushToken: SabycomPushToken? { get set }
     
+    var registeredAsAnonymous: Bool { get }
+    
     var currentUserId: String? { get }
     
     func registerUser(_ user: SabycomUser)
@@ -19,17 +21,6 @@ protocol UserService {
 }
 
 class UserServiceImpl: UserService {
-    private (set) var user: SabycomUser? {
-        set {
-            if _user != newValue {
-                _user = newValue
-            }
-        }
-        get {
-            return _user
-        }
-    }
-    
     var appId: String? {
         set {
             if _appId != newValue {
@@ -49,6 +40,21 @@ class UserServiceImpl: UserService {
         }
         get {
             return _pushToken
+        }
+    }
+    
+    var registeredAsAnonymous: Bool {
+        return userStorage.anonymousUser != nil
+    }
+    
+    private (set) var user: SabycomUser? {
+        set {
+            if _user != newValue {
+                _user = newValue
+            }
+        }
+        get {
+            return _user
         }
     }
     

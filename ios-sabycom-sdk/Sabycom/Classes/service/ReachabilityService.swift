@@ -24,7 +24,7 @@ class ReachabilityServiceImpl: ReachabilityService {
             return false
         }
         
-        return reachability.connection == .wifi || reachability.connection == .cellular
+        return reachability.currentReachabilityStatus == .reachableViaWWAN || reachability.currentReachabilityStatus == .reachableViaWiFi
     }
     
     private let reachability: Reachability?
@@ -37,7 +37,7 @@ class ReachabilityServiceImpl: ReachabilityService {
     }
     
     init() {
-        self.reachability = try? Reachability()
+        self.reachability = try? Reachability.reachabilityForInternetConnection()
         
         reachability?.whenReachable = { [weak self] _ in
             self?.notifyObservers(true)

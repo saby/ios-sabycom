@@ -9,35 +9,63 @@ import UIKit
 
 protocol SabycomView: AnyObject {
     var didLoadView: (() -> Void)? { get set }
-    var didLoadWebView: (() -> Void)? { get set }
     var viewWillAppear: (() -> Void)? { get set }
     var viewWillDisappear: (() -> Void)? { get set }
     
+    var didFinishLoading: ((_ url: URL) -> Void)? { get set }
+    var didFailLoading: ((_ error: Error?) -> Void)? { get set }
+    
+    var didUpdateUnreadMessagesCount: ((_ count: Int) -> Void)? { get set }
+    
     func load(_ url: URL)
     func load(archive archiveUrl: URL)
+    func update(with state: WebViewState)
+    
     func createWebArchive(completion: @escaping (_ data: Data?) -> Void)
     func evaluateJavaScript(_ script: String)
 }
 
+enum WebViewState: Equatable {
+    case preparing
+    case loading(url: URL)
+    case loadingFromArchive(url: URL)
+    case loaded(url: URL)
+    case error
+}
+
 class SabycomPresenter {
+    var isInternetAvailable: Bool {
+        return reachabilityService.isAvailable
+    }
+    
     private let interactor: SabycomInteractor
     private let webArchivesStorage: WebArchivesStorage
-    private weak var view: SabycomView?
     private let reachabilityService: ReachabilityService
+    private let unreadMessagesService: UnreadMessagesService
+    
+    private weak var view: SabycomView?
     
     private var appWillEnterForegroundObserver: Any?
     private var appWillEnterBackgroundObserver: Any?
     
     private var loadedFromArchive: Bool = false
     
+    private var state: WebViewState = .preparing {
+        didSet {
+            view?.update(with: state)
+        }
+    }
+    
     init(interactor: SabycomInteractor,
          view: SabycomView,
          webArchivesStorage: WebArchivesStorage,
-         reachabilityService: ReachabilityService) {
+         reachabilityService: ReachabilityService,
+         unreadMessagesService: UnreadMessagesService) {
         self.interactor = interactor
         self.webArchivesStorage = webArchivesStorage
         self.view = view
         self.reachabilityService = reachabilityService
+        self.unreadMessagesService = unreadMessagesService
         
         setViewHandlers()
         subscribeApplicationStateChanges()
@@ -56,29 +84,38 @@ class SabycomPresenter {
     
     private func setViewHandlers() {
         view?.didLoadView = { [weak self] in
-            guard let self = self else {
-                return
-            }
-            
-            self.load()
+            self?.load()
         }
         
         view?.viewWillDisappear = { [weak self] in
-            guard let self = self else {
-                return
-            }
-            
-            self.createArchive()
+            self?.createArchive()
         }
         
-        view?.didLoadWebView = { [weak self] in
+        view?.didFinishLoading = { [weak self] url in
+            // Временный фикс мелькания поля ввода при оффлайн режиме. Пока не поняли, в чем ошибка в самом виджете
+            let timeout: TimeInterval = self?.reachabilityService.isAvailable == true ? 0 : 0.5
+            DispatchQueue.main.asyncAfter(deadline: .now() + timeout) { [weak self] in
+                guard let self = self else {
+                    return
+                }
+                
+                self.notifyUINetworkChanged(self.reachabilityService.isAvailable)
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + timeout) { [weak self] in
+                    self?.state = .loaded(url: url)
+                }
+            }
+        }
+        
+        view?.didFailLoading = { [weak self] _ in
             guard let self = self else {
                 return
             }
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                self.notifyUINetworkChanged(self.reachabilityService.isAvailable)
-            }
+            self.state = .error
+        }
+        
+        view?.didUpdateUnreadMessagesCount = { [weak unreadMessagesService] count in
+            unreadMessagesService?.updateUnreadMessagesCount(count)
         }
     }
     
@@ -92,18 +129,20 @@ class SabycomPresenter {
     
     private func loadFromArchive(_ archiveUrl: URL) {
         loadedFromArchive = true
+        state = .loadingFromArchive(url: archiveUrl)
         view?.load(archive: archiveUrl)
     }
     
     private func loadFromCloud() {
         if let url = self.interactor.getUrl() {
             loadedFromArchive = false
+            state = .loading(url: url)
             view?.load(url)
         }
     }
     
     private func createArchive() {
-        if !loadedFromArchive {
+        if !loadedFromArchive, case .loaded = state {
             view?.createWebArchive(completion: { [weak webArchivesStorage] data in
                 guard let data = data else {
                     return
@@ -171,7 +210,12 @@ extension SabycomPresenter: ReachabilityObservable {
                 return
             }
             
-            if available, self.loadedFromArchive {
+            var lastStateIsError: Bool = false
+            if case .error = self.state {
+                lastStateIsError = true
+            }
+            
+            if available && (self.loadedFromArchive || lastStateIsError) {
                 self.loadFromCloud()
             }
             

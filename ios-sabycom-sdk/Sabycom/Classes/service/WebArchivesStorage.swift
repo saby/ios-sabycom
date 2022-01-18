@@ -10,6 +10,7 @@ import Foundation
 protocol WebArchivesStorage: AnyObject {
     func saveWebArchive(_ data: Data)
     func getWebArchiveURL() -> URL?
+    func clear()
 }
 
 class WebArchivesStorageImpl: WebArchivesStorage {
@@ -35,6 +36,20 @@ class WebArchivesStorageImpl: WebArchivesStorage {
         }
         
         return url
+    }
+    
+    func clear() {
+        guard let url = webArchiveURL() else {
+            return
+        }
+        
+        do {
+            if FileManager.default.fileExists(atPath: url.path) {
+                try FileManager.default.removeItem(at: url)
+            }
+        } catch {
+            print(error.localizedDescription)
+        }
     }
     
     private func webArchiveURL() -> URL? {
