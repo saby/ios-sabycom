@@ -9,14 +9,6 @@
 import WebKit
 import UIKit
 
-enum WebViewState: Equatable {
-    case preparing
-    case loading(url: URL)
-    case loadingFromArchive(url: URL)
-    case loaded(url: URL)
-    case error
-}
-
 class SabycomViewController: UIViewController, SabycomView {
     private enum Constants {
         static let popupCloseButtonSize: CGFloat = 44
@@ -31,12 +23,6 @@ class SabycomViewController: UIViewController, SabycomView {
     }
     
     var presenter: SabycomPresenter!
-    
-    var state: WebViewState = .preparing {
-        didSet {
-            updateViewState()
-        }
-    }
     
     // MARK: - Private properties
     
@@ -100,7 +86,7 @@ class SabycomViewController: UIViewController, SabycomView {
         label.numberOfLines = 0
         label.textColor = .gray
         label.textAlignment = .center
-        label.text = Localization.shared.text(forKey: "NetworkErrorMessage")
+        label.text = Localization.shared.text(forKey: .networkError)
         label.isHidden = true
         return label
     }()
@@ -118,23 +104,11 @@ class SabycomViewController: UIViewController, SabycomView {
     
     private var lastResponse: WebResponse?
     
-    private let unreadMessagesService: UnreadMessagesService?
-    
     private var webContainerHeightConstraint: NSLayoutConstraint?
     
     private var keyboardWillShowObserver: Any?
     private var keyboardWillHideObserver: Any?
-    
-    init(unreadMessagesService: UnreadMessagesService) {
-        self.unreadMessagesService = unreadMessagesService
         
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
     deinit {
         attachmentLoadingTask?.cancel()
         attachmentLoadingTaskObservation?.invalidate()
@@ -143,22 +117,59 @@ class SabycomViewController: UIViewController, SabycomView {
     //MARK: - SabycomView -
     
     var didLoadView: (() -> Void)?
-    var didLoadWebView: (() -> Void)?
     var viewWillAppear: (() -> Void)?
     var viewWillDisappear: (() -> Void)?
     
+    var didFinishLoading: ((_ url: URL) -> Void)?
+    var didFailLoading: ((_ error: Error?) -> Void)?
+    
+    var didUpdateUnreadMessagesCount: ((Int) -> Void)?
+    
     func load(_ url: URL) {
-        state = .loading(url: url)
-        loadWebPage()
+        guard isViewLoaded else {
+            return
+        }
+        
+        webview { webView in
+            let request = URLRequest(url: url, cachePolicy: .useProtocolCachePolicy)
+            _ = webView.load(request)
+        }
     }
     
     func load(archive archiveUrl: URL) {
-        state = .loadingFromArchive(url: archiveUrl)
-        loadWebPage()
+        guard isViewLoaded else {
+            return
+        }
+        
+        webview { webView in
+            _ = webView.loadFileURL(archiveUrl, allowingReadAccessTo: archiveUrl)
+        }
+    }
+    
+    func update(with state: WebViewState) {
+        guard isViewLoaded else {
+            return
+        }
+        
+        switch state {
+        case .loading, .loadingFromArchive:
+            webContainer.isHidden = true
+            webViewLoadIndicator.startAnimating()
+            errorLabel.isHidden = true
+            
+        case .preparing, .loaded:
+            webContainer.isHidden = false
+            webViewLoadIndicator.stopAnimating()
+            errorLabel.isHidden = true
+        case .error:
+            webContainer.isHidden = true
+            webViewLoadIndicator.stopAnimating()
+            errorLabel.isHidden = false
+        }
     }
     
     func createWebArchive(completion: @escaping (Data?) -> Void) {
-        if case .loaded = state, #available(iOS 14.0, *) {
+        if #available(iOS 14.0, *) {
             _webView?.createWebArchiveData(completionHandler: { result in
                 switch result {
                 case .success(let data):
@@ -193,7 +204,6 @@ class SabycomViewController: UIViewController, SabycomView {
         setupViews()
         setupAttachmentProgressView()
         setupWebView()
-        updateViewState()
         
         didLoadView?()
     }
@@ -375,60 +385,14 @@ class SabycomViewController: UIViewController, SabycomView {
         webViewRequestsStack.removeAll()
     }
     
-    private func loadWebPage() {
-        var archiveUrl: URL?
-        var currentUrl: URL?
-        
-        switch state {
-        case .loadingFromArchive(let url):
-            archiveUrl = url
-        case .loading(let url), .loaded(let url):
-            currentUrl = url
-        default:
-            archiveUrl = nil
-            currentUrl = nil
-        }
-        guard isViewLoaded else {
-            return
-        }
-                
-        webview { webView in
-            if let archiveUrl = archiveUrl {
-                _ = webView.loadFileURL(archiveUrl, allowingReadAccessTo: archiveUrl)
-            } else if let url = currentUrl {
-                let request = URLRequest(url: url, cachePolicy: .useProtocolCachePolicy)
-                _ = webView.load(request)
-            }
-        }
-    }
-    
-    // MARK: - update UI helper
-    
-    private func updateViewState() {
-        guard isViewLoaded else {
-            return
-        }
-        
-        switch state {
-        case .loading, .loadingFromArchive:
-            webContainer.isHidden = true
-            webViewLoadIndicator.startAnimating()
-            errorLabel.isHidden = true
-            
-        case .preparing, .loaded:
-            webContainer.isHidden = false
-            webViewLoadIndicator.stopAnimating()
-            errorLabel.isHidden = true
-        case .error:
-            webContainer.isHidden = true
-            webViewLoadIndicator.stopAnimating()
-            errorLabel.isHidden = false
-        }
-    }
-    
     // MARK: - Attachments downloading -
     
     private func share(url: URL?) {
+        guard presenter.isInternetAvailable else {
+            UIAlertController.showNetworkNotAvailableAlert(on: self)
+            return
+        }
+        
         if let url = url {
             
             updateProgressLabel(with: 0)
@@ -549,7 +513,7 @@ extension SabycomViewController: SabycomWidgetJSHandlerDelegate {
     }
     
     func didReceiveNewMessage(unreadCount: Int) {
-        unreadMessagesService?.updateUnreadMessagesCount(unreadCount)
+        didUpdateUnreadMessagesCount?(unreadCount)
     }
 }
 
@@ -573,15 +537,14 @@ extension SabycomViewController: WKNavigationDelegate {
     }
     
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
-        state = .error
+        didFailLoading?(error)
     }
     
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         if let url = webView.url {
-            state = .loaded(url: url)
-            didLoadWebView?()
+            didFinishLoading?(url)
         } else {
-            state = .error
+            didFailLoading?(nil)
         }
     }
     

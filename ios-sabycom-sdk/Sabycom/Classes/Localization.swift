@@ -8,6 +8,12 @@
 import Foundation
 
 class Localization {
+    enum Key: String {
+        case errorTitle = "ErrorTitle"
+        case okButtonTitle = "OkButtonTitle"
+        case networkNotAvailable = "NetworkNotAvailableMessage"
+        case networkError = "NetworkErrorMessage"
+    }
     static let shared = Localization()
     
     private let bundle: Bundle
@@ -21,8 +27,8 @@ class Localization {
         bundle = Bundle(path: path)!
     }
     
-    func text(forKey key: String) -> String {
-        let text = bundle.localizedString(forKey: key, value: nil, table: nil)
+    func text(forKey key: Key) -> String {
+        let text = bundle.localizedString(forKey: key.rawValue, value: nil, table: nil)
         return text
     }
 }

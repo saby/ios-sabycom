@@ -140,12 +140,18 @@ private class SabycomImpl {
     }
     
     func registerUser(_ user: SabycomUser) {
+        if userStorage.currentUserId != user.uuid {
+            webArchivesStorage.clear()
+        }
         userService.registerUser(user)
         
         configure(with: user)
      }
     
     func registerAnonymousUser() {
+        if !userService.registeredAsAnonymous {
+            webArchivesStorage.clear()
+        }
         let user = userService.registerAnonymousUser()
         
         configure(with: user)
@@ -201,8 +207,12 @@ private class SabycomImpl {
         
         let host = SabycomHost(hostType: hostType, appId: appId)
         let interactor = SabycomInteractor(host: host, appId: appId, user: user)
-        let controller = SabycomViewController(unreadMessagesService: unreadMessagesService)
-        controller.presenter = SabycomPresenter(interactor: interactor, view: controller, webArchivesStorage: webArchivesStorage, reachabilityService: reachabilityService)
+        let controller = SabycomViewController()
+        controller.presenter = SabycomPresenter(interactor: interactor,
+                                                view: controller,
+                                                webArchivesStorage: webArchivesStorage,
+                                                reachabilityService: reachabilityService,
+                                                unreadMessagesService: unreadMessagesService)
         
         self.controller = controller
         
