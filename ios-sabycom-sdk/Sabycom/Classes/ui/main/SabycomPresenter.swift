@@ -42,6 +42,7 @@ class SabycomPresenter {
     private let webArchivesStorage: WebArchivesStorage
     private let reachabilityService: ReachabilityService
     private let unreadMessagesService: UnreadMessagesService
+    private let userService: UserService
     
     private weak var view: SabycomView?
     
@@ -56,22 +57,27 @@ class SabycomPresenter {
         }
     }
     
+    private var shouldLoadFromCloud: Bool = false
+    
     init(interactor: SabycomInteractor,
          view: SabycomView,
          webArchivesStorage: WebArchivesStorage,
          reachabilityService: ReachabilityService,
-         unreadMessagesService: UnreadMessagesService) {
+         unreadMessagesService: UnreadMessagesService,
+         userService: UserService) {
         self.interactor = interactor
         self.webArchivesStorage = webArchivesStorage
         self.view = view
         self.reachabilityService = reachabilityService
         self.unreadMessagesService = unreadMessagesService
+        self.userService = userService
         
         setViewHandlers()
         subscribeApplicationStateChanges()
         removeNotifications()
         
         reachabilityService.registerObserver(self)
+        userService.registerObserver(self)
     }
     
     deinit {
@@ -80,6 +86,7 @@ class SabycomPresenter {
         }
         
         reachabilityService.unregisterObserver(self)
+        userService.unregisterObserver(self)
     }
     
     private func setViewHandlers() {
@@ -120,24 +127,35 @@ class SabycomPresenter {
     }
     
     private func load() {
-        if !reachabilityService.isAvailable, let archiveUrl = webArchivesStorage.getWebArchiveURL() {
-            loadFromArchive(archiveUrl)
-        } else {
+        state = .preparing
+        
+        if reachabilityService.isAvailable {
             loadFromCloud()
+        } else {
+            if let archiveUrl = webArchivesStorage.getWebArchiveURL() {
+                loadFromArchive(archiveUrl)
+            } else {
+                state = .error
+            }
         }
     }
     
     private func loadFromArchive(_ archiveUrl: URL) {
         loadedFromArchive = true
+        shouldLoadFromCloud = false
         state = .loadingFromArchive(url: archiveUrl)
         view?.load(archive: archiveUrl)
     }
     
     private func loadFromCloud() {
         if let url = self.interactor.getUrl() {
-            loadedFromArchive = false
-            state = .loading(url: url)
-            view?.load(url)
+            if userService.userInfoSent {
+                loadedFromArchive = false
+                state = .loading(url: url)
+                view?.load(url)
+            } else {
+                shouldLoadFromCloud = true
+            }
         }
     }
     
@@ -220,6 +238,20 @@ extension SabycomPresenter: ReachabilityObservable {
             }
             
             self.notifyUINetworkChanged(available)
+        }
+    }
+}
+
+extension SabycomPresenter: UserServiceObservable {
+    func userInfoSent() {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else {
+                return
+            }
+            
+            if self.shouldLoadFromCloud {
+                self.loadFromCloud()
+            }
         }
     }
 }

@@ -152,12 +152,12 @@ class SabycomViewController: UIViewController, SabycomView {
         }
         
         switch state {
-        case .loading, .loadingFromArchive:
+        case .loading, .loadingFromArchive, .preparing:
             webContainer.isHidden = true
             webViewLoadIndicator.startAnimating()
             errorLabel.isHidden = true
             
-        case .preparing, .loaded:
+        case .loaded:
             webContainer.isHidden = false
             webViewLoadIndicator.stopAnimating()
             errorLabel.isHidden = true

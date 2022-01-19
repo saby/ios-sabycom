@@ -87,8 +87,8 @@ private class SabycomImpl {
     private lazy var api = Api(hostType: hostType)
     
     private lazy var userStorage: UserStorage = UserStorageImpl()
-    private lazy var userService: UserService = UserServiceImpl(api: api, userStorage: userStorage)
-    private lazy var unreadMessagesService: UnreadMessagesService = UnreadMessagesServiceImpl(api: api)
+    private lazy var userService: UserService = UserServiceImpl(api: api, userStorage: userStorage, reachabilityService: reachabilityService)
+    private lazy var unreadMessagesService: UnreadMessagesService = UnreadMessagesServiceImpl(api: api, reachabilityService: reachabilityService)
     private lazy var imagesService: ImagesService = ImagesServiceImpl(cacheService: ImagesCacheServiceImpl())
     private lazy var webArchivesStorage: WebArchivesStorage = WebArchivesStorageImpl()
     private lazy var reachabilityService: ReachabilityService = ReachabilityServiceImpl()
@@ -212,7 +212,8 @@ private class SabycomImpl {
                                                 view: controller,
                                                 webArchivesStorage: webArchivesStorage,
                                                 reachabilityService: reachabilityService,
-                                                unreadMessagesService: unreadMessagesService)
+                                                unreadMessagesService: unreadMessagesService,
+                                                userService: userService)
         
         self.controller = controller
         
