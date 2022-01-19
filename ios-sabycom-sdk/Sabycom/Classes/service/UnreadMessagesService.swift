@@ -46,6 +46,7 @@ class UnreadMessagesServiceImpl: UnreadMessagesService {
     var unreadMessagesCount: Int = 0
     
     private let api: Api
+    private let reachabilityService: ReachabilityService
     
     private let queue = DispatchQueue(label: "UnreadMessagesCountObservable", qos: .userInitiated)
 
@@ -60,8 +61,11 @@ class UnreadMessagesServiceImpl: UnreadMessagesService {
     
     private var updateUnreadMessagesWorker: DispatchWorkItem?
     
-    init(api: Api) {
+    init(api: Api, reachabilityService: ReachabilityService) {
         self.api = api
+        self.reachabilityService = reachabilityService
+        
+        reachabilityService.registerObserver(self)
         
         scheduleUpdateUnreadMessagesWorker()
     }
@@ -69,6 +73,8 @@ class UnreadMessagesServiceImpl: UnreadMessagesService {
     deinit {
         updateUnreadMessagesWorker?.cancel()
         updateUnreadMessagesWorker = nil
+        
+        reachabilityService.unregisterObserver(self)
     }
     
     func updateUnreadMessagesCount(_ count: Int) {
@@ -92,7 +98,7 @@ class UnreadMessagesServiceImpl: UnreadMessagesService {
 
     @discardableResult
     func loadUnreadMessagesCount(force: Bool) -> Bool {
-        guard let uuid = user?.uuid, let appId = appId else {
+        guard let uuid = user?.uuid, let appId = appId, reachabilityService.isAvailable else {
             return false
         }
         
@@ -151,5 +157,15 @@ class UnreadMessagesServiceImpl: UnreadMessagesService {
 
     private func removeNilObservers() {
         observers = observers.filter { nil != $0.value }
+    }
+}
+
+extension UnreadMessagesServiceImpl: ReachabilityObservable {
+    func reachabilityChanged(_ available: Bool) {
+        DispatchQueue.main.async { [weak self] in
+            if available {
+                self?.loadUnreadMessagesCount(force: false)
+            }
+        }
     }
 }

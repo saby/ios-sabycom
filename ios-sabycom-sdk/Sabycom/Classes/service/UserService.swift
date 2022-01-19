@@ -7,17 +7,25 @@
 
 import Foundation
 
+protocol UserServiceObservable: AnyObject {
+    func userInfoSent()
+}
+
 protocol UserService {
     var appId: String? { get set }
     var pushToken: SabycomPushToken? { get set }
     
     var registeredAsAnonymous: Bool { get }
+    var userInfoSent: Bool { get }
     
     var currentUserId: String? { get }
     
     func registerUser(_ user: SabycomUser)
     func registerAnonymousUser() -> SabycomUser
     func logout(completion: (() -> Void)?)
+    
+    func registerObserver(_ observer: UserServiceObservable)
+    func unregisterObserver(_ observer: UserServiceObservable)
 }
 
 class UserServiceImpl: UserService {
@@ -47,6 +55,25 @@ class UserServiceImpl: UserService {
         return userStorage.anonymousUser != nil
     }
     
+    var userInfoSent: Bool {
+        get {
+            UserDefaults.standard.bool(forKey: "SabycomUser.InfoSent")
+        }
+        set {
+            if newValue {
+                notifyObserversUserInfoSent()
+            }
+            UserDefaults.standard.set(newValue, forKey: "SabycomUser.InfoSent")
+        }
+    }
+    
+    private let queue = DispatchQueue(label: "UserServiceQueue", qos: .userInitiated)
+
+    private var observers: [Weak<UserServiceObservable>] = []
+    private var strongObservers: [UserServiceObservable] {
+        return observers.compactMap { $0.value }
+    }
+    
     private (set) var user: SabycomUser? {
         set {
             if _user != newValue {
@@ -60,6 +87,7 @@ class UserServiceImpl: UserService {
     
     private var _user: SabycomUser? {
         didSet {
+            userInfoSent = false
             sendUserData()
         }
     }
@@ -75,17 +103,25 @@ class UserServiceImpl: UserService {
             sendUserData()
         }
     }
-    
+        
     var currentUserId: String? {
         userStorage.currentUserId
     }
     
     private let api: Api
     private let userStorage: UserStorage
+    private let reachabilityService: ReachabilityService
     
-    init(api: Api, userStorage: UserStorage) {
+    init(api: Api, userStorage: UserStorage, reachabilityService: ReachabilityService) {
         self.api = api
         self.userStorage = userStorage
+        self.reachabilityService = reachabilityService
+        
+        reachabilityService.registerObserver(self)
+    }
+    
+    deinit {
+        reachabilityService.unregisterObserver(self)
     }
     
     func registerUser(_ user: SabycomUser) {
@@ -121,10 +157,56 @@ class UserServiceImpl: UserService {
         }
     }
     
+    func registerObserver(_ observer: UserServiceObservable) {
+        queue.async { [self] in
+            if self.observers.contains(where: { $0.value === observer }) {
+                return
+            }
+            self.observers.append(Weak(value: observer))
+        }
+    }
+
+    func unregisterObserver(_ observer: UserServiceObservable) {
+        queue.sync {
+            observers = observers.filter { $0.value !== observer }
+        }
+    }
+    
+    private func notifyObserversUserInfoSent() -> Void {
+        queue.sync {
+            removeNilObservers()
+
+            for observer in strongObservers {
+                observer.userInfoSent()
+            }
+        }
+    }
+
+    private func removeNilObservers() {
+        observers = observers.filter { nil != $0.value }
+    }
+    
     private func sendUserData(unsubscribe: Bool = false, completion: (() -> Void)? = nil) {
-        if let user = user, let appId = appId {
-            api.registerUser(user, channedUUID: appId, pushToken: pushToken, unsubscribe: unsubscribe) { userId in
+        if let user = user, let appId = appId, reachabilityService.isAvailable {
+            api.registerUser(user, channedUUID: appId, pushToken: pushToken, unsubscribe: unsubscribe) { [weak self] userId in
+                self?.userInfoSent = true
                 completion?()
+            }
+        } else {
+            completion?()
+        }
+    }
+}
+
+extension UserServiceImpl: ReachabilityObservable {
+    func reachabilityChanged(_ available: Bool) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else {
+                return
+            }
+            
+            if !self.userInfoSent {
+                self.sendUserData()
             }
         }
     }
