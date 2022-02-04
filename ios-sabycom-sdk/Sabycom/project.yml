@@ -5,7 +5,7 @@ targets:
   Sabycom:
     type: framework
     platform: iOS
-    deploymentTarget: "12.2"
+    deploymentTarget: "12.0"
     settings:
       SWIFT_VERSION: "5.4.2"
     sources: 
