@@ -9,7 +9,7 @@ Pod::Spec.new do |s|
   s.author           = { 'Tensor' => 'appdev2@tensor.ru' }
   s.source           = { :git => 'https://github.com/saby/ios-sabycom.git', :tag => s.version.to_s }
 
-  s.ios.deployment_target = '12.2'
+  s.ios.deployment_target = '12.0'
 
   s.swift_versions = ['5.4', '5.5']
   s.source_files = 'ios-sabycom-sdk/Sabycom/Classes/**/*'
