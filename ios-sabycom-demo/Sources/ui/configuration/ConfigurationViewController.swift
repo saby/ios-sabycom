@@ -232,6 +232,12 @@ class ConfigurationViewController: UIViewController, ConfigurationView {
         present(alert, animated: true, completion: nil)
     }
     
+    func showErrorAlert(with message: String) {
+        let alert = UIAlertController(title: "Ошибка", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ок", style: .cancel, handler: nil))
+        present(alert, animated: true, completion: nil)
+    }
+    
     @objc
     private func tappedAround(_ sender: Any) {
         view.endEditing(true)
@@ -280,7 +286,7 @@ class ConfigurationViewController: UIViewController, ConfigurationView {
             serverPickerView.heightAnchor.constraint(equalToConstant: Constants.pickerViewHeight)
         ])
         
-        appIdTextField.didChange = { [weak self] in
+        appIdTextField.didEndEditing = { [weak self] in
             self?.onAppIdChanged?(self?.appIdTextField.text ?? "")
         }
     }
@@ -297,11 +303,13 @@ class ConfigurationViewController: UIViewController, ConfigurationView {
     
     @objc
     private func goToMain(_ sender: UIButton) {
+        view.endEditing(true)
         onStartClicked?()
     }
     
     @objc
     private func goToMainAsAnonymous(_ sender: UIButton) {
+        view.endEditing(true)
         onStartAnonymousClicked?()
     }
 }

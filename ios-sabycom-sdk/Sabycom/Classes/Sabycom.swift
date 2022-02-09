@@ -111,6 +111,11 @@ private class SabycomImpl {
     }
     
     func initialize(appId: String, host: SabycomHost.HostType) {
+        guard let _ = UUID(uuidString: appId) else {
+            assertionFailure(Localization.shared.text(forKey: .invalidChannelId))
+            return
+        }
+        
         api.hostType = host
         viewModel.appId = appId
         unreadMessagesService.appId = appId
