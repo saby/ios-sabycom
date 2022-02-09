@@ -41,6 +41,8 @@ extension SabycomWidgetJSHandler: WKScriptMessageHandler {
         if let data = message.data(using: .utf8), let dict = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
             if let action = dict["action"] as? String {
                 switch action {
+                case "registerWindow":
+                    delegate?.windowLoaded()
                 case "toggleWindow":
                     let closed = dict["value"] as? Bool
                     if closed == false {
@@ -61,4 +63,5 @@ extension SabycomWidgetJSHandler: WKScriptMessageHandler {
 protocol SabycomWidgetJSHandlerDelegate: AnyObject {
     func didClickClose()
     func didReceiveNewMessage(unreadCount: Int)
+    func windowLoaded()
 }
