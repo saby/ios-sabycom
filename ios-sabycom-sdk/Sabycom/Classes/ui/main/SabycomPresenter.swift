@@ -47,7 +47,6 @@ class SabycomPresenter {
     private weak var view: SabycomView?
     
     private var appWillEnterForegroundObserver: Any?
-    private var appWillEnterBackgroundObserver: Any?
     
     private var loadedFromCache: Bool = false
     
@@ -160,13 +159,6 @@ class SabycomPresenter {
             queue: .main) { [weak self] _ in
                 self?.load()
                 self?.removeNotifications()
-            }
-        
-        appWillEnterBackgroundObserver = NotificationCenter.default.addObserver(
-            forName: UIApplication.didEnterBackgroundNotification,
-            object: nil,
-            queue: .main) { _ in
-                
             }
     }
     
