@@ -121,28 +121,20 @@ class SabycomViewController: UIViewController, SabycomView {
     var viewWillDisappear: (() -> Void)?
     
     var didFinishLoading: ((_ url: URL) -> Void)?
+    var didFinishLoadingWindow: ((_ url: URL) -> Void)?
     var didFailLoading: ((_ error: Error?) -> Void)?
     
     var didUpdateUnreadMessagesCount: ((Int) -> Void)?
     
-    func load(_ url: URL) {
+    func load(_ url: URL, fromCache: Bool) {
         guard isViewLoaded else {
             return
         }
         
         webview { webView in
-            let request = URLRequest(url: url, cachePolicy: .useProtocolCachePolicy)
+            let cachePolicy: URLRequest.CachePolicy = fromCache ? .returnCacheDataDontLoad : .reloadIgnoringLocalCacheData
+            let request = URLRequest(url: url, cachePolicy: cachePolicy)
             _ = webView.load(request)
-        }
-    }
-    
-    func load(archive archiveUrl: URL) {
-        guard isViewLoaded else {
-            return
-        }
-        
-        webview { webView in
-            _ = webView.loadFileURL(archiveUrl, allowingReadAccessTo: archiveUrl)
         }
     }
     
@@ -508,6 +500,14 @@ extension SabycomViewController: UIPopoverPresentationControllerDelegate {
 }
 
 extension SabycomViewController: SabycomWidgetJSHandlerDelegate {
+    func windowLoaded() {
+        if let url = _webView?.url {
+            didFinishLoadingWindow?(url)
+        } else {
+            didFailLoading?(nil)
+        }
+    }
+    
     func didClickClose() {
         Sabycom.hide()
     }

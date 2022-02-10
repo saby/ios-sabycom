@@ -13,12 +13,12 @@ protocol SabycomView: AnyObject {
     var viewWillDisappear: (() -> Void)? { get set }
     
     var didFinishLoading: ((_ url: URL) -> Void)? { get set }
+    var didFinishLoadingWindow: ((_ url: URL) -> Void)? { get set }
     var didFailLoading: ((_ error: Error?) -> Void)? { get set }
     
     var didUpdateUnreadMessagesCount: ((_ count: Int) -> Void)? { get set }
     
-    func load(_ url: URL)
-    func load(archive archiveUrl: URL)
+    func load(_ url: URL, fromCache: Bool)
     func update(with state: WebViewState)
     
     func createWebArchive(completion: @escaping (_ data: Data?) -> Void)
@@ -47,9 +47,8 @@ class SabycomPresenter {
     private weak var view: SabycomView?
     
     private var appWillEnterForegroundObserver: Any?
-    private var appWillEnterBackgroundObserver: Any?
     
-    private var loadedFromArchive: Bool = false
+    private var loadedFromCache: Bool = false
     
     private var state: WebViewState = .preparing {
         didSet {
@@ -94,23 +93,15 @@ class SabycomPresenter {
             self?.load()
         }
         
-        view?.viewWillDisappear = { [weak self] in
-            self?.createArchive()
+        view?.didFinishLoading = { [weak self] url in
+            if self?.isInternetAvailable != true {
+                self?.view?.evaluateJavaScript("window.location.hash = '#isOffline=true';")
+            }
         }
         
-        view?.didFinishLoading = { [weak self] url in
-            // Временный фикс мелькания поля ввода при оффлайн режиме. Пока не поняли, в чем ошибка в самом виджете
-            let timeout: TimeInterval = self?.reachabilityService.isAvailable == true ? 0 : 0.5
-            DispatchQueue.main.asyncAfter(deadline: .now() + timeout) { [weak self] in
-                guard let self = self else {
-                    return
-                }
-                
-                self.notifyUINetworkChanged(self.reachabilityService.isAvailable)
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + timeout) { [weak self] in
-                    self?.state = .loaded(url: url)
-                }
+        view?.didFinishLoadingWindow = { [weak self] url in
+            DispatchQueue.main.async { [weak self] in
+                self?.state = .loaded(url: url)
             }
         }
         
@@ -129,44 +120,18 @@ class SabycomPresenter {
     private func load() {
         state = .preparing
         
-        if reachabilityService.isAvailable {
-            loadFromCloud()
-        } else {
-            if let archiveUrl = webArchivesStorage.getWebArchiveURL() {
-                loadFromArchive(archiveUrl)
-            } else {
-                state = .error
-            }
-        }
-    }
-    
-    private func loadFromArchive(_ archiveUrl: URL) {
-        loadedFromArchive = true
-        shouldLoadFromCloud = false
-        state = .loadingFromArchive(url: archiveUrl)
-        view?.load(archive: archiveUrl)
-    }
-    
-    private func loadFromCloud() {
         if let url = self.interactor.getUrl() {
-            if userService.userInfoSent {
-                loadedFromArchive = false
+            let isOffline = !reachabilityService.isAvailable
+            
+            if isOffline || userService.userInfoSent {
+                loadedFromCache = isOffline
                 state = .loading(url: url)
-                view?.load(url)
+                view?.load(url, fromCache: isOffline)
             } else {
                 shouldLoadFromCloud = true
             }
-        }
-    }
-    
-    private func createArchive() {
-        if !loadedFromArchive, case .loaded = state {
-            view?.createWebArchive(completion: { [weak webArchivesStorage] data in
-                guard let data = data else {
-                    return
-                }
-                webArchivesStorage?.saveWebArchive(data)
-            })
+        } else {
+            state = .error
         }
     }
     
@@ -194,13 +159,6 @@ class SabycomPresenter {
             queue: .main) { [weak self] _ in
                 self?.load()
                 self?.removeNotifications()
-            }
-        
-        appWillEnterBackgroundObserver = NotificationCenter.default.addObserver(
-            forName: UIApplication.didEnterBackgroundNotification,
-            object: nil,
-            queue: .main) { [weak self] _ in
-                self?.createArchive()
             }
     }
     
@@ -233,8 +191,8 @@ extension SabycomPresenter: ReachabilityObservable {
                 lastStateIsError = true
             }
             
-            if available && (self.loadedFromArchive || lastStateIsError) {
-                self.loadFromCloud()
+            if available && (self.loadedFromCache || lastStateIsError) {
+                self.load()
             }
             
             self.notifyUINetworkChanged(available)
@@ -250,7 +208,7 @@ extension SabycomPresenter: UserServiceObservable {
             }
             
             if self.shouldLoadFromCloud {
-                self.loadFromCloud()
+                self.load()
             }
         }
     }
