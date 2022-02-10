@@ -25,9 +25,9 @@ protocol UnreadMessagesService: AnyObject {
 
 class UnreadMessagesServiceImpl: UnreadMessagesService {
     private enum Constants {
-        static let minUpdateTimeInterval: TimeInterval = 60
+        static let minUpdateTimeInterval: TimeInterval = 30
         
-        static let checkUpdatePossibilitySeconds: Int = 10
+        static let checkUpdatePossibilitySeconds: Int = 5
     }
     
     var user: SabycomUser? {
