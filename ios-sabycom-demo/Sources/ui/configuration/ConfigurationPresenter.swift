@@ -26,6 +26,8 @@ protocol ConfigurationView: AnyObject {
     func updateHost(_ hostType: SabycomHost.HostType)
     
     func showConfirmDeleteUserAlert(_ positiveCompletion: (() -> Void)?)
+ 
+    func showErrorAlert(with message: String)
 }
 
 class ConfigurationPresenter {
@@ -62,7 +64,11 @@ class ConfigurationPresenter {
             interactor?.saveHost(hostType)
         }
         
-        view?.onAppIdChanged = { [weak interactor] appId in
+        view?.onAppIdChanged = { [weak interactor, weak view] appId in
+            guard let _ = UUID(uuidString: appId) else {
+                view?.showErrorAlert(with: "Введите корректный идентификатор канала")
+                return
+            }
             interactor?.saveAppId(appId)
         }
         

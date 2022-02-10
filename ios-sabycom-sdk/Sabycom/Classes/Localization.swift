@@ -13,6 +13,7 @@ class Localization {
         case okButtonTitle = "OkButtonTitle"
         case networkNotAvailable = "NetworkNotAvailableMessage"
         case networkError = "NetworkErrorMessage"
+        case invalidChannelId = "InvalidChannelIdMessage"
     }
     static let shared = Localization()
     
