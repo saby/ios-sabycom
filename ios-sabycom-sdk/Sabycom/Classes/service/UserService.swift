@@ -77,6 +77,9 @@ class UserServiceImpl: UserService {
     private (set) var user: SabycomUser? {
         set {
             if _user != newValue {
+                if _user != nil {
+                    logout(clearUser: false, completion: nil)
+                }
                 _user = newValue
             }
         }
@@ -150,11 +153,7 @@ class UserServiceImpl: UserService {
     }
     
     func logout(completion: (() -> Void)?) {
-        sendUserData(unsubscribe: true) { [weak self] in
-            self?.userStorage.currentUserId = nil
-            
-            completion?()
-        }
+        logout(clearUser: true, completion: completion)
     }
     
     func registerObserver(_ observer: UserServiceObservable) {
@@ -169,6 +168,16 @@ class UserServiceImpl: UserService {
     func unregisterObserver(_ observer: UserServiceObservable) {
         queue.sync {
             observers = observers.filter { $0.value !== observer }
+        }
+    }
+    
+    private func logout(clearUser: Bool, completion: (() -> Void)?) {
+        sendUserData(unsubscribe: true) { [weak self] in
+            if clearUser {
+                self?.userStorage.currentUserId = nil
+            }
+            
+            completion?()
         }
     }
     
