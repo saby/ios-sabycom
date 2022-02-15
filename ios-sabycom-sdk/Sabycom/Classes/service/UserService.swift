@@ -172,9 +172,9 @@ class UserServiceImpl: UserService {
     }
     
     private func logout(clearUser: Bool, completion: (() -> Void)?) {
-        sendUserData(unsubscribe: true) { [weak self] in
+        sendUserData(unsubscribe: true) { [weak userStorage] in
             if clearUser {
-                self?.userStorage.currentUserId = nil
+                userStorage?.currentUserId = nil
             }
             
             completion?()
