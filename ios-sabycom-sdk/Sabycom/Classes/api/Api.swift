@@ -47,7 +47,11 @@ class Api {
         let request = Request<BaseResponse<Bool>>.put(urlCreator: urlCreator(for: path), params: params)
         request.execute { response in
             if response.result == true {
-                print("registered user id: \(user.uuid)")
+                if unsubscribe {
+                    print("unregistered user id: \(user.uuid)")
+                } else {
+                    print("registered user id: \(user.uuid)")
+                }
                 completion?(user.uuid)
             } else if let error = response.error {
                 print("user registration error: \(error.message)")
