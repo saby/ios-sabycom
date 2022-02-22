@@ -1,4 +1,4 @@
-## Sabycom SDK for iOS .
+## Sabycom SDK for iOS ..
 
 ### Требования
 Для работы Sabycom SDK необходим iOS версии 12.2 и выше и Xcode 13.0 или выше.
