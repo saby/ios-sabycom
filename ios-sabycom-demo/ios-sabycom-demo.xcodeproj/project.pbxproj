@@ -50,9 +50,8 @@
 		83C5735826C28D2F00E7454C /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 83C5735226C28D2F00E7454C /* Images.xcassets */; };
 		83C5735926C28D2F00E7454C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83C5735326C28D2F00E7454C /* AppDelegate.swift */; };
 		83DA6A5427316EAC007ADA95 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83DA6A5327316EAC007ADA95 /* NotificationService.swift */; };
-		8D7929A72723837E3377D5A1 /* Pods_ios_sabycom_demo_local.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46353DE7C63EDCCE3D14D4BF /* Pods_ios_sabycom_demo_local.framework */; };
-		F30E162FE77E9FFFF3FA22B8 /* Pods_ios_sabycom_demo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 464C01B8931D08CFECEB53C5 /* Pods_ios_sabycom_demo.framework */; };
-		F6157D2C4123F9D5DCFCA88B /* Pods_ios_sabycom_demo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 464C01B8931D08CFECEB53C5 /* Pods_ios_sabycom_demo.framework */; };
+		9813DFF996DB1755A8BD063C /* libPods-ios-sabycom-demo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D05CF6388B96EE4092A8D6FF /* libPods-ios-sabycom-demo.a */; };
+		DA04469F79B441FE29B3F450 /* libPods-ios-sabycom-demo-local.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DE1F43F97A20193572C07680 /* libPods-ios-sabycom-demo-local.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -66,9 +65,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		46353DE7C63EDCCE3D14D4BF /* Pods_ios_sabycom_demo_local.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ios_sabycom_demo_local.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		464C01B8931D08CFECEB53C5 /* Pods_ios_sabycom_demo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ios_sabycom_demo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		539399A8C42439462BC7F6E6 /* Pods-ios-sabycom-demo-local.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios-sabycom-demo-local.debug.xcconfig"; path = "Target Support Files/Pods-ios-sabycom-demo-local/Pods-ios-sabycom-demo-local.debug.xcconfig"; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* ios-sabycom-demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-sabycom-demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACE51AFB9204008FA782 /* Sabycom_Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Sabycom_Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -97,9 +93,12 @@
 		83C5735426C28D2F00E7454C /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		83DA6A5327316EAC007ADA95 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		83DA6A5527317031007ADA95 /* ios-sabycom-demo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "ios-sabycom-demo.entitlements"; sourceTree = "<group>"; };
-		89C56629FFE951BF4724FB09 /* Pods-ios-sabycom-demo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios-sabycom-demo.debug.xcconfig"; path = "Target Support Files/Pods-ios-sabycom-demo/Pods-ios-sabycom-demo.debug.xcconfig"; sourceTree = "<group>"; };
-		8B9CC67100EC5A0A3D761933 /* Pods-ios-sabycom-demo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios-sabycom-demo.release.xcconfig"; path = "Target Support Files/Pods-ios-sabycom-demo/Pods-ios-sabycom-demo.release.xcconfig"; sourceTree = "<group>"; };
-		E9440274D48B0501EDBCB383 /* Pods-ios-sabycom-demo-local.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios-sabycom-demo-local.release.xcconfig"; path = "Target Support Files/Pods-ios-sabycom-demo-local/Pods-ios-sabycom-demo-local.release.xcconfig"; sourceTree = "<group>"; };
+		A81EC6254DAF48060D861DA9 /* Pods-ios-sabycom-demo-local.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios-sabycom-demo-local.debug.xcconfig"; path = "Target Support Files/Pods-ios-sabycom-demo-local/Pods-ios-sabycom-demo-local.debug.xcconfig"; sourceTree = "<group>"; };
+		B8837B28879A3F9B157FE161 /* Pods-ios-sabycom-demo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios-sabycom-demo.release.xcconfig"; path = "Target Support Files/Pods-ios-sabycom-demo/Pods-ios-sabycom-demo.release.xcconfig"; sourceTree = "<group>"; };
+		D05CF6388B96EE4092A8D6FF /* libPods-ios-sabycom-demo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ios-sabycom-demo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DAD66558F7A90403B8E52411 /* Pods-ios-sabycom-demo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios-sabycom-demo.debug.xcconfig"; path = "Target Support Files/Pods-ios-sabycom-demo/Pods-ios-sabycom-demo.debug.xcconfig"; sourceTree = "<group>"; };
+		DE1F43F97A20193572C07680 /* libPods-ios-sabycom-demo-local.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ios-sabycom-demo-local.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E1274FF14B086C0C26442F70 /* Pods-ios-sabycom-demo-local.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios-sabycom-demo-local.release.xcconfig"; path = "Target Support Files/Pods-ios-sabycom-demo-local/Pods-ios-sabycom-demo-local.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,8 +106,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F30E162FE77E9FFFF3FA22B8 /* Pods_ios_sabycom_demo.framework in Frameworks */,
-				F6157D2C4123F9D5DCFCA88B /* Pods_ios_sabycom_demo.framework in Frameworks */,
+				9813DFF996DB1755A8BD063C /* libPods-ios-sabycom-demo.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -123,29 +121,20 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8D7929A72723837E3377D5A1 /* Pods_ios_sabycom_demo_local.framework in Frameworks */,
+				DA04469F79B441FE29B3F450 /* libPods-ios-sabycom-demo-local.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		0BEBD6A642A060C1D7144D2F /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				464C01B8931D08CFECEB53C5 /* Pods_ios_sabycom_demo.framework */,
-				46353DE7C63EDCCE3D14D4BF /* Pods_ios_sabycom_demo_local.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		46EA215C669050380AA288DD /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				539399A8C42439462BC7F6E6 /* Pods-ios-sabycom-demo-local.debug.xcconfig */,
-				E9440274D48B0501EDBCB383 /* Pods-ios-sabycom-demo-local.release.xcconfig */,
-				89C56629FFE951BF4724FB09 /* Pods-ios-sabycom-demo.debug.xcconfig */,
-				8B9CC67100EC5A0A3D761933 /* Pods-ios-sabycom-demo.release.xcconfig */,
+				DAD66558F7A90403B8E52411 /* Pods-ios-sabycom-demo.debug.xcconfig */,
+				B8837B28879A3F9B157FE161 /* Pods-ios-sabycom-demo.release.xcconfig */,
+				A81EC6254DAF48060D861DA9 /* Pods-ios-sabycom-demo-local.debug.xcconfig */,
+				E1274FF14B086C0C26442F70 /* Pods-ios-sabycom-demo-local.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -159,7 +148,7 @@
 				607FACE81AFB9204008FA782 /* Tests */,
 				607FACD11AFB9204008FA782 /* Products */,
 				46EA215C669050380AA288DD /* Pods */,
-				0BEBD6A642A060C1D7144D2F /* Frameworks */,
+				8295E911762C83E0D6AD243E /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -188,6 +177,15 @@
 				607FACEA1AFB9204008FA782 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		8295E911762C83E0D6AD243E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				D05CF6388B96EE4092A8D6FF /* libPods-ios-sabycom-demo.a */,
+				DE1F43F97A20193572C07680 /* libPods-ios-sabycom-demo-local.a */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		83254256270F1E8700F6FCE0 /* utils */ = {
@@ -305,11 +303,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 607FACEF1AFB9204008FA782 /* Build configuration list for PBXNativeTarget "ios-sabycom-demo" */;
 			buildPhases = (
-				42D1EB743268A7C175F803B5 /* [CP] Check Pods Manifest.lock */,
+				F071518BD34DE03C9ED47FB4 /* [CP] Check Pods Manifest.lock */,
 				607FACCC1AFB9204008FA782 /* Sources */,
 				607FACCD1AFB9204008FA782 /* Frameworks */,
 				607FACCE1AFB9204008FA782 /* Resources */,
-				B673E15AA2A9B6B19B00464E /* [CP] Embed Pods Frameworks */,
+				34633753F1A2FBFE954CEE3E /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -342,11 +340,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 8308AAA22742319A00047D47 /* Build configuration list for PBXNativeTarget "ios-sabycom-demo-local" */;
 			buildPhases = (
-				CB0B698ABE42655D2E15D9CB /* [CP] Check Pods Manifest.lock */,
+				830A44B9A82E9C1E4556E2FC /* [CP] Check Pods Manifest.lock */,
 				8308AA882742319A00047D47 /* Sources */,
 				8308AA9B2742319A00047D47 /* Frameworks */,
 				8308AA9D2742319A00047D47 /* Resources */,
-				250257E9A5F218B472E8D5CD /* [CP] Embed Pods Frameworks */,
+				18D2A5A8DDFA8AA458A1ECEB /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -435,65 +433,43 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		250257E9A5F218B472E8D5CD /* [CP] Embed Pods Frameworks */ = {
+		18D2A5A8DDFA8AA458A1ECEB /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ios-sabycom-demo-local/Pods-ios-sabycom-demo-local-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/Sabycom/Sabycom.framework",
+				"${PODS_ROOT}/Target Support Files/Pods-ios-sabycom-demo-local/Pods-ios-sabycom-demo-local-resources.sh",
+				"${PODS_CONFIGURATION_BUILD_DIR}/Sabycom/Sabycom.bundle",
 			);
-			name = "[CP] Embed Pods Frameworks";
+			name = "[CP] Copy Pods Resources";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Sabycom.framework",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Sabycom.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ios-sabycom-demo-local/Pods-ios-sabycom-demo-local-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ios-sabycom-demo-local/Pods-ios-sabycom-demo-local-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		42D1EB743268A7C175F803B5 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-ios-sabycom-demo-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		B673E15AA2A9B6B19B00464E /* [CP] Embed Pods Frameworks */ = {
+		34633753F1A2FBFE954CEE3E /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ios-sabycom-demo/Pods-ios-sabycom-demo-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/Sabycom/Sabycom.framework",
+				"${PODS_ROOT}/Target Support Files/Pods-ios-sabycom-demo/Pods-ios-sabycom-demo-resources.sh",
+				"${PODS_CONFIGURATION_BUILD_DIR}/Sabycom/Sabycom.bundle",
 			);
-			name = "[CP] Embed Pods Frameworks";
+			name = "[CP] Copy Pods Resources";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Sabycom.framework",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Sabycom.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ios-sabycom-demo/Pods-ios-sabycom-demo-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ios-sabycom-demo/Pods-ios-sabycom-demo-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		CB0B698ABE42655D2E15D9CB /* [CP] Check Pods Manifest.lock */ = {
+		830A44B9A82E9C1E4556E2FC /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -509,6 +485,28 @@
 			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-ios-sabycom-demo-local-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F071518BD34DE03C9ED47FB4 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-ios-sabycom-demo-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -602,6 +600,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -661,6 +660,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -710,7 +710,7 @@
 		};
 		607FACF01AFB9204008FA782 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 89C56629FFE951BF4724FB09 /* Pods-ios-sabycom-demo.debug.xcconfig */;
+			baseConfigurationReference = DAD66558F7A90403B8E52411 /* Pods-ios-sabycom-demo.debug.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = ApplicationIcon;
@@ -720,7 +720,6 @@
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
 				EXCLUDED_ARCHS = "";
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				INFOPLIST_FILE = "$(SRCROOT)/Resources/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -738,7 +737,7 @@
 		};
 		607FACF11AFB9204008FA782 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8B9CC67100EC5A0A3D761933 /* Pods-ios-sabycom-demo.release.xcconfig */;
+			baseConfigurationReference = B8837B28879A3F9B157FE161 /* Pods-ios-sabycom-demo.release.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = ApplicationIcon;
@@ -748,7 +747,6 @@
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
 				EXCLUDED_ARCHS = "";
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				INFOPLIST_FILE = "$(SRCROOT)/Resources/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -808,8 +806,9 @@
 		};
 		8308AAA32742319A00047D47 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 539399A8C42439462BC7F6E6 /* Pods-ios-sabycom-demo-local.debug.xcconfig */;
+			baseConfigurationReference = A81EC6254DAF48060D861DA9 /* Pods-ios-sabycom-demo-local.debug.xcconfig */;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = ApplicationIcon;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = "ios-sabycom-demo.entitlements";
@@ -832,8 +831,9 @@
 		};
 		8308AAA42742319A00047D47 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E9440274D48B0501EDBCB383 /* Pods-ios-sabycom-demo-local.release.xcconfig */;
+			baseConfigurationReference = E1274FF14B086C0C26442F70 /* Pods-ios-sabycom-demo-local.release.xcconfig */;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = ApplicationIcon;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = "ios-sabycom-demo.entitlements";
