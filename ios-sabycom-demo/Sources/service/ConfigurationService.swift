@@ -7,6 +7,7 @@
 //
 
 import Sabycom
+import Foundation
 
 protocol ConfigurationService {
     func saveAppId(_ appId: String)

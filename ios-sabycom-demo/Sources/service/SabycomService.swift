@@ -8,6 +8,7 @@
 
 import UIKit
 import Sabycom
+import Foundation
 
 protocol SabycomService {
     var unreadConversationCount: Int { get }

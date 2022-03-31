@@ -7,6 +7,7 @@
 //
 
 import Sabycom
+import Foundation
 
 protocol UserStorage {
     var currentUser: SabycomUser? { get }
