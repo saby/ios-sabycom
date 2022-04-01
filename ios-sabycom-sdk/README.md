@@ -25,7 +25,7 @@ import Sabycom
 
 ```
 func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-    Sabycom.initialize(appId: appId)
+    SabycomSDK.initialize(appId: appId)
 }
  ```
 
@@ -40,14 +40,14 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
                        email: "email@google.com",
                        phone: "79001234567")
 
-        Sabycom.registerUser(user)
+        SabycomSDK.registerUser(user)
     } else {
-        Sabycom.registerAnonymousUser()
+        SabycomSDK.registerAnonymousUser()
     }
 }
  ```
 
-4. Чтобы показать виджет, вызовите в вашем UIViewController Sabycom.show(). Чтобы скрыть виджет, вызовите Sabycom.hide()
+4. Чтобы показать виджет, вызовите в вашем UIViewController SabycomSDK.show(). Чтобы скрыть виджет, вызовите SabycomSDK.hide()
 
  ```
  import Sabycom
@@ -63,17 +63,17 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
     }
 
     @objc func onSabycom(_ sender: Any) {
-        Sabycom.show(on: self)
+        SabycomSDK.show(on: self)
     }
 
     @objc func onHideSabycom(_ sender: Any) {
-        Sabycom.hide()
+        SabycomSDK.hide()
     }
  }
  ```
 
 
-5. Для получения количества непрочитанных сообщений используйте свойство Sabycom.unreadConversationCount и подпишитесь на обновления, используя NotificationCenter
+5. Для получения количества непрочитанных сообщений используйте свойство SabycomSDK.unreadConversationCount и подпишитесь на обновления, используя NotificationCenter
 
 ```
 
@@ -98,7 +98,7 @@ class YourViewController: UIViewController {
    }
 
    func updateUnreadMessagesLabel() {
-       unreadMessagesLabel.text = "\(Sabycom.unreadConversationCount)"
+       unreadMessagesLabel.text = "\(SabycomSDK.unreadConversationCount)"
    }
 }
 
@@ -114,13 +114,13 @@ func application(_ application: UIApplication, didRegisterForRemoteNotifications
             tokenType = .sandbox
         #endif
         
-        Sabycom.registerForPushNotifications(with: deviceToken, tokenType: tokenType)
+        SabycomSDK.registerForPushNotifications(with: deviceToken, tokenType: tokenType)
     }
 ```
 
 7. Чтобы удалить информацию о пользователе и отписаться от уведомлений, вызовите функцию
 ```
-Sabycom.logout()
+SabycomSDK.logout()
 ```
 
 8. Для того, чтобы показать всплывающее уведомление о новом сообщении, вызовите следующие функции
@@ -130,11 +130,11 @@ public func userNotificationCenter(_ center: UNUserNotificationCenter, willPrese
         let userInfo = notification.request.content.userInfo
         
         // Проверяет, пришел пуш от Sabycom или от другого сервиса
-        if Sabycom.isSabycomPushNotification(info: userInfo), 
+        if SabycomSDK.isSabycomPushNotification(info: userInfo), 
             let appDelegate = UIApplication.shared.delegate as? AppDelegate, let window = appDelegate.window, let controller = window.rootViewController {
 
             // Показывает всплывающее уведомление с новым сообщением. parentView - view, в котором нужно показать уведомление
-            Sabycom.handlePushNotification(info: userInfo, parentView: controller.view)
+            SabycomSDK.handlePushNotification(info: userInfo, parentView: controller.view)
         }
         
         completionHandler([])

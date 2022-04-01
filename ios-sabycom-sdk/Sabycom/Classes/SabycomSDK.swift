@@ -1,5 +1,5 @@
 //
-//  Sabycom.swift
+//  SabycomSDK.swift
 //  Sabycom
 //
 //  Created by Sergey Iskhakov on 10.08.2021.
@@ -9,7 +9,7 @@
 import UIKit
 
 /// СБИС онлайн консультант.
-public class Sabycom {
+public class SabycomSDK {
     private static var _instance: SabycomImpl?
     private static var instance: SabycomImpl {
         get {
@@ -227,12 +227,12 @@ private class SabycomImpl {
     
     private func tryGetAppIdAndUser() -> (appId: String, user: SabycomUser)? {
         guard let appId = viewModel.appId, !appId.isEmpty else {
-            assertionFailure("Sabycom not initialized. Call Sabycom.initialize(apiKey:)")
+            assertionFailure("SabycomSDK not initialized. Call SabycomSDK.initialize(apiKey:)")
             return nil
         }
         
         guard let user = viewModel.user else {
-            assertionFailure("User not registered. Call Sabycom.registerUser(_:)")
+            assertionFailure("User not registered. Call SabycomSDK.registerUser(_:)")
             return nil
         }
         

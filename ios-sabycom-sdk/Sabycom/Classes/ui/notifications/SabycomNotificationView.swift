@@ -276,8 +276,8 @@ class SabycomNotificationView: UIView {
             
             messageDateLabel.text = dateFormatter.string(from: model.messageDate)
             
-            unreadCountLabel.isHidden = Sabycom.unreadConversationCount <= 0
-            unreadCountLabel.text = "\(Sabycom.unreadConversationCount)"
+            unreadCountLabel.isHidden = SabycomSDK.unreadConversationCount <= 0
+            unreadCountLabel.text = "\(SabycomSDK.unreadConversationCount)"
             
             if let url = URL(string: model.operatorPhoto) {
                 imageLoadTask = imagesService.getImage(from: url) { [weak self] image in
@@ -292,7 +292,7 @@ class SabycomNotificationView: UIView {
     @objc private func onOpenSabycom() {
         hide()
         if let viewController = UIApplication.shared.windows.first?.rootViewController {
-            Sabycom.show(on: viewController)
+            SabycomSDK.show(on: viewController)
         }
     }
     

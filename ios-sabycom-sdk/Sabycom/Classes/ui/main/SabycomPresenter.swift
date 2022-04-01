@@ -167,7 +167,7 @@ class SabycomPresenter {
             let result: [UNNotification] = notifications.compactMap { notification in
                 let userInfo = notification.request.content.userInfo
                 
-                guard Sabycom.isSabycomPushNotification(info: userInfo) else {
+                guard SabycomSDK.isSabycomPushNotification(info: userInfo) else {
                     return nil
                 }
                 
