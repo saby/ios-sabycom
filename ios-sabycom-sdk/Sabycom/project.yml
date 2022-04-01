@@ -1,8 +1,8 @@
-name: Sabycom
+name: SabycomCore
 options:
   bundleIdPrefix: ru.tensor.sabycom
 targets:
-  Sabycom:
+  SabycomCore:
     type: framework
     platform: iOS
     deploymentTarget: "12.0"

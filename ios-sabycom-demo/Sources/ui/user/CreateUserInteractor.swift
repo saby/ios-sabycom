@@ -7,6 +7,7 @@
 //
 
 import Sabycom
+import Foundation
 
 class CreateUserInteractor {
     private let userStorage: UserStorage

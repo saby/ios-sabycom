@@ -7,6 +7,7 @@
 //
 
 import Sabycom
+import Foundation
 
 protocol ConfigurationView: AnyObject {
     var viewDidLoadHandler: (() -> Void)? { get set }
