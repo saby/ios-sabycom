@@ -24,7 +24,7 @@ protocol SabycomService {
 }
 class SabycomServiceImpl: SabycomService {
     var unreadConversationCount: Int {
-        Sabycom.unreadConversationCount
+        SabycomSDK.unreadConversationCount
     }
     
     private let configurationService: ConfigurationService
@@ -82,7 +82,7 @@ class SabycomServiceImpl: SabycomService {
     
     func registerAnonymousUser() {
         userStorage.registeredAsAnonymous = true
-        Sabycom.registerAnonymousUser()
+        SabycomSDK.registerAnonymousUser()
     }
     
     func clearAnonymousUser() {
@@ -91,7 +91,7 @@ class SabycomServiceImpl: SabycomService {
     
     func show(on viewController: UIViewController) {
         configureSabycom()
-        Sabycom.show(on: viewController)
+        SabycomSDK.show(on: viewController)
     }
     
     func configureSabycom() {
@@ -106,26 +106,26 @@ class SabycomServiceImpl: SabycomService {
     }
     
     func logout() {
-        Sabycom.logout()
+        SabycomSDK.logout()
     }
     
     func isSabycomPushNotification(info: [AnyHashable: Any]) -> Bool {
-        Sabycom.isSabycomPushNotification(info: info)
+        SabycomSDK.isSabycomPushNotification(info: info)
     }
     
     func handlePushNotification(info: [AnyHashable: Any], parentView: UIView) {
-        Sabycom.handlePushNotification(info: info, parentView: parentView)
+        SabycomSDK.handlePushNotification(info: info, parentView: parentView)
     }
     
     private func initializeSabycom() {
         if let appId = configurationService.getCurrentAppId(), let host = configurationService.getCurrentHostType() {
-            Sabycom.initialize(appId: appId, host: host)
+            SabycomSDK.initialize(appId: appId, host: host)
         }
     }
     
     private func registerSabycomUser() {
         if let user = userStorage.currentUser {
-            Sabycom.registerUser(user)
+            SabycomSDK.registerUser(user)
         }
     }
     
@@ -137,7 +137,7 @@ class SabycomServiceImpl: SabycomService {
                 tokenType = .sandbox
             #endif
             
-            Sabycom.registerForPushNotifications(with: deviceToken, tokenType: tokenType)
+            SabycomSDK.registerForPushNotifications(with: deviceToken, tokenType: tokenType)
         }
     }
 }

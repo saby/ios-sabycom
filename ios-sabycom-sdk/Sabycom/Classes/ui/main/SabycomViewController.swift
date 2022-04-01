@@ -509,7 +509,7 @@ extension SabycomViewController: SabycomWidgetJSHandlerDelegate {
     }
     
     func didClickClose() {
-        Sabycom.hide()
+        SabycomSDK.hide()
     }
     
     func didReceiveNewMessage(unreadCount: Int) {
