@@ -10,7 +10,14 @@ import Foundation
 extension Bundle {
     class var mainSdk: Bundle {
         let bundle = Bundle.init(for: SabycomSDK.self)
-        let bundleUrl = bundle.url(forResource: "Sabycom", withExtension: "bundle")
-        return Bundle.init(url: bundleUrl!)!
+        guard let bundleUrl = bundle.url(forResource: "Sabycom", withExtension: "bundle") else {
+            return bundle
+        }
+        
+        guard let resBundle = Bundle(url: bundleUrl) else {
+            return bundle
+        }
+        
+        return resBundle
     }
 }
