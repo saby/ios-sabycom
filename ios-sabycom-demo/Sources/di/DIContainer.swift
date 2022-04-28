@@ -19,7 +19,7 @@ final class DIContainer: DIContainerProtocol {
     
     private init() {}
 
-    var components: [String: Any] = [:]
+    private var components: [String: Any] = [:]
 
     func register<Component>(type: Component.Type, component: Any) {
         components["\(type)"] = component

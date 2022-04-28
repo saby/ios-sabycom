@@ -19,9 +19,7 @@ protocol NotificationService {
 }
 
 class NotificationServiceImpl: NSObject, NotificationService, UNUserNotificationCenterDelegate {
-    private var sabycomService: SabycomService {
-        DIContainer.shared.resolve(type: SabycomService.self)!
-    }
+    private lazy var sabycomService: SabycomService = DIContainer.shared.resolve(type: SabycomService.self)!
     
     private (set) var deviceToken: Data? {
         didSet {
