@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'Sabycom'
-  s.version          = '22.3206'
+  s.version          = '22.4100'
   s.summary          = 'Виджет чата поддержки.'
   s.description      = 'Виджет чата поддержки СБИС.'
 
