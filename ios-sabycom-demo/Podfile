@@ -1,0 +1,25 @@
+use_frameworks!
+
+platform :ios, '12.0'
+
+def common_pods_for_target
+  pod 'Sabycom', :path => '../ios-sabycom-sdk'
+end
+
+target 'ios-sabycom-demo' do
+  common_pods_for_target
+end
+
+target 'ios-sabycom-demo-local' do
+  common_pods_for_target
+end
+
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      config.build_settings["EXCLUDED_ARCHS[sdk=iphonesimulator*]"] = "arm64"
+      config.build_settings['SWIFT_VERSION'] = '5.4.2'
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
+    end
+  end
+end
