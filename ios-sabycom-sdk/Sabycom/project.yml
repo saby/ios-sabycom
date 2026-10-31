@@ -1,0 +1,15 @@
+name: Sabycom
+options:
+  bundleIdPrefix: ru.tensor.sabycom
+targets:
+  Sabycom:
+    type: framework
+    platform: iOS
+    deploymentTarget: "12.2"
+    settings:
+      SWIFT_VERSION: "5.4.2"
+    sources: 
+      - path: "Assets/"
+      - path: "Classes"
+    info:
+      path: "Info.plist"
